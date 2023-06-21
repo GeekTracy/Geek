@@ -1,6 +1,5 @@
 package com.geek.tracy.leetcode;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -35,36 +34,40 @@ public class Code_089 {
         // 记录过程中，满足格雷序列的数；如需要记录所有格雷编码，可以定义一个：List<List<Integer>> list
         Deque<Integer> greyCode = new LinkedList<>();
         List<List<Integer>> list = new ArrayList<>();
-        backTrace(numMax, 0, greyCode, list);
-//        for (int i = 0; i <= numMax; i++) {
-//            greyCode.clear();
-//            backTrace(numMax, i, greyCode, list);
-//        }
+        for (int i = 0; i <= numMax; i++) {
+            greyCode.clear();
+            backTrace(numMax, i, greyCode, list);
+        }
         System.out.println(list);
         return list.get(0);
     }
 
     private void backTrace(int numMax, int curNum, Deque<Integer> greyCode, List<List<Integer>> list) {
-        if (greyCode.contains(curNum)) {
+        if (list.size() > 0) {
             return;
         }
-        // 退出条件：格雷数组当前大小为numMax - 2，且不包含当前值，且当前curNum与数组头部互为格雷数
+        // 退出条件：格雷数组当前大小为numMax，且不包含当前值，且当前curNum与数组头部互为格雷数
         if (greyCode.size() == numMax && isGrayNeighbour(greyCode.peekLast(), curNum) && isGrayNeighbour(greyCode.peekFirst(), curNum)) {
             greyCode.offerLast(curNum);
             list.add(new ArrayList<>(greyCode));
             return;
         }
 
-        if (isGrayNeighbour(greyCode.peekLast(), curNum)) {
-            greyCode.offerLast(curNum);
-            // 遍历访问下一个
-            for (int i = 0; i <= numMax; i++) {
-                backTrace(numMax, i, greyCode, list);
+        // 遍历访问下一个
+        for (int i = 0; i <= numMax; i++) {
+            if (greyCode.contains(i) || curNum == i) {
+                continue;
             }
+            if (isGrayNeighbour(greyCode.peekLast(), curNum)) {
+                greyCode.offerLast(curNum);
+            } else {
+                // 不满足条件时，需要跳过
+                continue;
+            }
+            backTrace(numMax, i, greyCode, list);
             // 回退
             greyCode.pollLast();
         }
-
     }
 
     /**
@@ -96,7 +99,11 @@ public class Code_089 {
 
     @Test
     public void test() {
-        grayCode(2);
+//        grayCode(10);
+        System.out.println(1 << 0);
+        System.out.println(1 << 1);
     }
+
+
 }
 
