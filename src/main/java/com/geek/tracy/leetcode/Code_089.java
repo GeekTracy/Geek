@@ -99,9 +99,55 @@ public class Code_089 {
 
     @Test
     public void test() {
-//        grayCode(10);
-        System.out.println(1 << 0);
-        System.out.println(1 << 1);
+        System.out.println(grayCode02(10));
+    }
+
+    /**
+     * 格雷编码：方法二：动态规划法，寻找G（n） 与G（n-1）的关系
+     *  寻找规律：G(n)为G(n-1)拼接【Gr(n-1)每一位加2^n-1】，其中Gr表示G的转置数列，如：G(1)=[0,1]，则Gr[1]=[1,0]
+     *  其中：G(0)=[0],G(1)=[0,1]或[1,0]
+     */
+    public List<Integer> grayCode02(int n) {
+        List<Integer> grayCode = new ArrayList<>();
+        // 从G（0）开始
+        grayCode.add(0);
+        for (int i = 1; i <= n; i++) {
+            // 偏移量 2^n-1
+            int offset = 1 << (i - 1);
+            for (int j = offset - 1; j >= 0; j--) {
+                // 将G(n-1)倒序取值+offset添加至数组后即可得到G(n)
+                grayCode.add(grayCode.get(j) + offset);
+            }
+        }
+        return grayCode;
+    }
+
+    /**
+     * 格雷编码：方法三：有方法二的基础，可以使用递归，换一种写法
+     * 提示：
+     *   1 <= n <= 16
+     */
+    public List<Integer> grayCode03(int n) {
+        // 递归出口
+        if (n == 1) {
+            return new ArrayList<Integer>(){{add(0);add(1);}};
+        }
+        // 当前为G(n-1)的值
+        List<Integer> grayBeforeCurrent = grayCode(n - 1);
+        // 偏移量
+        int offset = 1 << (n - 1);
+        int size = grayBeforeCurrent.size();
+        // G(n-1)数列倒置加offset，拼接到当前数组后，即为G(n)
+        for (int i = size - 1; i >= 0; i--) {
+            grayBeforeCurrent.add(grayBeforeCurrent.get(i) + offset);
+        }
+        return grayBeforeCurrent;
+    }
+
+
+    @Test
+    public void test01() {
+        grayCode03(2);
     }
 
 
