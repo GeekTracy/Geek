@@ -1,10 +1,5 @@
 package com.geek.tracy.leetcode.tree;
 
-/**
- * @author mike
- * @date 2023/6/26
- */
-
 import com.geek.tracy.leetcode.tree.bean.TreeNode;
 
 import java.util.List;
