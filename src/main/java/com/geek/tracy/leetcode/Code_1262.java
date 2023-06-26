@@ -38,22 +38,23 @@ public class Code_1262 {
         }
         Integer max = 0;
         int index = 0;
-        getMax(cannotDivideThree, sum, index);
+//        getMax(cannotDivideThree, sum, index);
 
         return 0;
     }
 
-    private void getMax(List<Integer> cannotDivideThree, Integer sum, int index) {
-        // 退出条件
-        if (index == cannotDivideThree.size() - 1) {
 
-        }
-        Integer temp = cannotDivideThree.get(index);
-        cannotDivideThree.set(index, Integer.MAX_VALUE);
+    /**
+     *
+     * @param cannotDivideThree 数组
+     * @param sum 当前总和
+     * @param tempArray 临时数组，保存去掉的数据的下标
+     * @param count 减掉的数据的个数
+     */
+    private void getMax(List<Integer> cannotDivideThree, Integer sum, List<Integer> tempArray, int max, int count) {
+        // 退出条件：
         // 调用下一个
-        getMax(cannotDivideThree, sum - temp, index + 1);
         // 还原值
-        cannotDivideThree.set(index, temp);
     }
 
     public static void main(String[] args) {
