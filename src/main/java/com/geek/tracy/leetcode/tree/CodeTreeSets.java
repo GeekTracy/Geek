@@ -10,7 +10,7 @@ import java.util.List;
  * @Author Tracy
  * @Date 2023/6/26
  */
-public class CodeTreeSets {
+public class CodeTreeSets extends TreeTraversal {
 
     /**
      * 144. 二叉树的前序遍历
@@ -20,39 +20,34 @@ public class CodeTreeSets {
             return new ArrayList<>();
         }
         List<Integer> list = new ArrayList<>();
+        // 前序遍历
         preOrder(root, list);
         return list;
-    }
-
-    /**
-     * 前序遍历--递归
-     * @param tree
-     * @param list
-     */
-    private void preOrder(TreeNode tree, List<Integer> list) {
-        // 根
-        list.add(tree.val);
-        // 左
-        if (tree.left != null) {
-            preOrder(tree.left, list);
-        }
-        // 右
-        if (tree.right != null) {
-            preOrder(tree.right, list);
-        }
     }
 
     /**
      * 94. 二叉树的中序遍历
      */
     public List<Integer> inorderTraversal(TreeNode root) {
-        return null;
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> list = new ArrayList<>();
+        // 中序遍历
+        inOrder(root, list);
+        return list;
     }
 
     /**
      * 145. 二叉树的后序遍历
      */
     public List<Integer> postorderTraversal(TreeNode root) {
-        return null;
+        if (root == null) {
+            return new ArrayList<>();
+        }
+        List<Integer> list = new ArrayList<>();
+        // 后续序遍历
+        postOrder(root, list);
+        return list;
     }
 }
