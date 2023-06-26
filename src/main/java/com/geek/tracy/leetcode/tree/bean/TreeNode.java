@@ -1,4 +1,4 @@
-package com.geek.tracy.leetcode.bean;
+package com.geek.tracy.leetcode.tree.bean;
 
 /**
  * @Author yang

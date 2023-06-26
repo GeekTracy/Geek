@@ -1,6 +1,6 @@
 package com.geek.tracy.leetcode;
 
-import com.geek.tracy.leetcode.bean.ListNode;
+import com.geek.tracy.leetcode.tree.bean.ListNode;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 package com.geek.tracy.leetcode;
 
-import com.geek.tracy.leetcode.bean.ListNode;
-import com.geek.tracy.leetcode.bean.TreeNode;
+import com.geek.tracy.leetcode.tree.bean.ListNode;
+import com.geek.tracy.leetcode.tree.bean.TreeNode;
 import org.junit.Test;
 
 import java.util.ArrayList;
