@@ -38,11 +38,11 @@ public class CodeSets {
             return 1;
         }
         // 总和
-        int sum = (int) ((1 + n) * n /2.0);
+        int sum = (int) ((1 + n) * n / 2.0);
         // 游标平移，左侧和小于右侧，则右移，反之左移，游标取折半中点
         int left = 1;
         int right = n;
-        while(left <= right) {
+        while (left <= right) {
             int pivot = (left + right + 1) / 2;
             int leftSum = (1 + pivot) * pivot / 2;
             int rightSum = sum - leftSum + pivot;
@@ -70,8 +70,8 @@ public class CodeSets {
     /**
      * 66. 加一
      * 提示：
-     *      1 <= digits.length <= 100
-     *      0 <= digits[i] <= 9
+     * 1 <= digits.length <= 100
+     * 0 <= digits[i] <= 9
      */
     public int[] plusOne(int[] digits) {
         // 记录数组末尾数字为9的个数
