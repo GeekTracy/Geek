@@ -13,7 +13,30 @@ import java.util.List;
  */
 public class CodeSets {
 
-    @Test
+
+    /**
+     * 2490. 回环句
+     */
+    public boolean isCircularSentence(String sentence) {
+        String[] sentenceArr = sentence.split(" ");
+        if (!circularWord(sentenceArr[sentenceArr.length - 1], sentenceArr[0])) {
+            return false;
+        }
+        for (int i = 1; i < sentenceArr.length; i++) {
+            if (!circularWord(sentenceArr[i - 1], sentenceArr[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean circularWord(String word1, String word2) {
+        char [] char1 = word1.toCharArray() ;
+        char [] char2 = word2.toCharArray() ;
+        return char1[char1.length - 1] == char2[0];
+    }
+
+        @Test
     public void reconstructMatrixTest() {
         System.out.println(reconstructMatrix(2, 1, new int[]{1, 1, 1}));
         System.out.println(reconstructMatrix(2, 3, new int[]{1, 1, 1,}));
