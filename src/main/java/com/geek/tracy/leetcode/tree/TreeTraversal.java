@@ -2,6 +2,9 @@ package com.geek.tracy.leetcode.tree;
 
 import com.geek.tracy.leetcode.tree.bean.TreeNode;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -19,6 +22,9 @@ public class TreeTraversal implements TreeTraversalWay {
      */
     @Override
     public void preOrder(TreeNode tree, List<Integer> list) {
+        if (tree == null) {
+            return;
+        }
         // 根
         list.add(tree.val);
         // 左
@@ -32,6 +38,28 @@ public class TreeTraversal implements TreeTraversalWay {
     }
 
     /**
+     * 前序遍历 -- 迭代，非递归
+     * @param root 树节点
+     */
+    public List<Integer> preOrderIteration(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        // 使用队列，FIFO，进队顺序：右、左，前序遍历保持左节点在队首
+        Deque<TreeNode> deque = new LinkedList<>();
+        // 初始状态，队列只有根节点root
+        deque.offerFirst(root);
+        while (!deque.isEmpty()) {
+            TreeNode queueHead = deque.pollFirst();
+            if (queueHead != null) {
+                result.add(queueHead.val);
+                // 进队顺序：右、左，前序遍历保持左节点在队首
+                deque.offerFirst(queueHead.right);
+                deque.offerFirst(queueHead.left);
+            }
+        }
+        return result;
+    }
+
+    /**
      * 中序遍历 -- 递归
      *
      * @param tree 树节点
@@ -39,6 +67,9 @@ public class TreeTraversal implements TreeTraversalWay {
      */
     @Override
     public void inOrder(TreeNode tree, List<Integer> list) {
+        if (tree == null) {
+            return;
+        }
         // 左
         if (tree.left != null) {
             inOrder(tree.left, list);
@@ -52,6 +83,14 @@ public class TreeTraversal implements TreeTraversalWay {
     }
 
     /**
+     * 中序遍历 -- 迭代，非递归
+     * @param root 树节点
+     */
+    public List<Integer> inOrderIteration(TreeNode root) {
+        return null;
+    }
+
+    /**
      * 后序遍历 -- 递归
      *
      * @param tree 树节点
@@ -59,6 +98,9 @@ public class TreeTraversal implements TreeTraversalWay {
      */
     @Override
     public void postOrder(TreeNode tree, List<Integer> list) {
+        if (tree == null) {
+            return;
+        }
         // 左
         if (tree.left != null) {
             postOrder(tree.left, list);
