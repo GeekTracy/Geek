@@ -2,7 +2,9 @@ package com.geek.tracy.leetcode;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 合集
@@ -11,7 +13,68 @@ import java.util.Arrays;
  */
 public class CodeSets {
 
+    @Test
+    public void reconstructMatrixTest() {
+        System.out.println(reconstructMatrix(2, 1, new int[]{1, 1, 1}));
+        System.out.println(reconstructMatrix(2, 3, new int[]{1, 1, 1,}));
+        System.out.println(reconstructMatrix(5, 5, new int[]{2, 1, 2, 0, 1, 0, 1, 2, 0, 1}));
+    }
 
+
+    /**
+     * 1253. 重构 2 行二进制矩阵
+     */
+    public List<List<Integer>> reconstructMatrix(int upper, int lower, int[] colsum) {
+        // 数组是二进制数组，则数组的元素不是0，就是1，在colsum数组中的元素只可能是：0、1、2，
+        int size = colsum.length;
+        // colsum数组中，值为2的个数
+        List<Integer> twoIndex = new ArrayList<>();
+        List<Integer> oneIndex = new ArrayList<>();
+
+        int[] upperArr = new int[size];
+        int[] lowerArr = new int[size];
+
+        for (int i = 0; i < size; i++) {
+            if (colsum[i] == 2) {
+                twoIndex.add(i);
+            } else if (colsum[i] == 1) {
+                oneIndex.add(i);
+            }
+        }
+        // 1) upper + lower 不等于 colusum的元素之和，则返回空数组
+        if (upper + lower != twoIndex.size() * 2 + oneIndex.size()) {
+            return new ArrayList<>();
+        }
+        // 2) upper/lower 的值都要大于2的个数，因为colsum元素为2时，即upper,lower对应的二位二进制数组对应下标的值均为1，所以 {upper,lower} >= 2的个数
+        if (upper < twoIndex.size() || lower < twoIndex.size()) {
+            return new ArrayList<>();
+        }
+        for (Integer index : twoIndex) {
+            upperArr[index] = 1;
+            lowerArr[index] = 1;
+        }
+
+        int oneCount = upper - twoIndex.size();
+        for (Integer index : oneIndex) {
+            if (oneCount-- > 0) {
+                upperArr[index] = 1;
+            } else {
+                lowerArr[index] = 1;
+            }
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        result.add(toList(upperArr));
+        result.add(toList(lowerArr));
+        return result;
+    }
+
+    private List<Integer> toList(int[] arr) {
+        List<Integer> list = new ArrayList<>();
+        for (int j : arr) {
+            list.add(j);
+        }
+        return list;
+    }
     /**
      * 2485. 找出中枢整数 --测试
      */
