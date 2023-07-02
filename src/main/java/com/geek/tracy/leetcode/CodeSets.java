@@ -1,5 +1,6 @@
 package com.geek.tracy.leetcode;
 
+import com.geek.tracy.leetcode.tree.bean.ListNode;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -13,6 +14,56 @@ import java.util.List;
  */
 public class CodeSets {
 
+    @Test
+    public void addTwoNumbersTest() {
+//        l1 = [2,4,3]
+//        l2 = [5,6,4]
+        ListNode l1 = new ListNode(2);
+        l1.next = new ListNode(4);
+        l1.next.next = new ListNode(3);
+
+        ListNode l2 = new ListNode(5);
+        l2.next = new ListNode(6);
+        l2.next.next = new ListNode(4);
+
+        addTwoNumbers(l1, l2);
+    }
+
+    /**
+     * 2. 两数相加
+     */
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode tempRoot = new ListNode();
+        ListNode tempL1 = l1;
+        ListNode tempL2 = l2;
+        ListNode resultTemp = tempRoot;
+        boolean more = false;
+        while (tempL1 != null || tempL2 != null || more) {
+            int sum = 0;
+            if (tempL1 != null) {
+                sum += tempL1.val;
+                tempL1 = tempL1.next;
+            }
+            if (tempL2 != null) {
+                sum += tempL2.val;
+                tempL2 = tempL2.next;
+            }
+            if (more) {
+                sum++;
+            }
+            ListNode curr;
+            if (sum > 9) {
+                curr = new ListNode(sum - 10);
+                more = true;
+            } else {
+                curr = new ListNode(sum);
+                more = false;
+            }
+            resultTemp.next = curr;
+            resultTemp = curr;
+        }
+        return tempRoot.next;
+    }
 
     /**
      * 2490. 回环句
