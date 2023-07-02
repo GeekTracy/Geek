@@ -7,7 +7,7 @@ import org.junit.Test;
  * @Author Tracy
  * @Date 2023/6/27
  */
-public class Code_DpSets {
+public class DynamicProgrammingMethod {
 
 
     @Test
