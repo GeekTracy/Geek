@@ -3,9 +3,7 @@ package com.geek.tracy.leetcode;
 import com.geek.tracy.leetcode.tree.bean.ListNode;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * 合集
@@ -13,6 +11,57 @@ import java.util.List;
  * @Date 2023/6/26
  */
 public class CodeSets {
+
+    /**
+     * 445. 两数相加 II
+     * 高位在链表表头，使用栈保存，FILO先进后出
+     */
+    public ListNode addTwoNumbersII(ListNode l1, ListNode l2) {
+        Deque<ListNode> stack1 = new LinkedList<>();
+        Deque<ListNode> stack2 = new LinkedList<>();
+
+        while (l1 != null) {
+            stack1.offerLast(l1);
+            l1 = l1.next;
+        }
+        while (l2 != null) {
+            stack2.offerLast(l2);
+            l2 = l2.next;
+        }
+        Deque<ListNode> result = new LinkedList<>();
+        boolean more = false;
+        // 遍历stack1 和 stack2,
+        while (!stack1.isEmpty() || !stack2.isEmpty()) {
+            int sum = 0;
+            if (!stack1.isEmpty()) {
+                sum += stack1.pollLast().val;
+            }
+            if (!stack2.isEmpty()) {
+                sum += stack2.pollLast().val;
+            }
+            // 是否进位
+            if (more) {
+                sum++;
+                more = false;
+            }
+            if (sum > 9) {
+                more = true;
+                sum -= 10;
+            }
+            result.offerLast(new ListNode(sum));
+        }
+        if (more) {
+            result.offerLast(new ListNode(1));
+        }
+        // 栈result转为链表，表头为root
+        ListNode root = result.pollLast();
+        ListNode temp = root;
+        while (!result.isEmpty()) {
+            temp.next = result.peekLast();
+            temp = result.pollLast();
+        }
+        return root;
+    }
 
     @Test
     public void addTwoNumbersTest() {
