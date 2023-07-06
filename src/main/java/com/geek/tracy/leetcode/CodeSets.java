@@ -12,6 +12,36 @@ import java.util.*;
  */
 public class CodeSets {
 
+    @Test
+    public void maximumEvenSplitTest() {
+        for (int i = 2; i < 50; i = i + 2) {
+            System.out.println("finalSum:" + i + ": " + maximumEvenSplit(i));
+        }
+    }
+    /**
+     * 2178. 拆分成最多数目的正偶数之和
+     */
+    public List<Long> maximumEvenSplit(long finalSum) {
+        if (finalSum % 2 != 0) {
+            return new ArrayList<>();
+        }
+        List<Long> result = new ArrayList<>();
+        long sum = 0;
+        for (Long i = 2L; sum < finalSum; i = i + 2) {
+            sum += i;
+            result.add(i);
+        }
+        if (sum == finalSum) {
+            return result;
+        } else if (sum > finalSum) {
+            sum -= result.get(result.size() - 1);
+            result.remove(result.size() - 1);
+            Long left = finalSum - sum;
+            result.set(result.size() - 1, result.get(result.size() - 1) + left);
+        }
+        return result;
+    }
+
     /**
      * 445. 两数相加 II
      * 高位在链表表头，使用栈保存，FILO先进后出
