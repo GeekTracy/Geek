@@ -12,6 +12,31 @@ import java.util.*;
  */
 public class CodeSets {
 
+
+    /**
+     * 2679. 矩阵中的和
+     *
+     * 给你一个下标从 0 开始的二维整数数组 nums 。一开始你的分数为 0 。你需要执行以下操作直到矩阵变为空：
+     *
+     * 矩阵中每一行选取最大的一个数，并删除它。如果一行中有多个最大的数，选择任意一个并删除。
+     * 在步骤 1 删除的所有数字中找到最大的一个数字，将它添加到你的 分数 中。
+     * 请你返回最后的 分数 。
+     */
+    public int matrixSum(int[][] nums) {
+        for (int[] num : nums) {
+            Arrays.sort(num);
+        }
+        int score = 0;
+        for (int col = 0; col < nums[0].length; col++) {
+            int colMax = 0;
+            for (int row = 0; row < nums.length; row++) {
+                colMax = Math.max(nums[row][col], colMax);
+            }
+            score += colMax;
+        }
+        return score;
+    }
+
     @Test
     public void maximumEvenSplitTest() {
         for (int i = 2; i < 50; i = i + 2) {
