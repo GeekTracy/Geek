@@ -13,6 +13,69 @@ import java.util.*;
 public class CodeSets {
 
 
+    @Test
+    public void threeSumTest() {
+//        System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
+        System.out.println(threeSum(new int[] {34,55,79,28,46,33,2,48,31,-3,84,71,52,-3,93,15,21,-43,57,-6,86,56,94,74,83,-14,28,-66,46,-49,62,-11,43,65,77,12,47,61,26,1,13,29,55,-82,76,26,15,-29,36,-29,10,-70,69,17,49}));
+    }
+
+    /**
+     * 15. 三数之和
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        int size = nums.length;
+
+        List<List<Integer>> res = new ArrayList<>();
+
+        // 去重
+        List<String> only = new ArrayList<>();
+        for (int i = 1; i < 1 << size; i++) {
+            if (Integer.bitCount(i) == 3) {
+                String binary = Integer.toBinaryString(i);
+                char[] chars = binary.toCharArray();
+                int length = chars.length;
+                int sum = 0;
+                List<Integer> temp = new ArrayList<>();
+                for (int j = length - 1; j >= 0; j--) {
+                    if (chars[j] == '1') {
+                        sum += nums[length - 1 - j];
+                        temp.add(nums[length - 1 - j]);
+                    }
+                }
+                if (sum == 0 && temp.size() == 3) {
+                    Collections.sort(temp);
+                    String ts = "" + temp.get(0) + temp.get(1) + temp.get(2);
+                    if (!only.contains(ts)) {
+                        only.add(ts);
+                        res.add(temp);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    @Test
+    public void test01 () {
+        twoSum(new int[]{0,0,3,4}, 0);
+    }
+    public int[] twoSum(int[] numbers, int target) {
+        int size = numbers.length;
+        int[] res = new int[2];
+        for (int i = 0; i < size; i++) {
+            for (int j = i + i; j < size; j++) {
+                if (numbers[i] + numbers[j] == target) {
+                    res[0] = i + 1;
+                    res[1] = j + 1;
+                    return res;
+                }
+            }
+        }
+        return res;
+    }
+
     /**
      * 2679. 矩阵中的和
      *
