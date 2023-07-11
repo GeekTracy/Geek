@@ -15,45 +15,63 @@ public class CodeSets {
 
     @Test
     public void threeSumTest() {
-//        System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
-        System.out.println(threeSum(new int[] {34,55,79,28,46,33,2,48,31,-3,84,71,52,-3,93,15,21,-43,57,-6,86,56,94,74,83,-14,28,-66,46,-49,62,-11,43,65,77,12,47,61,26,1,13,29,55,-82,76,26,15,-29,36,-29,10,-70,69,17,49}));
+        System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
+        System.out.println(threeSum(new int[]{0, 0, 0}));
+        System.out.println(threeSum(new int[]{0, 0, 0, 0}));
     }
 
     /**
      * 15. 三数之和
+     *      双指针法：将数组排序，取下标i的之后的2个指针：l、r，且i < l < r，遍历数组
+     *  提示：
+     *  *   3 <= nums.length <= 3000
+     *  *   -10^5 <= nums[i] <= 10^5
      * @param nums
      * @return
      */
     public List<List<Integer>> threeSum(int[] nums) {
-        int size = nums.length;
-
         List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length < 3) {
+            return res;
+        }
+        // 排序
+        Arrays.sort(nums);
+        // 遍历数组的元素，由于求的是和为0，又数组已排序
+        for (int i = 0; i < nums.length; i++) {
+            // 如果下标i的元素大于0，则3数之和不可能为0，终止循环
+            if (nums[i] > 0) {
+                break;
+            }
+            // 本题存在重复元素，当nums[i] = nums[i - 1]，则遍历i时会出现重复结果，需要跳过
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            // 双指针，l、r一前一后，收缩遍历
+            int l = i + 1;
+            int r = nums.length - 1;
 
-        // 去重
-        List<String> only = new ArrayList<>();
-        for (int i = 1; i < 1 << size; i++) {
-            if (Integer.bitCount(i) == 3) {
-                String binary = Integer.toBinaryString(i);
-                char[] chars = binary.toCharArray();
-                int length = chars.length;
-                int sum = 0;
-                List<Integer> temp = new ArrayList<>();
-                for (int j = length - 1; j >= 0; j--) {
-                    if (chars[j] == '1') {
-                        sum += nums[length - 1 - j];
-                        temp.add(nums[length - 1 - j]);
+            while (l < r) {
+                int sum = nums[i] + nums[l] + nums[r];
+                if (sum == 0) {
+                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                    // 左指针，重复值，取最右
+                    while (l < r && nums[l] == nums[l + 1]) {
+                        l++;
                     }
-                }
-                if (sum == 0 && temp.size() == 3) {
-                    Collections.sort(temp);
-                    String ts = "" + temp.get(0) + temp.get(1) + temp.get(2);
-                    if (!only.contains(ts)) {
-                        only.add(ts);
-                        res.add(temp);
+                    // 右指针，重复值，取最左
+                    while (l < r && nums[r] == nums[r - 1]) {
+                        r--;
                     }
+                    l++;
+                    r--;
+                } else if (sum < 0) {
+                    l++;
+                } else {
+                    r--;
                 }
             }
         }
+
         return res;
     }
 
