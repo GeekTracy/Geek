@@ -14,6 +14,104 @@ public class CodeSets {
 
 
     @Test
+    public void alternateDigitSumTest() {
+        System.out.println(alternateDigitSum(4));
+        System.out.println(alternateDigitSum(12));
+        System.out.println(alternateDigitSum(123));
+        System.out.println(alternateDigitSum(6789));
+    }
+    /**
+     * 2544. 交替数字和
+     *
+     * 给你一个正整数 n 。n 中的每一位数字都会按下述规则分配一个符号：
+     *
+     * 最高有效位 上的数字分配到 正 号。
+     * 剩余每位上数字的符号都与其相邻数字相反。
+     * 返回所有数字及其对应符号的和。
+     */
+    public int alternateDigitSum(int n) {
+        // 位数
+        int num = 0;
+        int sum = 0;
+        while (n > 0) {
+            sum += n % 10 * Math.pow(-1, num);
+            n = n / 10;
+            num ++;
+        }
+        // 位数为偶数，取相反数
+        if ((num & 1) == 0) {
+            sum = -1 * sum;
+        }
+        return sum;
+    }
+
+
+    @Test
+    public void threeSumClosestTest() {
+//        System.out.println(threeSumClosest(new int[]{-1,2,1,-4}, 1));
+        System.out.println(threeSumClosest(new int[]{0,1,2}, 3));
+    }
+
+    /**
+     * 16. 最接近的三数之和
+     * 给你一个长度为 n 的整数数组 nums 和 一个目标值 target。请你从 nums 中选出三个整数，使它们的和与 target 最接近。
+     * 返回这三个数的和。假定每组输入只存在恰好一个解。
+     *
+     * 分析：排序 + 双指针法，类似：15. 三数之和，差异点：15题和为0，此题和接近target
+     */
+    public int threeSumClosest(int[] nums, int target) {
+        if (nums == null || nums.length < 3) {
+            return 0;
+        }
+        if (nums.length == 3) {
+            return nums[0] + nums[1] + nums[2];
+        }
+        // 排序
+        Arrays.sort(nums);
+        int res = 0;
+        int sub = Integer.MAX_VALUE;
+        // 遍历数组的元素，由于求的是和为0，又数组已排序
+        for (int i = 0; i < nums.length; i++) {
+            // 如果下标i的元素大于0，则3数之和不可能为0，终止循环
+            // 本题存在重复元素，当nums[i] = nums[i - 1]，则遍历i时会出现重复结果，需要跳过
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            // 双指针，l、r一前一后，收缩遍历
+            int l = i + 1;
+            int r = nums.length - 1;
+
+            while (l < r) {
+                int sum = nums[i] + nums[l] + nums[r];
+                if (sum == target) {
+                    return nums[i] + nums[l] + nums[r];
+                } else if (sum < target) {
+                    if (Math.abs(sum - target) < sub) {
+                        sub = Math.abs(sum - target);
+                        res = sum;
+                    }
+                    // 左指针，重复值，取最右
+                    while (l < r && nums[l] == nums[l + 1]) {
+                        l++;
+                    }
+                    l++;
+                } else {
+                    if (Math.abs(sum - target) < sub) {
+                        sub = Math.abs(sum - target);
+                        res = sum;
+                    }
+                    // 右指针，重复值，取最左
+                    while (l < r && nums[r] == nums[r - 1]) {
+                        r--;
+                    }
+                    r--;
+                }
+            }
+        }
+        return res;
+    }
+
+    @Test
     public void threeSumTest() {
         System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
         System.out.println(threeSum(new int[]{0, 0, 0}));
@@ -22,7 +120,7 @@ public class CodeSets {
 
     /**
      * 15. 三数之和
-     *      双指针法：将数组排序，取下标i的之后的2个指针：l、r，且i < l < r，遍历数组
+     *      排序 + 双指针法：将数组排序，取下标i的之后的2个指针：l、r，且i < l < r，遍历数组
      *  提示：
      *  *   3 <= nums.length <= 3000
      *  *   -10^5 <= nums[i] <= 10^5
