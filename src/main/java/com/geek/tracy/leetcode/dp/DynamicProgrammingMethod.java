@@ -2,6 +2,8 @@ package com.geek.tracy.leetcode.dp;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * 动态规划 Dynamic Programming 集合
  * @Author Tracy
@@ -9,6 +11,44 @@ import org.junit.Test;
  */
 public class DynamicProgrammingMethod {
 
+    @Test
+    public void minFallinPathSumTest() {
+        System.out.println(minFallingPathSum(new int[][]{{2,1,3},{6,5,4},{7,8,9}}));
+    }
+    /**
+     * 931. 下降路径最小和
+     */
+    public int minFallingPathSum(int[][] matrix) {
+        int row = matrix.length;
+        int col = matrix[0].length;
+
+        // 定义一个dp[][]二位数组，保存当前元素往下的最小路径和，自底向上进行计算
+        int[][] dp = new int[row][col];
+        for (int i = row - 1; i >= 0 ; i--) {
+            // 最后一排，dp[row - 1][j] = matrix[row - 1][j]
+            for (int j = 0; j < col; j++) {
+                dp[i][j] = matrix[i][j] + getNextRowMin(dp, i, j);
+            }
+        }
+        Arrays.sort(dp[0]);
+        return dp[0][0];
+    }
+
+    private int getNextRowMin(int[][] dp, int row, int col) {
+        int len = dp.length;
+        if (row == len - 1) {
+            return 0;
+        }
+        // 取下一行左、中、右3个值中的最小值，并注意左右边界
+        // 1左边界
+        if (col == 0) {
+            return Math.min(dp[row + 1][col], dp[row + 1][col + 1]);
+        } else if (col == len - 1) {
+            return Math.min(dp[row + 1][col], dp[row + 1][col - 1]);
+        } else {
+            return Math.min(Math.min(dp[row + 1][col], dp[row + 1][col - 1]), dp[row + 1][col + 1]);
+        }
+    }
 
     @Test
     public void maximumSumTest() {
