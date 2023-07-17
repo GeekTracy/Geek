@@ -4,17 +4,16 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 
 /**
- * 18. 四数之和
+ * 排序 + 双指针
  *
  * @author mike
- * @date 2023/7/15
+ * @date 2023/7/1
  */
-public class Code_018 {
+public class DoublePointer {
 
     @Test
     public void test() {
@@ -24,7 +23,8 @@ public class Code_018 {
     }
 
     /**
-     * 四数之和，同三数之和的做法：排序+双指针，遍历数组：i,j，移动指针l,r，且i < j < l < r
+     *  18. 四数之和
+     *  解法分析：同三数之和的做法：排序+双指针，遍历数组：i,j，移动指针l,r，且i < j < l < r
      *  注：int越界问题，使用long保存sum
      *
      * 参考：三数之和，排序 + 双指针，遍历数组元素 i, 左右指针 l, r，且i < l < r，l、r，指针移动寻找i、l、r 下标和等于target放入数组
@@ -73,57 +73,68 @@ public class Code_018 {
 
 
 
+    /**
+     * 15. 三数之和
+     */
     @Test
     public void threeSumTest() {
-//        System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}, 0));
-        System.out.println(threeSum(new int[]{0, 0, 0}, 0));
-//        System.out.println(threeSum(new int[]{0, 0, 0, 0}, 0));
+        System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
+        System.out.println(threeSum(new int[]{0, 0, 0}));
+        System.out.println(threeSum(new int[]{0, 0, 0, 0}));
     }
 
     /**
-     * 三数之和，排序 + 双指针，遍历数组元素 i, 左右指针 l, r，且i < l < r，l、r指针移动寻找i、l、r 下标和等于target放入数组
+     * 15. 三数之和
+     *      排序 + 双指针法：将数组排序，取下标i的之后的2个指针：l、r，且i < l < r，遍历数组
+     *  提示：
+     *  *   3 <= nums.length <= 3000
+     *  *   -10^5 <= nums[i] <= 10^5
      * @param nums
-     * @param target
      * @return
      */
-    private List<List<Integer>> threeSum(int[] nums, int target) {
-        if (nums.length < 3) {
-            return new ArrayList<>();
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (nums == null || nums.length < 3) {
+            return res;
         }
         // 排序
         Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < nums.length - 2; i++) {
-            // 遍历下标：i，去重
+        // 遍历数组的元素，由于求的是和为0，又数组已排序
+        for (int i = 0; i < nums.length; i++) {
+            // 如果下标i的元素大于0，则3数之和不可能为0，终止循环
+            if (nums[i] > 0) {
+                break;
+            }
+            // 本题存在重复元素，当nums[i] = nums[i - 1]，则遍历i时会出现重复结果，需要跳过
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
-            // 左指针：l = i + 1，右指针：r = size - 1
+            // 双指针，l、r一前一后，收缩遍历
             int l = i + 1;
             int r = nums.length - 1;
-            // 若：nums[i] + nums[l] + nums[r] < target，则左指针右移；
-            // 若：nums[i] + nums[l] + nums[r] > target，则右指针左移；
-            // 否则满足条件，放入列表
+
             while (l < r) {
                 int sum = nums[i] + nums[l] + nums[r];
-                if (sum < target) {
-                    l++;
-                } else if (sum > target) {
-                    r--;
-                } else {
+                if (sum == 0) {
                     res.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                    // 左指针，重复值，取最右
                     while (l < r && nums[l] == nums[l + 1]) {
                         l++;
                     }
-                    while (l < r && nums[r - 1] == nums[r]) {
+                    // 右指针，重复值，取最左
+                    while (l < r && nums[r] == nums[r - 1]) {
                         r--;
                     }
                     l++;
                     r--;
+                } else if (sum < 0) {
+                    l++;
+                } else {
+                    r--;
                 }
-
             }
         }
+
         return res;
     }
 }

@@ -112,68 +112,6 @@ public class CodeSets {
     }
 
     @Test
-    public void threeSumTest() {
-        System.out.println(threeSum(new int[]{-1, 0, 1, 2, -1, -4}));
-        System.out.println(threeSum(new int[]{0, 0, 0}));
-        System.out.println(threeSum(new int[]{0, 0, 0, 0}));
-    }
-
-    /**
-     * 15. 三数之和
-     *      排序 + 双指针法：将数组排序，取下标i的之后的2个指针：l、r，且i < l < r，遍历数组
-     *  提示：
-     *  *   3 <= nums.length <= 3000
-     *  *   -10^5 <= nums[i] <= 10^5
-     * @param nums
-     * @return
-     */
-    public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> res = new ArrayList<>();
-        if (nums == null || nums.length < 3) {
-            return res;
-        }
-        // 排序
-        Arrays.sort(nums);
-        // 遍历数组的元素，由于求的是和为0，又数组已排序
-        for (int i = 0; i < nums.length; i++) {
-            // 如果下标i的元素大于0，则3数之和不可能为0，终止循环
-            if (nums[i] > 0) {
-                break;
-            }
-            // 本题存在重复元素，当nums[i] = nums[i - 1]，则遍历i时会出现重复结果，需要跳过
-            if (i > 0 && nums[i] == nums[i - 1]) {
-                continue;
-            }
-            // 双指针，l、r一前一后，收缩遍历
-            int l = i + 1;
-            int r = nums.length - 1;
-
-            while (l < r) {
-                int sum = nums[i] + nums[l] + nums[r];
-                if (sum == 0) {
-                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));
-                    // 左指针，重复值，取最右
-                    while (l < r && nums[l] == nums[l + 1]) {
-                        l++;
-                    }
-                    // 右指针，重复值，取最左
-                    while (l < r && nums[r] == nums[r - 1]) {
-                        r--;
-                    }
-                    l++;
-                    r--;
-                } else if (sum < 0) {
-                    l++;
-                } else {
-                    r--;
-                }
-            }
-        }
-
-        return res;
-    }
-
-    @Test
     public void test01 () {
         twoSum(new int[]{0,0,3,4}, 0);
     }
