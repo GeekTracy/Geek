@@ -478,6 +478,53 @@ public class CodeSets {
     }
 
     /**
+     * 415. 字符串相加 - 测试
+     */
+    @Test
+    public void addStringsTest() {
+        System.out.println(addStrings("99", "45"));
+        System.out.println(addStrings("5987", "45"));
+    }
+
+    /**
+     * 415. 字符串相加
+     */
+    public String addStrings(String num1, String num2) {
+        int len1 = num1.length() - 1;
+        int len2 = num2.length() - 1;
+        char[] arr1 = num1.toCharArray();
+        char[] arr2 = num2.toCharArray();
+        StringBuilder sb = new StringBuilder("");
+        boolean flag = false;
+        while (len1 >= 0 || len2 >= 0) {
+            int sum = 0;
+            if (len1 >= 0) {
+                char a1 = arr1[len1--];
+                sum += a1 - '0';
+            }
+            if (len2 >= 0) {
+                char a2 = arr2[len2--];
+                sum += a2 - '0';
+            }
+            if (flag) {
+                sum++;
+            }
+            if (sum > 9) {
+                flag = true;
+                sum %= 10;
+            } else {
+                flag = false;
+            }
+            sb.append(sum);
+        }
+        if (flag) {
+            sb.append("1");
+        }
+        sb.reverse();
+        return sb.toString();
+    }
+
+    /**
      * 66. 加一 --测试
      */
     @Test
