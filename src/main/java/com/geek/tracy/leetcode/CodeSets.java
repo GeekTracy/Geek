@@ -13,7 +13,145 @@ import java.util.*;
 public class CodeSets {
 
 
+    /**
+     * 874. 模拟行走机器人 -- 测试
+     */
     @Test
+    public void robotSimTest() {
+        // 示例 1：
+        //
+        //输入：commands = [4,-1,3], obstacles = []
+        //输出：25
+        //解释：
+        //机器人开始位于 (0, 0)：
+        //1. 向北移动 4 个单位，到达 (0, 4)
+        //2. 右转
+        //3. 向东移动 3 个单位，到达 (3, 4)
+        //距离原点最远的是 (3, 4) ，距离为 3^2 + 4^2 = 25
+        System.out.println(robotSim(new int[]{4, -1, 3}, new int[0][0]));
+
+        //示例 2：
+        //
+        //输入：commands = [4,-1,4,-2,4], obstacles = [[2,4]]
+        //输出：65
+        //解释：机器人开始位于 (0, 0)：
+        //1. 向北移动 4 个单位，到达 (0, 4)
+        //2. 右转
+        //3. 向东移动 1 个单位，然后被位于 (2, 4) 的障碍物阻挡，机器人停在 (1, 4)
+        //4. 左转
+        //5. 向北走 4 个单位，到达 (1, 8)
+        //距离原点最远的是 (1, 8) ，距离为 1^2 + 8^2 = 65
+        System.out.println(robotSim(new int[]{4, -1, 4, -2, 4}, new int[][]{{2, 4}}));
+
+    }
+
+
+    /**
+     * 874. 模拟行走机器人
+     * 机器人在一个无限大小的 XY 网格平面上行走，从点 (0, 0) 处开始出发，面向北方。该机器人可以接收以下三种类型的命令 commands ：
+     *
+     * -2 ：向左转 90 度
+     * -1 ：向右转 90 度
+     * 1 <= x <= 9 ：向前移动 x 个单位长度
+     * 在网格上有一些格子被视为障碍物 obstacles 。第 i 个障碍物位于网格点  obstacles[i] = (xi, yi) 。
+     *
+     * 提示：
+     *
+     * 1 <= commands.length <= 10^4
+     * commands[i] is one of the values in the list [-2,-1,1,2,3,4,5,6,7,8,9].
+     * 0 <= obstacles.length <= 10^4
+     * -3 * 10^4 <= xi, yi <= 3 * 10^4
+     * 答案保证小于 2^31
+     *
+     * 解法分析：哈希表 + 模拟（行走方向）
+     */
+    public int robotSim(int[] commands, int[][] obstacles) {
+        // 哈希表保存障碍数组，加速运算
+        int direc = 0;
+        // 当前x/y节点
+        int curr_x = 0;
+        int curr_y = 0;
+        // 欧氏距离
+        int distance = 0;
+        // 由于obstacles[i] = (xi, yi)，其中：-3 * 10^4 <= xi, yi <= 3 * 10^4
+        // 为了将obstacles二维矩阵转为哈希表，取obstacles二维数组的最大值覆盖所有可能的xi/yi，即元素xi/yi取值区间为：
+        // [-3 * 10^4) ， (3 * 10^4] --> [-30000, 30000],
+        // 则obstacles数组的空间为：60001 * 60001，再把矩阵一维化（第二行接到第一行后面，以此类推），则obstacles[x][y]对应哈希表
+        // 值为：x * 60001 + y
+        Set<Integer> intSet = new HashSet<>();
+        for (int[] obstacle : obstacles) {
+            intSet.add(obstacle[0] * 60001 + obstacle[1]);
+        }
+        for (int i = 0; i < commands.length; i++) {
+            int command = commands[i];
+            if (command < 0) {
+                if (command == -2) {
+                    // 左转
+                    direc++;
+                } else if (command == -1) {
+                    // 右转
+                    direc--;
+                }
+                // 保持direc始终在数组direction中
+                direc = (direc + 4) % 4;
+            } else {
+                // 定义数组：0, 1, 2, 3 分别表示  ↑ ← ↓ →，则初始方向值为：0，左转++，右转--
+                switch (direc) {
+                    case 0:
+                        // 上
+                        for (int j = 0; j < command; j++) {
+                            if (intSet.contains(curr_x * 60001 + (curr_y + 1))) {
+                                break;
+                            } else {
+                                curr_y++;
+                            }
+                        }
+                        distance = Math.max(distance, curr_x * curr_x + curr_y * curr_y);
+                        break;
+                    case 1:
+                        // 左
+                        for (int j = 0; j < command; j++) {
+                            if (intSet.contains((curr_x - 1)  * 60001 + curr_y)){
+                                break;
+                            } else {
+                                curr_x--;
+                            }
+                        }
+                        distance = Math.max(distance, curr_x * curr_x + curr_y * curr_y);
+                        break;
+                    case 2:
+                        // 下
+                        for (int j = 0; j < command; j++) {
+                            if (intSet.contains(curr_x  * 60001 + (curr_y - 1))) {
+                                break;
+                            } else {
+                                curr_y--;
+                            }
+                        }
+                        distance = Math.max(distance, curr_x * curr_x + curr_y * curr_y);
+                        break;
+                    case 3:
+                        // 右
+                        for (int j = 0; j < command; j++) {
+                            if (intSet.contains((curr_x + 1)  * 60001 + curr_y)) {
+                                break;
+                            } else {
+                                curr_x++;
+                            }
+                        }
+                        distance = Math.max(distance, curr_x * curr_x + curr_y * curr_y);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return distance;
+    }
+
+    /**
+     * 2544. 交替数字和 -- 测试
+     */
     public void alternateDigitSumTest() {
         System.out.println(alternateDigitSum(4));
         System.out.println(alternateDigitSum(12));
