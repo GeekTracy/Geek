@@ -3,6 +3,7 @@ package com.geek.tracy.leetcode;
 import com.geek.tracy.leetcode.tree.bean.ListNode;
 import org.junit.Test;
 
+import java.sql.Array;
 import java.util.*;
 
 /**
@@ -12,6 +13,43 @@ import java.util.*;
  */
 public class CodeSets {
 
+
+    /**
+     * 860. 柠檬水找零
+     */
+    public boolean lemonadeChange(int[] bills) {
+        Map<Integer, Integer> hash = new HashMap<>();
+        hash.putIfAbsent(5, 0);
+        hash.putIfAbsent(10, 0);
+        for (int bill : bills) {
+            if (bill == 5) {
+                hash.put(5, hash.get(5) + 1);
+            } else if (bill == 10) {
+                hash.put(10, hash.get(10) + 1);
+                if (hash.get(5) == 0) {
+                    return false;
+                } else {
+                    hash.put(5, hash.get(5) - 1);
+                }
+            } else {
+                if (hash.get(10) == 0) {
+                    if (hash.get(5) > 2) {
+                        hash.put(5, hash.get(5) - 3);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    hash.put(10, hash.get(10) - 1);
+                    if (hash.get(5) == 0) {
+                        return false;
+                    } else {
+                        hash.put(5, hash.get(5) - 1);
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * 874. 模拟行走机器人 -- 测试
