@@ -1,10 +1,15 @@
 package com.geek.tracy.leetcode;
 
-import com.geek.tracy.leetcode.tree.bean.ListNode;
 import org.junit.Test;
 
-import java.sql.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * 合集
@@ -12,6 +17,7 @@ import java.util.*;
  * @Date 2023/6/26
  */
 public class CodeSets {
+
 
 
     /**
@@ -360,107 +366,6 @@ public class CodeSets {
         return result;
     }
 
-    /**
-     * 445. 两数相加 II
-     * 高位在链表表头，使用栈保存，FILO先进后出
-     */
-    public ListNode addTwoNumbersII(ListNode l1, ListNode l2) {
-        Deque<ListNode> stack1 = new LinkedList<>();
-        Deque<ListNode> stack2 = new LinkedList<>();
-
-        while (l1 != null) {
-            stack1.offerLast(l1);
-            l1 = l1.next;
-        }
-        while (l2 != null) {
-            stack2.offerLast(l2);
-            l2 = l2.next;
-        }
-        Deque<ListNode> result = new LinkedList<>();
-        boolean more = false;
-        // 遍历stack1 和 stack2,
-        while (!stack1.isEmpty() || !stack2.isEmpty()) {
-            int sum = 0;
-            if (!stack1.isEmpty()) {
-                sum += stack1.pollLast().val;
-            }
-            if (!stack2.isEmpty()) {
-                sum += stack2.pollLast().val;
-            }
-            // 是否进位
-            if (more) {
-                sum++;
-                more = false;
-            }
-            if (sum > 9) {
-                more = true;
-                sum -= 10;
-            }
-            result.offerLast(new ListNode(sum));
-        }
-        if (more) {
-            result.offerLast(new ListNode(1));
-        }
-        // 栈result转为链表，表头为root
-        ListNode root = result.pollLast();
-        ListNode temp = root;
-        while (!result.isEmpty()) {
-            temp.next = result.peekLast();
-            temp = result.pollLast();
-        }
-        return root;
-    }
-
-    @Test
-    public void addTwoNumbersTest() {
-//        l1 = [2,4,3]
-//        l2 = [5,6,4]
-        ListNode l1 = new ListNode(2);
-        l1.next = new ListNode(4);
-        l1.next.next = new ListNode(3);
-
-        ListNode l2 = new ListNode(5);
-        l2.next = new ListNode(6);
-        l2.next.next = new ListNode(4);
-
-        addTwoNumbers(l1, l2);
-    }
-
-    /**
-     * 2. 两数相加
-     */
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode tempRoot = new ListNode();
-        ListNode tempL1 = l1;
-        ListNode tempL2 = l2;
-        ListNode resultTemp = tempRoot;
-        boolean more = false;
-        while (tempL1 != null || tempL2 != null || more) {
-            int sum = 0;
-            if (tempL1 != null) {
-                sum += tempL1.val;
-                tempL1 = tempL1.next;
-            }
-            if (tempL2 != null) {
-                sum += tempL2.val;
-                tempL2 = tempL2.next;
-            }
-            if (more) {
-                sum++;
-            }
-            ListNode curr;
-            if (sum > 9) {
-                curr = new ListNode(sum - 10);
-                more = true;
-            } else {
-                curr = new ListNode(sum);
-                more = false;
-            }
-            resultTemp.next = curr;
-            resultTemp = curr;
-        }
-        return tempRoot.next;
-    }
 
     /**
      * 2490. 回环句

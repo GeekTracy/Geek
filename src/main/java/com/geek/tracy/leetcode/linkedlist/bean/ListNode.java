@@ -1,4 +1,4 @@
-package com.geek.tracy.leetcode.tree.bean;
+package com.geek.tracy.leetcode.linkedlist.bean;
 
 /**
  * 链表
