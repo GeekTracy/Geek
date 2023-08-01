@@ -8,8 +8,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
  * @Date 2023/7/31
  */
 public class ChainTable {
+
+
 
 
     @Test
@@ -57,6 +61,20 @@ public class ChainTable {
             end--;
         }
         list.get(start).next = null;
+    }
+
+    /**
+     * 142. 环形链表 II
+     */
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> set = new HashSet<>();
+        while (head != null) {
+            if (!set.add(head)) {
+                return head;
+            }
+            head = head.next;
+        }
+        return null;
     }
 
     /**
