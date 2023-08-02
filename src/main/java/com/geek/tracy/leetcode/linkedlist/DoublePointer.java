@@ -1,4 +1,4 @@
-package com.geek.tracy.leetcode;
+package com.geek.tracy.leetcode.linkedlist;
 
 import org.junit.Test;
 
