@@ -18,7 +18,39 @@ import java.util.Set;
  */
 public class CodeSets {
 
-
+    /**
+     * 822. 翻转卡片游戏
+     *
+     * 输入：fronts = [1,2,4,4,7], backs = [1,3,4,1,3]
+     * 输出：2
+     * 解释：假设我们翻转第二张卡片，那么在正面的数变成了 [1,3,4,4,7] ， 背面的数变成了 [1,2,4,1,3]。
+     * 接着我们选择第二张卡片，因为现在该卡片的背面的数是 2，2 与任意卡片上正面的数都不同，所以 2 就是我们想要的数字。
+     *
+     * 提示：
+     * n == fronts.length == backs.length
+     * 1 <= n <= 1000
+     * 1 <= fronts[i], backs[i] <= 2000
+     */
+    // 阅读理解，理解题意，正反相同的卡片，无论怎么翻转，都会出现现在正面，所以与之相同的不能被选中，其他的都有可能，找到最小的即可
+    public int flipgame(int[] fronts, int[] backs) {
+        Set<Integer> set = new HashSet<>();
+        int n = fronts.length;
+        for (int i = 0; i < n; i++) {
+            if (fronts[i] == backs[i]) {
+                set.add(fronts[i]);
+            }
+        }
+        int min = 2001; // 数据范围：[1, 2000]，所以设置边界值为：2001
+        for (int i = 0; i < n; i++) {
+            if (!set.contains(fronts[i])) {
+                min = Math.min(min, fronts[i]);
+            }
+            if (!set.contains(backs[i])) {
+                min = Math.min(min, backs[i]);
+            }
+        }
+        return min == 2001 ? 0 : min;
+    }
 
     /**
      * 860. 柠檬水找零
