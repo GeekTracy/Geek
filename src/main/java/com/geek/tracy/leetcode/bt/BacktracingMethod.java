@@ -16,8 +16,8 @@ public class BacktracingMethod {
     @Test
     public void uniquePathsIIITest() {
         System.out.println(uniquePathsIII(new int[][]{{1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 2, -1}}));
-        res = 0;
-        System.out.println(uniquePathsIII(new int[][]{{0, 1}, {2, 0}}));
+//        res = 0;
+//        System.out.println(uniquePathsIII(new int[][]{{0, 1}, {2, 0}}));
     }
 
     /**
@@ -34,8 +34,8 @@ public class BacktracingMethod {
      * 回溯遍历二维数组所有节点
      *
      */
-//    private List<String> trace = new ArrayList<>();
-    private int res = 0;
+    private List<String> trace = new ArrayList<>(); // 临时保存访问路径
+    private List<String> result = new ArrayList<>(); // 最终有效路径
     private int i = 0;
     private int j = 0;
     public int uniquePathsIII(int[][] grid) {
@@ -55,18 +55,20 @@ public class BacktracingMethod {
             }
         }
         backtrace(grid, 0, totalCount, startrow, startcol);
-        return res;
+        return result.size();
     }
 
     private void backtrace(int[][] grid, int travelCount, int totalMove, int row, int col) {
         // 退出条件
         if (grid[row][col] == 2) {
             if (travelCount == totalMove - 1) {
-                res++;
+                trace.add("(" + row + ", " + col + ")");
+                result.add(trace.toString());
             }
             return;
         }
         if (grid[row][col] != -1) {
+            trace.add("(" + row + ", " + col + ")");
             int curr = grid[row][col];
             grid[row][col] = -1;
             if (col > 0 && grid[row][col - 1] != -1) {
@@ -86,6 +88,7 @@ public class BacktracingMethod {
                 backtrace(grid, travelCount + 1, totalMove, row + 1, col);
             }
             grid[row][col] = curr;
+            trace.remove(trace.size() - 1);
         }
     }
 
