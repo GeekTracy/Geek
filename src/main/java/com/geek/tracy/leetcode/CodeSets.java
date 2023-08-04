@@ -19,6 +19,90 @@ import java.util.Set;
 public class CodeSets {
 
 
+    @Test
+    public void uniquePathsIIITest() {
+        System.out.println(uniquePathsIII(new int[][]{{1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 2, -1}}));
+    }
+
+    /**
+     * 980. 不同路径 III
+     *
+     *
+     *  [1, 0, 0, 0],
+     *  [0, 0, 0, 0],
+     *  [0, 0, 2,-1]
+     *
+     * 1. (0,0),(0,1),(0,2),(0,3),(1,3),(1,2),(1,1),(1,0),(2,0),(2,1),(2,2)
+     * 2. (0,0),(1,0),(2,0),(2,1),(1,1),(0,1),(0,2),(0,3),(1,3),(1,2),(2,2)
+     *
+     * 回溯遍历二维数组所有节点
+     *
+     */
+//    private List<String> trace = new ArrayList<>();
+    private int res = 0;
+    private int i = 0;
+    private int j = 0;
+    public int uniquePathsIII(int[][] grid) {
+        i = grid.length;
+        j = grid[0].length;
+        int totalCount = 0;
+
+        int startrow = 0;
+        int startcol = 0;
+        for (int k = 0; k < i; k++) {
+            for (int l = 0; l < j; l++) {
+                if (grid[k][l] != -1) totalCount++;
+                if (grid[k][l] == 1) {
+                    startrow = k;
+                    startcol = l;
+                }
+            }
+        }
+        backtrace(grid, 0, totalCount, startrow, startcol);
+        return res;
+    }
+
+    private void backtrace(int[][] grid, int travelCount, int totalMove, int row, int col) {
+        if (row < 0 || row >= i || col < 0 || col >= j) {
+            return;
+        }
+        // 退出条件
+        if (grid[row][col] == 2) {
+            if (travelCount == totalMove - 1) {
+                res++;
+            }
+            return;
+        }
+        if (grid[row][col] != -1) {
+            int curr = grid[row][col];
+            grid[row][col] = -1;
+            if (col > 0 && grid[row][col - 1] != -1) {
+                // 向左
+                backtrace(grid, ++travelCount, totalMove, row, col - 1);
+                // 回退
+                grid[row][col] = curr;
+            } else if (col < j - 1 && grid[row][col + 1] != -1) {
+                // 向右
+                backtrace(grid, ++travelCount, totalMove, row, col + 1);
+                // 回退
+                grid[row][col] = curr;
+            } else if (row > 0 && grid[row - 1][col] != -1) {
+                // 向上
+                backtrace(grid, ++travelCount, totalMove, row - 1, col);
+                // 回退
+                grid[row][col] = curr;
+            } else if (row < i - 1 && grid[row + 1][col] != -1) {
+                // 向下
+                backtrace(grid, ++travelCount, totalMove, row + 1, col);
+                // 回退
+                grid[row][col] = curr;
+            }
+
+        }
+    }
+
+
+
     /**
      * 722. 删除注释
      */
