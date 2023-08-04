@@ -1,4 +1,4 @@
-package com.geek.tracy.leetcode;
+package com.geek.tracy.leetcode.dp;
 
 import org.junit.Test;
 
