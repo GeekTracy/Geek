@@ -18,6 +18,47 @@ import java.util.Set;
  */
 public class CodeSets {
 
+    @Test
+    public void maxAbsoluteSumTest() {
+        maxAbsoluteSum(new int[] {1,-3,2,3,-4});
+    }
+
+    /**
+     * 1749. 任意子数组和的绝对值的最大值
+     */
+    public int maxAbsoluteSum(int[] nums) {
+        int pre = nums[0];
+        int maxHere = nums[0];
+        int minHere = nums[0];
+        // 遍历求最大
+        for (int i = 1; i < nums.length; i++) {
+            pre = Math.max(nums[i], pre + nums[i]);
+            maxHere = Math.max(pre, maxHere);
+        }
+        // 遍历求最小
+        pre = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            pre = Math.min(nums[i], pre + nums[i]);
+            minHere = Math.min(pre, minHere);
+        }
+        return Math.max(Math.abs(maxHere), Math.abs(minHere));
+    }
+
+    /**
+     * 344. 反转字符串
+     */
+    public void reverseString(char[] s) {
+        int i = 0;
+        int j = s.length - 1;
+        while (i < j) {
+            char temp = s[i];
+            s[i] = s[j];
+            s[j] = temp;
+            i++;
+            j--;
+        }
+    }
+
 
     /**
      * 722. 删除注释
