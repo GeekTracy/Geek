@@ -18,6 +18,23 @@ import java.util.Set;
  */
 public class CodeSets {
 
+    /**
+     * 1572. 矩阵对角线元素的和
+     */
+    public int diagonalSum(int[][] mat) {
+        // 分析法：根据矩阵边长分为奇数、偶数2种情形处理
+        int n = mat.length;
+        int count = 0;
+        for (int i = 0, j = n - 1; i < n && j >= 0; i++, j--) {
+            count += mat[i][i] + mat[i][j];
+        }
+        if ((n & 1) == 1) {
+            // 奇数
+            count -= mat[n / 2][n / 2];
+        }
+        return count;
+    }
+
     @Test
     public void maxAbsoluteSumTest() {
         maxAbsoluteSum(new int[] {1,-3,2,3,-4});
