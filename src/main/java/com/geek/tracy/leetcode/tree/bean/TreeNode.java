@@ -12,14 +12,14 @@ public class TreeNode {
     // 右子树
     public TreeNode right;
 
-    TreeNode() {
+    public TreeNode() {
     }
 
-    TreeNode(int val) {
+    public TreeNode(int val) {
         this.val = val;
     }
 
-    TreeNode(int val, TreeNode left, TreeNode right) {
+    public TreeNode(int val, TreeNode left, TreeNode right) {
         this.val = val;
         this.left = left;
         this.right = right;

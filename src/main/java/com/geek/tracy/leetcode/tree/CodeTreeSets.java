@@ -12,6 +12,63 @@ import java.util.List;
  */
 public class CodeTreeSets extends TreeTraversal {
 
+
+    /**
+     * 617. 合并二叉树
+     *
+     * 给你两棵二叉树： root1 和 root2 。
+     *
+     * 想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。合并的规则是：
+     * 如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，不为 null 的节点将直接作为新二叉树的节点。
+     * 返回合并后的二叉树。
+     * 注意: 合并过程必须从两个树的根节点开始。
+     *
+     * 答案写法，更加简洁，书写角度不一样
+     *     public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+     *         if (t1 == null) {
+     *             return t2;
+     *         }
+     *         if (t2 == null) {
+     *             return t1;
+     *         }
+     *         TreeNode merged = new TreeNode(t1.val + t2.val);
+     *         merged.left = mergeTrees(t1.left, t2.left);
+     *         merged.right = mergeTrees(t1.right, t2.right);
+     *         return merged;
+     *     }
+     *  来个更简洁的：上述解答的精简版
+     *    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+     *         if (root1 == null) return root2;
+     *         if (root2 == null) return root1;
+     *         return new TreeNode(root1.val + root2.val,
+     *             mergeTrees(root1.left, root2.left),    // 合并左子树
+     *             mergeTrees(root1.right, root2.right)); // 合并右子树
+     *     }
+     *
+     * 作者：灵茶山艾府
+     * 链接：https://leetcode.cn/problems/merge-two-binary-trees/solutions/2387255/kan-dao-di-gui-jiu-yun-dai-ni-li-jie-di-leixm/
+     * 来源：力扣（LeetCode）
+     * 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+     *
+     *
+     */
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if (root1 != null && root2 != null) {
+            root1.val = root1.val + root2.val;
+            root1.left = mergeTrees(root1.left, root2.left);
+            root1.right = mergeTrees(root1.right, root2.right);
+        } else if (root1 == null && root2 == null) {
+            return null;
+        } else if (root1 == null) {
+            root1 = new TreeNode(root2.val);
+            root1.left = mergeTrees(null, root2.left);
+            root1.right = mergeTrees(null, root2.right);
+        }
+        return root1;
+
+    }
+
+
     /**
      * 题单：贡献法
      * 891. 子序列宽度之和，题解
