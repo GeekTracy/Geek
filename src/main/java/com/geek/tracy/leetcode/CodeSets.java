@@ -18,6 +18,40 @@ import java.util.Set;
  */
 public class CodeSets {
 
+
+    /**
+     * 2682. 找出转圈游戏输家
+     */
+    public int[] circularGameLosers(int n, int k) {
+        int[] res = new int[n + 1];
+        res[1] = 1;
+        int index = 1;
+        int i = 1;
+        while (res[index] != 2) {
+            index = (index + k * i) % n;
+            i++;
+            if (index == 0) {
+                res[n] += 1;
+                index = n;
+            } else {
+                res[index] += 1;
+            }
+        }
+        List<Integer> result = new ArrayList<>();
+        for (int j = 1; j <= n; j++) {
+            if (res[j] == 0) {
+                result.add(j);
+            }
+        }
+        System.out.println(result);
+        int[] kk = new int[result.size()];
+        for (int m = 0; m < result.size(); m++) {
+            kk[m] = result.get(m);
+        }
+        return kk;
+    }
+
+
     /**
      * 1572. 矩阵对角线元素的和
      */
