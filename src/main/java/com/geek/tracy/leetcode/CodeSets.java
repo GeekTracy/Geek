@@ -1,5 +1,6 @@
 package com.geek.tracy.leetcode;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,6 +18,73 @@ import java.util.Set;
  * @Date 2023/6/26
  */
 public class CodeSets {
+
+    @Test
+    public void maxDistToClosestTest() {
+        Assert.assertEquals("{1, 0, 0, 0, 1, 0, 1} 应该为：2", 2, maxDistToClosest(new int[]{1, 0, 0, 0, 1, 0, 1}));
+        Assert.assertEquals("{1,0,0,0} 应该为：3", 3, maxDistToClosest(new int[]{1,0,0,0}));
+        Assert.assertEquals("{0,1} 应该为：1", 1, maxDistToClosest(new int[]{0,1}));
+    }
+
+    /**
+     * 849. 到最近的人的最大距离
+     *
+     * 提示：
+     *      2 <= seats.length <= 2 * 104
+     *      seats[i] 为 0 或 1
+     *      至少有一个 空座位
+     *      至少有一个 座位上有人
+     */
+    public int maxDistToClosest(int[] seats) {
+        List<Integer> peopleIndex = new ArrayList<>();
+        for (int i = 0; i < seats.length; i++) {
+            if (seats[i] == 1) {
+                peopleIndex.add(i);
+            }
+        }
+        int max = 0;
+        if (peopleIndex.get(0) != 0) {
+            max = Math.max(peopleIndex.get(0), max);
+        }
+        if (peopleIndex.get(peopleIndex.size() - 1) != seats.length - 1) {
+            max = Math.max(seats.length - 1 - peopleIndex.get(peopleIndex.size() - 1), max);
+        }
+        for (int i = 1; i < peopleIndex.size(); i++) {
+            max = Math.max((peopleIndex.get(i) - peopleIndex.get(i - 1))/2, max);
+        }
+        return max;
+    }
+
+
+    /**
+     * 2337. 移动片段得到字符串
+     */
+    public boolean canChange(String start, String target) {
+        // 定义两个指针i,j，分别遍历start，target，出去“_”之外，遇见L，i>=j，遇见R，i<=j，否则返回false
+        int i = 0;
+        int j = 0;
+        int n = start.length();
+        if (!start.replaceAll("_", "").equals(target.replace("_", ""))) {
+            return false;
+        }
+        while (i < n || j < n) {
+            while (start.charAt(i) == '_') {
+                i++;
+            }
+            while (target.charAt(i) == '_') {
+                j++;
+            }
+            if (start.charAt(i)  == 'L' && target.charAt(j) == 'L' && i >= j) {
+                i++;
+                j++;
+            } else if (start.charAt(i)  == 'R' && target.charAt(j) == 'R' && i <= j) {
+                i++;
+                j++;
+            }
+        }
+        return true;
+    }
+
 
     @Test
     public void mergeTest() {
