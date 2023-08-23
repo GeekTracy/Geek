@@ -68,19 +68,23 @@ public class CodeSets {
             return false;
         }
         while (i < n || j < n) {
-            while (start.charAt(i) == '_') {
+            while (i < n && start.charAt(i) == '_') {
                 i++;
             }
-            while (target.charAt(i) == '_') {
+            while (j < n && target.charAt(j) == '_') {
                 j++;
             }
-            if (start.charAt(i)  == 'L' && target.charAt(j) == 'L' && i >= j) {
-                i++;
-                j++;
-            } else if (start.charAt(i)  == 'R' && target.charAt(j) == 'R' && i <= j) {
-                i++;
-                j++;
+            if (i == n && j == n) {
+                return true;
             }
+            if (start.charAt(i) != target.charAt(j)) {
+                return false;
+            }
+            if (start.charAt(i) == 'L' && i < j || start.charAt(i) == 'R' && i > j) {
+                return false;
+            }
+            i++;
+            j++;
         }
         return true;
     }
