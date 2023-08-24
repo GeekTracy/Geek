@@ -20,6 +20,62 @@ import java.util.Set;
 public class CodeSets {
 
     @Test
+    public void countServersTest() {
+//        Assert.assertEquals(0, countServers(new int[][]{{1,0}, {0,1}}));
+        Assert.assertEquals(3, countServers(new int[][]{{1,0}, {1,1}}));
+//        Assert.assertEquals(4, countServers(new int[][]{{1,1,0,0}, {0,0,1,0},{0,0,1,0},{0,0,0,1}}));
+    }
+
+    /**
+     * 1267. 统计参与通信的服务器
+     */
+    public int countServers(int[][] grid) {
+        int row = grid.length;
+        int col = grid[0].length;
+        int sum = 0;
+        int[] rowFlagArr = new int[row];
+        int[] colFlagArr = new int[col];
+
+        for (int i = 0; i < row; i++) {
+            int count = 0;
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 1) {
+                    count++;
+                }
+                if (count == 2) {
+                    rowFlagArr[i] = 1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < col; i++) {
+            int count = 0;
+            for (int j = 0; j < row; j++) {
+                if (grid[j][i] == 1) {
+                    count++;
+                }
+                if (count == 2) {
+                    colFlagArr[i] = 1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 0) continue;
+                // 行、列标记为1，则该节点存在可通信节点
+                if (rowFlagArr[i] == 1 || colFlagArr[j] == 1) {
+                    sum++;
+                    continue;
+                }
+            }
+        }
+        return sum;
+    }
+
+    @Test
     public void maxDistToClosestTest() {
         Assert.assertEquals("{1, 0, 0, 0, 1, 0, 1} 应该为：2", 2, maxDistToClosest(new int[]{1, 0, 0, 0, 1, 0, 1}));
         Assert.assertEquals("{1,0,0,0} 应该为：3", 3, maxDistToClosest(new int[]{1,0,0,0}));
