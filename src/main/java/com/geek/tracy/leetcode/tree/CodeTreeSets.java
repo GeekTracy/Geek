@@ -1,6 +1,7 @@
 package com.geek.tracy.leetcode.tree;
 
 import com.geek.tracy.leetcode.tree.bean.TreeNode;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,32 @@ import java.util.List;
  * @Date 2023/6/26
  */
 public class CodeTreeSets extends TreeTraversal {
+
+    @Test
+    public void goodNodesTest() {
+
+    }
+
+    /**
+     * 1448. 统计二叉树中好节点的数目
+     *
+     * 给你一棵根为 root 的二叉树，请你返回二叉树中好节点的数目。
+     * 「好节点」X 定义为：从根到该节点 X 所经过的节点中，没有任何节点的值大于 X 的值。
+     */
+    public int goodNodes(TreeNode root) {
+        return getGoodNode(root, Integer.MIN_VALUE);
+    }
+
+    private int getGoodNode(TreeNode note, int curMax) {
+        if (note == null) {
+            return 0;
+        }
+        if (note.val >= curMax) {
+            return 1 + getGoodNode(note.left, note.val) + getGoodNode(note.right, note.val);
+        } else {
+            return getGoodNode(note.left, curMax) + getGoodNode(note.right, curMax);
+        }
+    }
 
 
     /**
