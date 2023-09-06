@@ -1,4 +1,4 @@
-package com.geek.tracy.concurrent;
+package com.geek.tracy.concurrent.synchronizer;
 
 import java.util.Random;
 import java.util.concurrent.Semaphore;

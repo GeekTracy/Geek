@@ -1,4 +1,4 @@
-package com.geek.tracy.concurrent;
+package com.geek.tracy.concurrent.synchronizer;
 
 import ch.qos.logback.core.util.TimeUtil;
 import com.google.common.collect.Lists;
