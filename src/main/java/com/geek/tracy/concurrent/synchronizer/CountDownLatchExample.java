@@ -1,6 +1,5 @@
 package com.geek.tracy.concurrent.synchronizer;
 
-import ch.qos.logback.core.util.TimeUtil;
 import com.google.common.collect.Lists;
 import org.springframework.util.StopWatch;
 
@@ -11,11 +10,13 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * CountDownLatch
+ * 注意：
+ *      1）countDown() 放在finaly中，防止业务操作的时候异常导致countDown()失败，导致主线程一直阻塞
+ *      2）await() 建议设置过期时间，防止countDown()异常，导致计数器不能为0一直阻塞主线程
  * @Author Tracy
  * @Date 2023/9/6
  */
