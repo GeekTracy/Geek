@@ -1,5 +1,6 @@
 package com.geek.tracy.leetcode;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,6 +18,219 @@ import java.util.Set;
  * @Date 2023/6/26
  */
 public class CodeSets {
+
+    @Test
+    public void countServersTest() {
+//        Assert.assertEquals(0, countServers(new int[][]{{1,0}, {0,1}}));
+        Assert.assertEquals(3, countServers(new int[][]{{1,0}, {1,1}}));
+//        Assert.assertEquals(4, countServers(new int[][]{{1,1,0,0}, {0,0,1,0},{0,0,1,0},{0,0,0,1}}));
+    }
+
+    /**
+     * 1267. 统计参与通信的服务器
+     */
+    public int countServers(int[][] grid) {
+        int row = grid.length;
+        int col = grid[0].length;
+        int sum = 0;
+        int[] rowFlagArr = new int[row];
+        int[] colFlagArr = new int[col];
+
+        for (int i = 0; i < row; i++) {
+            int count = 0;
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 1) {
+                    count++;
+                }
+                if (count == 2) {
+                    rowFlagArr[i] = 1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < col; i++) {
+            int count = 0;
+            for (int j = 0; j < row; j++) {
+                if (grid[j][i] == 1) {
+                    count++;
+                }
+                if (count == 2) {
+                    colFlagArr[i] = 1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 0) continue;
+                // 行、列标记为1，则该节点存在可通信节点
+                if (rowFlagArr[i] == 1 || colFlagArr[j] == 1) {
+                    sum++;
+                    continue;
+                }
+            }
+        }
+        return sum;
+    }
+
+    @Test
+    public void maxDistToClosestTest() {
+        Assert.assertEquals("{1, 0, 0, 0, 1, 0, 1} 应该为：2", 2, maxDistToClosest(new int[]{1, 0, 0, 0, 1, 0, 1}));
+        Assert.assertEquals("{1,0,0,0} 应该为：3", 3, maxDistToClosest(new int[]{1,0,0,0}));
+        Assert.assertEquals("{0,1} 应该为：1", 1, maxDistToClosest(new int[]{0,1}));
+    }
+
+    /**
+     * 849. 到最近的人的最大距离
+     *
+     * 提示：
+     *      2 <= seats.length <= 2 * 104
+     *      seats[i] 为 0 或 1
+     *      至少有一个 空座位
+     *      至少有一个 座位上有人
+     */
+    public int maxDistToClosest(int[] seats) {
+        List<Integer> peopleIndex = new ArrayList<>();
+        for (int i = 0; i < seats.length; i++) {
+            if (seats[i] == 1) {
+                peopleIndex.add(i);
+            }
+        }
+        int max = 0;
+        if (peopleIndex.get(0) != 0) {
+            max = Math.max(peopleIndex.get(0), max);
+        }
+        if (peopleIndex.get(peopleIndex.size() - 1) != seats.length - 1) {
+            max = Math.max(seats.length - 1 - peopleIndex.get(peopleIndex.size() - 1), max);
+        }
+        for (int i = 1; i < peopleIndex.size(); i++) {
+            max = Math.max((peopleIndex.get(i) - peopleIndex.get(i - 1))/2, max);
+        }
+        return max;
+    }
+
+
+    /**
+     * 2337. 移动片段得到字符串
+     */
+    public boolean canChange(String start, String target) {
+        // 定义两个指针i,j，分别遍历start，target，出去“_”之外，遇见L，i>=j，遇见R，i<=j，否则返回false
+        int i = 0;
+        int j = 0;
+        int n = start.length();
+        if (!start.replaceAll("_", "").equals(target.replace("_", ""))) {
+            return false;
+        }
+        while (i < n || j < n) {
+            while (i < n && start.charAt(i) == '_') {
+                i++;
+            }
+            while (j < n && target.charAt(j) == '_') {
+                j++;
+            }
+            if (i == n && j == n) {
+                return true;
+            }
+            if (start.charAt(i) != target.charAt(j)) {
+                return false;
+            }
+            if (start.charAt(i) == 'L' && i < j || start.charAt(i) == 'R' && i > j) {
+                return false;
+            }
+            i++;
+            j++;
+        }
+        return true;
+    }
+
+
+    @Test
+    public void mergeTest() {
+        int[] nums1 = new int[] {1,2,3,0,0,0} ;
+        int[] nums2 = new int[] {2,5,6} ;
+        merge(nums1, 3, nums2, 3);
+
+        int[] nums11 = new int[] {1} ;
+        int[] nums22 = new int[] {} ;
+        merge(nums11, 1, nums22, 0);
+
+        int[] nums111 = new int[] {0} ;
+        int[] nums222 = new int[] {1} ;
+        merge(nums111, 0, nums222, 1);
+        System.out.println();
+    }
+
+    /**
+     * 88. 合并两个有序数组
+     */
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        while (m > 0 || n > 0) {
+            if (m == 0) {
+                nums1[n - 1] = nums2[n - 1];
+                n--;
+            } else if (n == 0) {
+                m--;
+            } else  if (nums1[m - 1] > nums2[n - 1]) {
+                nums1[m + n - 1] = nums1[m - 1];
+                m--;
+            } else {
+                nums1[m + n - 1] = nums2[n - 1];
+                n--;
+            }
+        }
+    }
+
+    /**
+     * 2682. 找出转圈游戏输家
+     */
+    public int[] circularGameLosers(int n, int k) {
+        int[] res = new int[n + 1];
+        res[1] = 1;
+        int index = 1;
+        int i = 1;
+        while (res[index] != 2) {
+            index = (index + k * i) % n;
+            i++;
+            if (index == 0) {
+                res[n] += 1;
+                index = n;
+            } else {
+                res[index] += 1;
+            }
+        }
+        List<Integer> result = new ArrayList<>();
+        for (int j = 1; j <= n; j++) {
+            if (res[j] == 0) {
+                result.add(j);
+            }
+        }
+        System.out.println(result);
+        int[] kk = new int[result.size()];
+        for (int m = 0; m < result.size(); m++) {
+            kk[m] = result.get(m);
+        }
+        return kk;
+    }
+
+
+    /**
+     * 1572. 矩阵对角线元素的和
+     */
+    public int diagonalSum(int[][] mat) {
+        // 分析法：根据矩阵边长分为奇数、偶数2种情形处理
+        int n = mat.length;
+        int count = 0;
+        for (int i = 0, j = n - 1; i < n && j >= 0; i++, j--) {
+            count += mat[i][i] + mat[i][j];
+        }
+        if ((n & 1) == 1) {
+            // 奇数
+            count -= mat[n / 2][n / 2];
+        }
+        return count;
+    }
 
     @Test
     public void maxAbsoluteSumTest() {

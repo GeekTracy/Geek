@@ -14,6 +14,67 @@ public class BacktracingMethod {
 
 
     @Test
+    public void minFallingPathSumIITest() {
+        // 超时
+        System.out.println(minFallingPathSumII(new int[][]{
+                {-2, -18, 31, -10, -71, 82, 47, 56, -14, 42},
+                {-95, 3, 65, -7, 64, 75, -51, 97, -66, -28},
+                {36, 3, -62, 38, 15, 51, -58, -90, -23, -63},
+                {58, -26, -42, -66, 21, 99, -94, -95, -90, 89},
+                {83, -66, -42, -45, 43, 85, 51, -86, 65, -39},
+                {56, 9, 9, 95, -56, -77, -2, 20, 78, 17},
+                {78, -13, -55, 55, -7, 43, -98, -89, 38, 90},
+                {32, 44, -47, 81, -1, -55, -5, 16, -81, 17},
+                {-87, 82, 2, 86, -88, -58, -91, -79, 44, -9},
+                {-96, -14, -52, -8, 12, 38, 84, 77, -51, 52}}));
+
+    }
+
+    /**
+     * 1289. 下降路径最小和 II
+     *
+     * 给你一个 n x n 整数矩阵 grid ，请你返回 非零偏移下降路径 数字和的最小值。
+     * 非零偏移下降路径 定义为：从 grid 数组中的每一行选择一个数字，且按顺序选出来的数字中，相邻数字不在原数组的同一列。
+     *
+     * 此回溯算法会超时，可使用动态规划法
+     */
+    private int MIN_II = 1000;
+    public int minFallingPathSumII(int[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            List<Integer> trace = new ArrayList<>();
+            backtrace02(grid, 0, i, trace);
+        }
+        return MIN_II;
+    }
+
+    private void backtrace02(int[][] grid, int row, int col, List<Integer> trace) {
+        int length = grid.length;
+        // 退出条件
+        if (trace.size() == grid[0].length - 1) {
+            trace.add(grid[row][col]);
+            int sum = 0;
+            for (Integer item : trace) {
+                sum += item;
+            }
+            MIN_II = Math.min(MIN_II, sum);
+            return;
+        }
+        // 访问
+        trace.add(grid[row][col]);
+        // 遍历下一行的非col列
+        for (int i = row + 1; i < length; i++) {
+            for (int j = 0; j < length; j++) {
+                if (col == j) continue;
+                backtrace02(grid, i, j, trace);
+                // 回退
+                trace.remove(trace.size() - 1);
+            }
+        }
+    }
+
+
+
+    @Test
     public void uniquePathsIIITest() {
         System.out.println(uniquePathsIII(new int[][]{{1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 2, -1}}));
 //        res = 0;
@@ -131,7 +192,7 @@ public class BacktracingMethod {
 
     @Test
     public void minFallingPathSumTest() {
-//        输入：matrix = [[2,1,3],[6,5,4],[7,8,9]]
+//        输入：matrix = [[2,1,3},{6,5,4],[7,8,9]]
 //        输出：13
 //        minFallingPathSum(new int[][]{{2,1,3}, {6,5,4}, {7,8,9}});
 //        输入：matrix = [[-19,57],[-40,-5]]

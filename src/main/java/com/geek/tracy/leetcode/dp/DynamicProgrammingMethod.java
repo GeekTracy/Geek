@@ -13,6 +13,65 @@ import java.util.Arrays;
 public class DynamicProgrammingMethod {
 
     @Test
+    public void minFallingPathSumIITest() {
+        System.out.println(minFallingPathSumII(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}));
+        System.out.println(minFallingPathSumII(new int[][]{{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2}}));
+        // 回溯法会超时
+        System.out.println(minFallingPathSumII(new int[][]{
+                {-2, -18, 31, -10, -71, 82, 47, 56, -14, 42},
+                {-95, 3, 65, -7, 64, 75, -51, 97, -66, -28},
+                {36, 3, -62, 38, 15, 51, -58, -90, -23, -63},
+                {58, -26, -42, -66, 21, 99, -94, -95, -90, 89},
+                {83, -66, -42, -45, 43, 85, 51, -86, 65, -39},
+                {56, 9, 9, 95, -56, -77, -2, 20, 78, 17},
+                {78, -13, -55, 55, -7, 43, -98, -89, 38, 90},
+                {32, 44, -47, 81, -1, -55, -5, 16, -81, 17},
+                {-87, 82, 2, 86, -88, -58, -91, -79, 44, -9},
+                {-96, -14, -52, -8, 12, 38, 84, 77, -51, 52}}));
+
+    }
+
+    /**
+     * 1289. 下降路径最小和 II
+     *
+     * 给你一个 n x n 整数矩阵 grid ，请你返回 非零偏移下降路径 数字和的最小值。
+     * 非零偏移下降路径 定义为：从 grid 数组中的每一行选择一个数字，且按顺序选出来的数字中，相邻数字不在原数组的同一列。
+     */
+    public int minFallingPathSumII(int[][] grid) {
+        // 定义一个dp[][]，(n + 1)*(n + 1)的矩阵，最后一列记录当前行的最小dp值
+        int n = grid.length;
+        int[][] dp = new int[n][n + 1];
+        int min = 1000;  // 本题数据范围：-99 <= grid[i][j] <= 99，所以设置1000
+        for (int i = 0; i < n; i++) {
+            min = Math.min(min, grid[0][i]);
+            dp[0][i] = grid[0][i];
+        }
+        dp[0][n] = min;
+
+        for (int i = 1; i < n; i++) {
+            min = Integer.MAX_VALUE;
+            for (int j = 0; j < n; j++) {
+                // dp[i][j] 的值为：grid[i][j] 加上上一行，列不等于j的最小dp[i-1][!j]
+                if (dp[i - 1][j] == dp[i - 1][n]) {
+                    // 上方值为最小，则需要遍历其他找到最小dp值，否则直接取上一行最后列dp值
+                    int temp = Integer.MAX_VALUE;
+                    for (int k = 0; k < n; k++) {
+                        if (k == j) continue;
+                        temp = Math.min(temp, dp[i - 1][k]);
+                    }
+                    dp[i][j] = temp + grid[i][j];
+                } else {
+                    dp[i][j] = grid[i][j] + dp[i - 1][n];
+                }
+                min = Math.min(min, dp[i][j]);
+            }
+            // 给当前行最后一列赋值
+            dp[i][n] = min;
+        }
+        return dp[n - 1][n];
+    }
+
+    @Test
     public void minFallinPathSumTest() {
         System.out.println(minFallingPathSum(new int[][]{{2, 1, 3}, {6, 5, 4}, {7, 8, 9}}));
     }
