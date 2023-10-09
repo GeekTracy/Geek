@@ -24,7 +24,7 @@
         美式咖啡【CoffeeAmericano】：Coffee 的子类，具体化 Coffee 中的两个方法
         拿铁咖啡【CoffeeLatte】：Coffee 的子类，具体化 Coffee 中的两个方发
    4、创建一个具体工厂类，实现抽象工厂接口，即具体决定应该创建哪种产品。
-        美式咖啡工厂【CoffeFactory】：制作美式咖啡
+        美式咖啡工厂【CoffeeFactory】：制作美式咖啡
         拿铁咖啡工厂【CoffeeLatteFactory】：制作拿铁咖啡
    5、在客户端程序中通过调用具体工厂类的方法来创建产品。
         咖啡店【CoffeeShop】：咖啡店，内部聚合了咖啡工厂，提供点单服务，返回具体 Coffee 对象
