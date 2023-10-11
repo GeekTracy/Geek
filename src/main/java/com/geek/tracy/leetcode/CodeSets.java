@@ -14,15 +14,54 @@ import java.util.Set;
 
 /**
  * 合集
+ *
  * @Author Tracy
  * @Date 2023/6/26
  */
 public class CodeSets {
 
+
+    @Test
+    public void insertTest() {
+        // 示例 1：
+        //
+        //输入：intervals = [[1,3],[6,9]], newInterval = [2,5]
+        //输出：[[1,5],[6,9]]
+        //示例 2：
+        //
+        //输入：intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]
+        //输出：[[1,2],[3,10],[12,16]]
+        //解释：这是因为新的区间 [4,8] 与 [3,5],[6,7],[8,10] 重叠。
+        //示例 3：
+        //
+        //输入：intervals = [], newInterval = [5,7]
+        //输出：[[5,7]]
+        //示例 4：
+        //
+        //输入：intervals = [[1,5]], newInterval = [2,3]
+        //输出：[[1,5]]
+        //示例 5：
+        //
+        //输入：intervals = [[1,5]], newInterval = [2,7]
+        //输出：[[1,7]]
+    }
+
+    /**
+     * 57. 插入区间
+     */
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if (intervals.length == 0) {
+            return new int[][]{newInterval};
+        }
+        List<int[]> list = new ArrayList<>();
+        return null;
+    }
+
+
     @Test
     public void countServersTest() {
 //        Assert.assertEquals(0, countServers(new int[][]{{1,0}, {0,1}}));
-        Assert.assertEquals(3, countServers(new int[][]{{1,0}, {1,1}}));
+        Assert.assertEquals(3, countServers(new int[][]{{1, 0}, {1, 1}}));
 //        Assert.assertEquals(4, countServers(new int[][]{{1,1,0,0}, {0,0,1,0},{0,0,1,0},{0,0,0,1}}));
     }
 
@@ -78,18 +117,18 @@ public class CodeSets {
     @Test
     public void maxDistToClosestTest() {
         Assert.assertEquals("{1, 0, 0, 0, 1, 0, 1} 应该为：2", 2, maxDistToClosest(new int[]{1, 0, 0, 0, 1, 0, 1}));
-        Assert.assertEquals("{1,0,0,0} 应该为：3", 3, maxDistToClosest(new int[]{1,0,0,0}));
-        Assert.assertEquals("{0,1} 应该为：1", 1, maxDistToClosest(new int[]{0,1}));
+        Assert.assertEquals("{1,0,0,0} 应该为：3", 3, maxDistToClosest(new int[]{1, 0, 0, 0}));
+        Assert.assertEquals("{0,1} 应该为：1", 1, maxDistToClosest(new int[]{0, 1}));
     }
 
     /**
      * 849. 到最近的人的最大距离
-     *
+     * <p>
      * 提示：
-     *      2 <= seats.length <= 2 * 104
-     *      seats[i] 为 0 或 1
-     *      至少有一个 空座位
-     *      至少有一个 座位上有人
+     * 2 <= seats.length <= 2 * 104
+     * seats[i] 为 0 或 1
+     * 至少有一个 空座位
+     * 至少有一个 座位上有人
      */
     public int maxDistToClosest(int[] seats) {
         List<Integer> peopleIndex = new ArrayList<>();
@@ -106,7 +145,7 @@ public class CodeSets {
             max = Math.max(seats.length - 1 - peopleIndex.get(peopleIndex.size() - 1), max);
         }
         for (int i = 1; i < peopleIndex.size(); i++) {
-            max = Math.max((peopleIndex.get(i) - peopleIndex.get(i - 1))/2, max);
+            max = Math.max((peopleIndex.get(i) - peopleIndex.get(i - 1)) / 2, max);
         }
         return max;
     }
@@ -148,16 +187,16 @@ public class CodeSets {
 
     @Test
     public void mergeTest() {
-        int[] nums1 = new int[] {1,2,3,0,0,0} ;
-        int[] nums2 = new int[] {2,5,6} ;
+        int[] nums1 = new int[]{1, 2, 3, 0, 0, 0};
+        int[] nums2 = new int[]{2, 5, 6};
         merge(nums1, 3, nums2, 3);
 
-        int[] nums11 = new int[] {1} ;
-        int[] nums22 = new int[] {} ;
+        int[] nums11 = new int[]{1};
+        int[] nums22 = new int[]{};
         merge(nums11, 1, nums22, 0);
 
-        int[] nums111 = new int[] {0} ;
-        int[] nums222 = new int[] {1} ;
+        int[] nums111 = new int[]{0};
+        int[] nums222 = new int[]{1};
         merge(nums111, 0, nums222, 1);
         System.out.println();
     }
@@ -172,7 +211,7 @@ public class CodeSets {
                 n--;
             } else if (n == 0) {
                 m--;
-            } else  if (nums1[m - 1] > nums2[n - 1]) {
+            } else if (nums1[m - 1] > nums2[n - 1]) {
                 nums1[m + n - 1] = nums1[m - 1];
                 m--;
             } else {
@@ -234,7 +273,7 @@ public class CodeSets {
 
     @Test
     public void maxAbsoluteSumTest() {
-        maxAbsoluteSum(new int[] {1,-3,2,3,-4});
+        maxAbsoluteSum(new int[]{1, -3, 2, 3, -4});
     }
 
     /**
@@ -309,12 +348,12 @@ public class CodeSets {
 
     /**
      * 822. 翻转卡片游戏
-     *
+     * <p>
      * 输入：fronts = [1,2,4,4,7], backs = [1,3,4,1,3]
      * 输出：2
      * 解释：假设我们翻转第二张卡片，那么在正面的数变成了 [1,3,4,4,7] ， 背面的数变成了 [1,2,4,1,3]。
      * 接着我们选择第二张卡片，因为现在该卡片的背面的数是 2，2 与任意卡片上正面的数都不同，所以 2 就是我们想要的数字。
-     *
+     * <p>
      * 提示：
      * n == fronts.length == backs.length
      * 1 <= n <= 1000
@@ -414,20 +453,20 @@ public class CodeSets {
     /**
      * 874. 模拟行走机器人
      * 机器人在一个无限大小的 XY 网格平面上行走，从点 (0, 0) 处开始出发，面向北方。该机器人可以接收以下三种类型的命令 commands ：
-     *
+     * <p>
      * -2 ：向左转 90 度
      * -1 ：向右转 90 度
      * 1 <= x <= 9 ：向前移动 x 个单位长度
      * 在网格上有一些格子被视为障碍物 obstacles 。第 i 个障碍物位于网格点  obstacles[i] = (xi, yi) 。
-     *
+     * <p>
      * 提示：
-     *
+     * <p>
      * 1 <= commands.length <= 10^4
      * commands[i] is one of the values in the list [-2,-1,1,2,3,4,5,6,7,8,9].
      * 0 <= obstacles.length <= 10^4
      * -3 * 10^4 <= xi, yi <= 3 * 10^4
      * 答案保证小于 2^31
-     *
+     * <p>
      * 解法分析：哈希表 + 模拟（行走方向）
      */
     public int robotSim(int[] commands, int[][] obstacles) {
@@ -476,7 +515,7 @@ public class CodeSets {
                     case 1:
                         // 左
                         for (int j = 0; j < command; j++) {
-                            if (intSet.contains((curr_x - 1)  * 60001 + curr_y)){
+                            if (intSet.contains((curr_x - 1) * 60001 + curr_y)) {
                                 break;
                             } else {
                                 curr_x--;
@@ -487,7 +526,7 @@ public class CodeSets {
                     case 2:
                         // 下
                         for (int j = 0; j < command; j++) {
-                            if (intSet.contains(curr_x  * 60001 + (curr_y - 1))) {
+                            if (intSet.contains(curr_x * 60001 + (curr_y - 1))) {
                                 break;
                             } else {
                                 curr_y--;
@@ -498,7 +537,7 @@ public class CodeSets {
                     case 3:
                         // 右
                         for (int j = 0; j < command; j++) {
-                            if (intSet.contains((curr_x + 1)  * 60001 + curr_y)) {
+                            if (intSet.contains((curr_x + 1) * 60001 + curr_y)) {
                                 break;
                             } else {
                                 curr_x++;
@@ -523,11 +562,12 @@ public class CodeSets {
         System.out.println(alternateDigitSum(123));
         System.out.println(alternateDigitSum(6789));
     }
+
     /**
      * 2544. 交替数字和
-     *
+     * <p>
      * 给你一个正整数 n 。n 中的每一位数字都会按下述规则分配一个符号：
-     *
+     * <p>
      * 最高有效位 上的数字分配到 正 号。
      * 剩余每位上数字的符号都与其相邻数字相反。
      * 返回所有数字及其对应符号的和。
@@ -539,7 +579,7 @@ public class CodeSets {
         while (n > 0) {
             sum += n % 10 * Math.pow(-1, num);
             n = n / 10;
-            num ++;
+            num++;
         }
         // 位数为偶数，取相反数
         if ((num & 1) == 0) {
@@ -552,14 +592,14 @@ public class CodeSets {
     @Test
     public void threeSumClosestTest() {
 //        System.out.println(threeSumClosest(new int[]{-1,2,1,-4}, 1));
-        System.out.println(threeSumClosest(new int[]{0,1,2}, 3));
+        System.out.println(threeSumClosest(new int[]{0, 1, 2}, 3));
     }
 
     /**
      * 16. 最接近的三数之和
      * 给你一个长度为 n 的整数数组 nums 和 一个目标值 target。请你从 nums 中选出三个整数，使它们的和与 target 最接近。
      * 返回这三个数的和。假定每组输入只存在恰好一个解。
-     *
+     * <p>
      * 分析：排序 + 双指针法，类似：15. 三数之和，差异点：15题和为0，此题和接近target
      */
     public int threeSumClosest(int[] nums, int target) {
@@ -615,9 +655,10 @@ public class CodeSets {
     }
 
     @Test
-    public void test01 () {
-        twoSum(new int[]{0,0,3,4}, 0);
+    public void test01() {
+        twoSum(new int[]{0, 0, 3, 4}, 0);
     }
+
     public int[] twoSum(int[] numbers, int target) {
         int size = numbers.length;
         int[] res = new int[2];
@@ -635,9 +676,9 @@ public class CodeSets {
 
     /**
      * 2679. 矩阵中的和
-     *
+     * <p>
      * 给你一个下标从 0 开始的二维整数数组 nums 。一开始你的分数为 0 。你需要执行以下操作直到矩阵变为空：
-     *
+     * <p>
      * 矩阵中每一行选取最大的一个数，并删除它。如果一行中有多个最大的数，选择任意一个并删除。
      * 在步骤 1 删除的所有数字中找到最大的一个数字，将它添加到你的 分数 中。
      * 请你返回最后的 分数 。
@@ -663,6 +704,7 @@ public class CodeSets {
             System.out.println("finalSum:" + i + ": " + maximumEvenSplit(i));
         }
     }
+
     /**
      * 2178. 拆分成最多数目的正偶数之和
      */
@@ -705,12 +747,12 @@ public class CodeSets {
     }
 
     private boolean circularWord(String word1, String word2) {
-        char [] char1 = word1.toCharArray() ;
-        char [] char2 = word2.toCharArray() ;
+        char[] char1 = word1.toCharArray();
+        char[] char2 = word2.toCharArray();
         return char1[char1.length - 1] == char2[0];
     }
 
-        @Test
+    @Test
     public void reconstructMatrixTest() {
         System.out.println(reconstructMatrix(2, 1, new int[]{1, 1, 1}));
         System.out.println(reconstructMatrix(2, 3, new int[]{1, 1, 1,}));
@@ -772,6 +814,7 @@ public class CodeSets {
         }
         return list;
     }
+
     /**
      * 2485. 找出中枢整数 --测试
      */
@@ -791,7 +834,7 @@ public class CodeSets {
     /**
      * 2485. 找出中枢整数
      * 提示：
-     *      1 <= n <= 1000
+     * 1 <= n <= 1000
      */
     public int pivotInteger(int n) {
         if (n == 1) {
