@@ -20,6 +20,41 @@ import java.util.Set;
  */
 public class CodeSets {
 
+    /**
+     * 2127. 参加会议的最多员工数
+     */
+    public int maximumInvitations(int[] favorite) {
+        return 0;
+    }
+
+    @Test
+    public void countPointsTest() {
+        System.out.println(countPoints("B7R5B3G5B1R2B8"));
+    }
+
+    /**
+     * 2103. 环和杆
+     */
+    public int countPoints(String rings) {
+        // 初始化3个颜色，二进制位111 代表各个位置受否有对应颜色
+        Map<Character, Integer> map = new HashMap<>();
+        map.put('R', 1);
+        map.put('G', 2);
+        map.put('B', 4);
+        int[] colorIn = new int[10];
+        char[] chars = rings.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char cha = chars[i++];
+            colorIn[Integer.parseInt(String.valueOf(chars[i]))] |= map.get(cha);
+        }
+        int sum = 0;
+        for (int i : colorIn) {
+            if (i == 7) {
+                sum++;
+            }
+        }
+        return sum;
+    }
 
     @Test
     public void insertTest() {
