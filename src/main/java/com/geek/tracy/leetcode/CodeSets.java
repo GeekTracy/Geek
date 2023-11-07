@@ -27,6 +27,52 @@ public class CodeSets {
         return 0;
     }
 
+
+    /**
+     * 2586. 统计范围内的元音字符串数
+     */
+    public int vowelStrings(String[] words, int left, int right) {
+        List<Character> list = Arrays.asList('a','e','i','o','u');
+        int sum = 0;
+        for (int i = left; i < right; i++) {
+            String word = words[i];
+            if (list.contains(word.charAt(0)) && list.contains(word.charAt(word.length() - 1))) {
+                sum++;
+            }
+        }
+        return sum;
+    }
+
+    @Test
+    public void maxtProductTest() {
+        String[] words = Arrays.asList("abcw", "baz", "foo", "bar", "xtfn", "abcdef").toArray(new String[0]);
+        System.out.println(maxProduct(words));
+    }
+
+    /**
+     * 318. 最大单词长度乘积
+     * 分析：只有小写字母，可以利用 ‘&’ ‘|’ 与 非运算判断，先将单词数组进行预处理，26位的二进制位，有哪个字母，那一位标志为：1，初始化完所有
+     *      单词后，word1 & word2 = 0，即标识2个单词没有重复字母！
+     */
+    public int maxProduct(String[] words) {
+        int max = 0;
+        int[] intiBinary = new int[words.length];
+        for (int i = 0; i < words.length; i++) {
+            char[] chars = words[i].toCharArray();
+            for (int j = 0; j < chars.length; j++) {
+                intiBinary[i] = intiBinary[i] | 1 << ((chars[j]) - 'a');
+            }
+        }
+        for (int i = 0; i < words.length; i++) {
+            for (int j = i + 1; j < words.length; j++) {
+                if ((intiBinary[i] & intiBinary[j]) ==0) {
+                    max = Math.max(max, words[i].length() * words[j].length());
+                }
+            }
+        }
+        return max;
+    }
+
     @Test
     public void countPointsTest() {
         System.out.println(countPoints("B7R5B3G5B1R2B8"));
