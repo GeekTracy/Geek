@@ -3,6 +3,7 @@ package com.geek.tracy.leetcode;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +21,55 @@ import java.util.Set;
  */
 public class CodeSets {
 
+    @Test
+    public void test_009() {
+        System.out.println(isPalindrome(123));
+        System.out.println(isPalindrome(1221));
+        System.out.println(isPalindrome(12321));
+    }
+
+    /**
+     * 9. 回文数 -- 数学法
+     * @param x
+     * @return
+     */
+    public boolean isPalindrome_01(int x) {
+        if (x < 0) {
+            return false;
+        }
+        int temp = x;
+        int trans = 0;
+        while (temp != 0) {
+            trans = trans * 10 + temp % 10;
+            temp = temp / 10;
+        }
+        return trans == x;
+    }
+
+
+    /**
+     * 9. 回文数 -- 字符串比对法
+     * @param x
+     * @return
+     */
+    public boolean isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+        char[] chars = String.valueOf(x).toCharArray();
+        int start = 0;
+        int end = chars.length - 1;
+        while (start < end) {
+            if (chars[start] != chars[end]) {
+                return false;
+            } else {
+                start++;
+                end--;
+            }
+        }
+        return true;
+    }
+
     /**
      * 2127. 参加会议的最多员工数
      */
@@ -27,6 +77,57 @@ public class CodeSets {
         return 0;
     }
 
+    @Test
+    public void testMessageFormat() {
+
+        System.out.println(MessageFormat.format("My '{'name} is {0}", "joe"));
+        System.out.println(MessageFormat.format("My ''name'' is {0}", "joe"));
+    }
+
+    @Test
+    public void suceessfulPares() {
+        String ss = "来看据了解{id}了建立起而空气为了领取{billno}我今儿两千万人";
+        char[] chars = ss.toCharArray();
+        List<String> properties = new ArrayList<>();
+        for (int i = 0; i < ss.length(); i++) {
+            if (chars[i] == '{') {
+                int start = i + 1;
+                int end = 0 ;
+                while (i < ss.length() && chars[i] != '}') {
+                    i++;
+                }
+                end = i;
+                properties.add(ss.substring(start, end));
+                System.out.println(ss.substring(start, end));
+            }
+        }
+        System.out.println(ss);
+        ss = ss.replace("{id}", "12341234");
+        ss = ss.replace("{billno}", "NO1314520");
+        System.out.println(ss);
+    }
+
+    /**
+     * 2300. 咒语和药水的成功对数
+     */
+    public int[] successfulPairs(int[] spells, int[] potions, long success) {
+        Arrays.sort(potions);
+        int m = potions.length;
+        int[] pairs = new int[spells.length];
+        for (int i = 0; i < spells.length; i++) {
+            int spell = spells[i];
+            int count = 0;
+            for (int potion : potions) {
+                if ((long)spell * potion < success) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+            pairs[i] = m - count;
+        }
+        return pairs;
+    }
 
     /**
      * 2586. 统计范围内的元音字符串数
