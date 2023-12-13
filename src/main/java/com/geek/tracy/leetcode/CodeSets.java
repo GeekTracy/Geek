@@ -21,6 +21,35 @@ import java.util.Set;
  */
 public class CodeSets {
 
+
+    @Test
+    public void test_2697() {
+        Assert.assertEquals("efcfe", makeSmallestPalindrome("egcfe"));
+        Assert.assertEquals("abba", makeSmallestPalindrome("abcd"));
+        Assert.assertEquals("neven", makeSmallestPalindrome("seven"));
+    }
+
+    /**
+     * 2697. 字典序最小回文串
+     * @param s
+     * @return
+     */
+    public String makeSmallestPalindrome(String s) {
+        char[] chars = s.toCharArray();
+        int start = 0;
+        int end = chars.length - 1;
+        while (start < end) {
+            if (chars[start] < chars[end]) {
+                chars[end] = chars[start];
+            } else if (chars[start] > chars[end]) {
+                chars[start] = chars[end];
+            }
+            start++;
+            end--;
+        }
+        return new String(chars);
+    }
+
     @Test
     public void test_009() {
         System.out.println(isPalindrome(123));
@@ -68,6 +97,44 @@ public class CodeSets {
             }
         }
         return true;
+    }
+
+    @Test
+    public void test_012() {
+        Assert.assertEquals("III", intToRoman(3));
+        Assert.assertEquals("LVIII", intToRoman(58));
+        Assert.assertEquals("MCMXCIV", intToRoman(1994));
+    }
+
+    /**
+     * 12.整数转罗马数字
+     *      罗马数字包含：I V X L C D M
+     *      对应关系如下：
+     *      I   1
+     *      V   5
+     *      X   10
+     *      L   50
+     *      C   100
+     *      D   500
+     *      M   1000
+     * 说明：通常小数字在大数字的右边。单存在特例，例如：IV : 4,IX ：9，同理还有：XL : 40, XC : 90, CD : 400, CM : 900
+     *
+     * @param num 1 <= num <= 3999
+     */
+    public String intToRoman(int num) {
+        // 贪心算法，构建映射关系，从最大依次往下匹配
+        List<Integer> intList = Arrays.asList(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1);
+        List<String> romanList = Arrays.asList("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I");
+
+        int size = intList.size();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            while (num >= intList.get(i)) {
+                result.append(romanList.get(i));
+                num -= intList.get(i);
+            }
+        }
+        return result.toString();
     }
 
     /**
