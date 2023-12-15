@@ -22,9 +22,9 @@ public class ChainTable {
 
     @Test
     public void test_019() {
-        ListNode root = ChainTableUtil.init(1);
-        ChainTableUtil.printChainTable(root);
-        ChainTableUtil.printChainTable(removeNthFromEnd(root, 1));
+        ListNode root = ListNode.init(1);
+        ListNode.printListNode(root);
+        ListNode.printListNode(removeNthFromEnd(root, 1));
     }
     /**
      * 19.删除链表的倒数第N个节点
@@ -53,7 +53,7 @@ public class ChainTable {
     @Test
     public void recorderListTest() {
         // 初始化链表
-        ListNode head = ListNode.inti(1, 2, 3, 4, 5, 6);
+        ListNode head = ListNode.init(1, 2, 3, 4, 5, 6);
         ListNode.printListNode(head);
         reorderList(head);
         ListNode.printListNode(head);

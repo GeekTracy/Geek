@@ -40,7 +40,7 @@ public class ListNode {
     /**
      * 初始化链表，返回表头节点
      */
-    public static ListNode inti(Integer... val) {
+    public static ListNode init(Integer... val) {
         if (val.length == 0) {
             return null;
         }
