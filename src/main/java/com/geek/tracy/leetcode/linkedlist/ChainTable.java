@@ -20,8 +20,35 @@ import java.util.stream.Collectors;
  */
 public class ChainTable {
 
-
-
+    @Test
+    public void test_019() {
+        ListNode root = ChainTableUtil.init(1);
+        ChainTableUtil.printChainTable(root);
+        ChainTableUtil.printChainTable(removeNthFromEnd(root, 1));
+    }
+    /**
+     * 19.删除链表的倒数第N个节点
+     * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode temp = head;
+        int count = 0;
+        while (temp != null) {
+            count++;
+            temp = temp.next;
+        }
+        int nthFromStart = count - n - 1;
+        if (nthFromStart == -1) {
+            return head.next;
+        }
+        temp = head;
+        while (nthFromStart > 0) {
+            temp = temp.next;
+            nthFromStart--;
+        }
+        temp.next = temp.next.next;
+        return head;
+    }
 
     @Test
     public void recorderListTest() {
@@ -31,6 +58,7 @@ public class ChainTable {
         reorderList(head);
         ListNode.printListNode(head);
     }
+
     /**
      * 143. 重排链表
      *
@@ -258,7 +286,6 @@ public class ChainTable {
         }
         return tempRoot.next;
     }
-
 
     /**
      *
