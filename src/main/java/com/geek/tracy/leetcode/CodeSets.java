@@ -137,11 +137,60 @@ public class CodeSets {
         return result.toString();
     }
 
+    @Test
+    public void test_013() {
+        Assert.assertEquals(58, romanToInt("LVIII"));
+    }
+
     /**
-     * 2127. 参加会议的最多员工数
+     * 13. 罗马数字转整数
      */
-    public int maximumInvitations(int[] favorite) {
-        return 0;
+    public int romanToInt(String s) {
+        Map<Character, Integer> dictionary = new HashMap<>();
+        dictionary.put('I', 1);
+        dictionary.put('V', 5);
+        dictionary.put('X', 10);
+        dictionary.put('L', 50);
+        dictionary.put('C', 100);
+        dictionary.put('D', 500);
+        dictionary.put('M', 1000);
+
+        char[] chars = s.toCharArray();
+        int result = 0;
+        int index = 0;
+        while (index < chars.length) {
+            if (index + 1 < chars.length && dictionary.get(chars[index]) < dictionary.get(chars[index + 1])) {
+                result -= dictionary.get(chars[index]);
+            } else {
+                result += dictionary.get(chars[index]);
+            }
+            index++;
+        }
+        return result;
+    }
+
+    @Test
+    public void test_014() {
+        System.out.println(longestCommonPrefix(new String[]{"longest","long","lon"}));
+        System.out.println(longestCommonPrefix(new String[]{"longest","longestdistance","longestway"}));
+    }
+
+    /**
+     * 14.最长公共前缀
+     */
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        char[] res = strs[0].toCharArray();
+        for (int index = 0; index < res.length; index++) {
+            for (int i = 1; i < strs.length; i++) {
+                if (index == strs[i].length() || res[index] != strs[i].charAt(index)) {
+                    return strs[0].substring(0, index);
+                }
+            }
+        }
+        return strs[0];
     }
 
     @Test
@@ -159,7 +208,7 @@ public class CodeSets {
         for (int i = 0; i < ss.length(); i++) {
             if (chars[i] == '{') {
                 int start = i + 1;
-                int end = 0 ;
+                int end = 0;
                 while (i < ss.length() && chars[i] != '}') {
                     i++;
                 }
@@ -175,6 +224,13 @@ public class CodeSets {
     }
 
     /**
+     * 2127. 参加会议的最多员工数
+     */
+    public int maximumInvitations(int[] favorite) {
+        return 0;
+    }
+
+    /**
      * 2300. 咒语和药水的成功对数
      */
     public int[] successfulPairs(int[] spells, int[] potions, long success) {
@@ -185,7 +241,7 @@ public class CodeSets {
             int spell = spells[i];
             int count = 0;
             for (int potion : potions) {
-                if ((long)spell * potion < success) {
+                if ((long) spell * potion < success) {
                     count++;
                 } else {
                     break;
@@ -200,7 +256,7 @@ public class CodeSets {
      * 2586. 统计范围内的元音字符串数
      */
     public int vowelStrings(String[] words, int left, int right) {
-        List<Character> list = Arrays.asList('a','e','i','o','u');
+        List<Character> list = Arrays.asList('a', 'e', 'i', 'o', 'u');
         int sum = 0;
         for (int i = left; i < right; i++) {
             String word = words[i];
@@ -220,7 +276,7 @@ public class CodeSets {
     /**
      * 318. 最大单词长度乘积
      * 分析：只有小写字母，可以利用 ‘&’ ‘|’ 与 非运算判断，先将单词数组进行预处理，26位的二进制位，有哪个字母，那一位标志为：1，初始化完所有
-     *      单词后，word1 & word2 = 0，即标识2个单词没有重复字母！
+     * 单词后，word1 & word2 = 0，即标识2个单词没有重复字母！
      */
     public int maxProduct(String[] words) {
         int max = 0;
@@ -233,7 +289,7 @@ public class CodeSets {
         }
         for (int i = 0; i < words.length; i++) {
             for (int j = i + 1; j < words.length; j++) {
-                if ((intiBinary[i] & intiBinary[j]) ==0) {
+                if ((intiBinary[i] & intiBinary[j]) == 0) {
                     max = Math.max(max, words[i].length() * words[j].length());
                 }
             }
