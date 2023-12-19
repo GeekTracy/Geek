@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -19,6 +20,35 @@ import java.util.stream.Collectors;
  * @Date 2023/7/31
  */
 public class ChainTable {
+
+    /**
+     * 23.合并k个升序链表
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        List<Integer> mergeList = new ArrayList<>();
+        for (int i = 0; i < lists.length; i++) {
+            ListNode temp = lists[i];
+            while (temp != null) {
+                mergeList.add(temp.val);
+                temp = temp.next;
+            }
+        }
+        mergeList.sort(Comparator.naturalOrder());
+        ListNode root = new ListNode();
+        for (int i = mergeList.size() - 1; i >= 0; i--) {
+            ListNode newNode = new ListNode(mergeList.get(i));
+            if (i != mergeList.size() - 1) {
+                newNode.next = root.next;
+            }
+            root.next = newNode;
+        }
+        return root.next;
+
+    }
+
 
     @Test
     public void test_019() {
