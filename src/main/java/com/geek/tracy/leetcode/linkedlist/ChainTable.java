@@ -21,6 +21,40 @@ import java.util.stream.Collectors;
  */
 public class ChainTable {
 
+
+    @Test
+    public void test_024() {
+        ListNode listNode = swapPairs(ListNode.init(1, 2, 3));
+        ListNode.printListNode(listNode);
+    }
+    /**
+     * 24.两两交换链表中的节点  -- 暴力总结解答，不推荐，思考递归解法
+     */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        List<ListNode> list = new ArrayList<>();
+        while (head != null) {
+            list.add(head);
+            head = head.next;
+        }
+        for (int i = 1; i < list.size(); i += 2) {
+            list.get(i).next = list.get(i - 1);
+            if (i + 2 < list.size()) {
+                list.get(i - 1).next = list.get(i + 2);
+            }
+        }
+        if (list.size() % 2 == 0) {
+            list.get(list.size() - 2).next = null;
+        }
+        if (list.size() % 2 == 1 && list.size() >= 3) {
+            list.get(list.size() - 3).next = list.get(list.size() - 1);
+        }
+        return list.get(1);
+    }
+
+
     /**
      * 23.合并k个升序链表
      */
