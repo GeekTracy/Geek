@@ -22,15 +22,110 @@ import java.util.Set;
 public class CodeSets {
 
 
+    /**
+     * 2865.美丽塔 Ⅰ
+     *
+     * @param maxHeights
+     * @return
+     */
+    public long maximumSumOfHeightsI(List<Integer> maxHeights) {
+        return 0;
+    }
+
+    /**
+     * 2865.美丽塔 Ⅱ
+     *
+     * @param maxHeights
+     * @return
+     */
+    public long maximumSumOfHeightsII(List<Integer> maxHeights) {
+        return 0;
+    }
+
+    @Test
+    public void test_1144() {
+        movesToMakeZigzag(new int[]{7,4,8,9,7,7,5});
+    }
+
+    private void print(int[] array) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int t : array) {
+            sb.append(t).append(",");
+        }
+        String res = sb.substring(0, sb.length() - 1);
+        System.out.println(res + "]");
+    }
+
+    /**
+     * 1144.递减元素是数组呈锯齿状
+     *
+     * 题解说明：存在两种锯齿，偶数下标或奇数下标为齿峰，不管哪一种，齿峰值不变。
+     *
+     * * 以偶下标为齿峰为例：则nums[0]、nums[2]、nums[4]...不变，改变奇数下标nums[1]、nums[3]、nums[5]使其成为齿谷。
+     * * 若下标i为要改变为峰谷的数，则需要改动的次数为：nums[i - 1]和nums[i + 1]中较小的为：min= min(nums[i - 1], nums[i + 1])，
+     * * 要移动的次数为：count = num[i] - min + 1 次，则又可优化为：count = max(num[i] - min + 1, 0)次.(说明：小于0不需要修改，即count=0)
+     *
+     * 此解法秒在：边界值的处理，常规表达式为：count = max(nums[i] - min(nums[i - 1], nums[i + 1]) + 1, 0)，本题边界值nums[i - 1]和nums[i + 1]
+     * 的处理，由于对其二者是取min，所以将边界值设定为Integer.MAX，即可将边界值常规化处理
+     */
+    public int movesToMakeZigzag(int[] nums) {
+        int[] res = new int[2];
+        for (int i = 0; i < nums.length; i++) {
+            int left = i - 1 < 0 ? Integer.MAX_VALUE : nums[i - 1];
+            int right = i + 1 > nums.length - 1 ? Integer.MAX_VALUE : nums[i + 1];
+            int count = Math.max(nums[i] - Math.min(left, right) + 1, 0);
+            res[i % 2] += count;
+        }
+        return Math.min(res[0], res[1]);
+    }
+
+
+
+    @Test
+    public void test_1901() {
+        Assert.assertEquals(new int[]{0, 1}, findPeakGrid(new int[][]{{1, 4}, {3, 2}}));
+    }
+
+
+    /**
+     * 1901.寻找峰值Ⅱ
+     *
+     * @param mat
+     * @return
+     */
+    public int[] findPeakGrid(int[][] mat) {
+        int row = mat.length;
+        int col = mat[0].length;
+        int[][] temp = new int[row + 2][col + 2];
+        for (int[] ints : temp) {
+            Arrays.fill(ints, -1);
+        }
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                temp[i + 1][j + 1] = mat[i][j];
+            }
+        }
+        for (int i = 1; i <= row; i++) {
+            for (int j = 1; j <= col; j++) {
+                if (temp[i][j] > temp[i][j - 1]
+                        && temp[i][j] > temp[i][j + 1]
+                        && temp[i][j] > temp[i - 1][j]
+                        && temp[i][j] > temp[i + 1][j]) {
+                    return new int[]{i - 1, j - 1};
+                }
+            }
+        }
+        return new int[0];
+    }
+
+
     @Test
     public void test_2697() {
-        Assert.assertEquals("efcfe", makeSmallestPalindrome("egcfe"));
-        Assert.assertEquals("abba", makeSmallestPalindrome("abcd"));
-        Assert.assertEquals("neven", makeSmallestPalindrome("seven"));
     }
 
     /**
      * 2697. 字典序最小回文串
+     *
      * @param s
      * @return
      */
@@ -59,6 +154,7 @@ public class CodeSets {
 
     /**
      * 9. 回文数 -- 数学法
+     *
      * @param x
      * @return
      */
@@ -78,6 +174,7 @@ public class CodeSets {
 
     /**
      * 9. 回文数 -- 字符串比对法
+     *
      * @param x
      * @return
      */
@@ -108,15 +205,15 @@ public class CodeSets {
 
     /**
      * 12.整数转罗马数字
-     *      罗马数字包含：I V X L C D M
-     *      对应关系如下：
-     *      I   1
-     *      V   5
-     *      X   10
-     *      L   50
-     *      C   100
-     *      D   500
-     *      M   1000
+     * 罗马数字包含：I V X L C D M
+     * 对应关系如下：
+     * I   1
+     * V   5
+     * X   10
+     * L   50
+     * C   100
+     * D   500
+     * M   1000
      * 说明：通常小数字在大数字的右边。单存在特例，例如：IV : 4,IX ：9，同理还有：XL : 40, XC : 90, CD : 400, CM : 900
      *
      * @param num 1 <= num <= 3999
@@ -171,8 +268,8 @@ public class CodeSets {
 
     @Test
     public void test_014() {
-        System.out.println(longestCommonPrefix(new String[]{"longest","long","lon"}));
-        System.out.println(longestCommonPrefix(new String[]{"longest","longestdistance","longestway"}));
+        System.out.println(longestCommonPrefix(new String[]{"longest", "long", "lon"}));
+        System.out.println(longestCommonPrefix(new String[]{"longest", "longestdistance", "longestway"}));
     }
 
     /**
@@ -1277,3 +1374,4 @@ public class CodeSets {
     }
 
 }
+
