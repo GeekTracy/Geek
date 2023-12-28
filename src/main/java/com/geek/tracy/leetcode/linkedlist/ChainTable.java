@@ -5,6 +5,7 @@ import com.geek.tracy.leetcode.tree.bean.TreeNode;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -20,6 +21,35 @@ import java.util.stream.Collectors;
  * @Date 2023/7/31
  */
 public class ChainTable {
+
+    /**
+     * 1019.链表中下一个最大节点
+     * @param head
+     * @return
+     */
+    public int[] nextLargerNodes(ListNode head) {
+        // 反转链表
+        ListNode pre = null, cur1 = head;
+        int n = 0;
+        while (cur1 != null) {
+            ListNode nxt = cur1.next;
+            cur1.next = pre;
+            pre = cur1;
+            cur1 = nxt;
+            ++n;
+        }
+        head = pre;  // 反转后的表头
+        int[] ans = new int[n]; // 保存各个节点的下一最大节点值
+        Deque<Integer> st = new ArrayDeque<>(); // 单调栈（节点值），保存当前最大值
+        for (ListNode cur = head; cur != null; cur = cur.next) {
+            while (!st.isEmpty() && st.peek() <= cur.val)
+                st.pop(); // 弹出无用数据
+            // 逆向填充ans，取栈顶值
+            ans[--n] = st.isEmpty() ? 0 : st.peek();
+            st.push(cur.val);
+        }
+        return ans;
+    }
 
 
     /**
