@@ -22,6 +22,36 @@ import java.util.stream.Collectors;
 public class ChainTable {
 
 
+    /**
+     * 206.反转链表
+     *
+     * 双指针解法，pre、cur，
+     * 例如：    1 --> 2 --> 3 --> 4 --> 5 --> null ，5个节点，最后一个节点为5；
+     *         cur                             pre
+     *         (后移)                          (后移)
+     * 第一次：
+     * null <-- 1     2 --> 3 --> 4 --> 5 --> null
+     *          pre  cur
+     * 第二次：
+     * null <-- 1 <-- 2     3 --> 4 --> 5 --> null
+     *                pre  cur
+     *  ...  依次类推
+     * 最后一次：
+     * null <-- 1 <-- 2 <-- 3 <-- 4 <-- 5   null
+     *                                 pre  cur
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;  // 指向前一节点，初始化为null，即反转前head的下一节点
+        ListNode cur = head;  // 指向当前节点，初始指向head
+        while (cur != null) {
+            ListNode temp = cur.next;  // 暂存下一节点
+            cur.next = pre;  // 当前节点next指向pre
+            pre = cur;       // pre节点后移
+            cur = temp;      // 当前节点指向暂存的下一节点
+        }
+        return pre;  // 此时cur指向null，pre指向头节点
+    }
+
     @Test
     public void test_024() {
         ListNode listNode = swapPairs(ListNode.init(1, 2, 3));
