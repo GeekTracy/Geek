@@ -2,6 +2,7 @@ package com.geek.tracy.leetcode;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.jmx.JmxException;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -22,14 +23,48 @@ import java.util.Set;
 public class CodeSets {
 
 
+    @Test
+    public void test_2865 () {
+//        Assert.assertEquals(13, maximumSumOfHeightsI(Arrays.asList(5,3,4,1,1)));
+        Assert.assertEquals(22, maximumSumOfHeightsI(Arrays.asList(6,5,3,9,2,7)));
+        Assert.assertEquals(18, maximumSumOfHeightsI(Arrays.asList(3,2,5,5,2,3)));
+    }
     /**
      * 2865.美丽塔 Ⅰ
-     *
+     * 存在一个峰顶下标i，其左右两边分别递增、递减
      * @param maxHeights
      * @return
      */
     public long maximumSumOfHeightsI(List<Integer> maxHeights) {
-        return 0;
+        // 遍历整个数组，计算每个下标index为峰顶时，最大美丽塔数组的值
+        if (maxHeights.size() <= 2) {
+            return maxHeights.stream().mapToLong(Long::valueOf).sum();
+        }
+        int size = maxHeights.size();
+        long res = 0;
+        for (int i = 0; i < size; i++) {
+            long sum = maxHeights.get(i);
+            // 从 i --> 0，递减
+            Integer leftMin = maxHeights.get(i);
+            Integer rightMin = maxHeights.get(i);
+            for (int left = i - 1; left >= 0; left--) {
+                sum += maxHeights.get(left);
+                leftMin = Math.min(leftMin, maxHeights.get(left));
+                if (maxHeights.get(left) > leftMin) {
+                    sum -= maxHeights.get(left) - leftMin;
+                }
+            }
+            // 从 i --> size，递减
+            for (int right = i + 1; right < size; right++) {
+                sum += maxHeights.get(right);
+                rightMin = Math.min(rightMin, maxHeights.get(right));
+                if (maxHeights.get(right) > rightMin) {
+                    sum -= maxHeights.get(right) - rightMin;
+                }
+            }
+            res = Math.max(sum, res);
+        }
+        return res;
     }
 
     /**
@@ -41,6 +76,7 @@ public class CodeSets {
     public long maximumSumOfHeightsII(List<Integer> maxHeights) {
         return 0;
     }
+
 
     @Test
     public void test_1144() {
