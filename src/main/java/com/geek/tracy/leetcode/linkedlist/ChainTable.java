@@ -28,6 +28,7 @@ public class ChainTable {
         //输入：head = [5,2,13,3,8]
         //输出：[13,8]
         removeNodes(ListNode.init(5,2,13,3,8));
+        removeNodesII(ListNode.init(5,2,13,3,8));
     }
 
     /**
@@ -71,6 +72,33 @@ public class ChainTable {
             }
         }
         return res.next;
+    }
+
+    /**
+     * 2487.从链表中移除节点
+     *
+     * 优化，去掉中间数组的过渡比较
+     */
+    public ListNode removeNodesII(ListNode head) {
+        Deque<ListNode> deque = new ArrayDeque<>();
+        while (head != null) {
+            deque.push(head);
+            head = head.next;
+        }
+        int maxFromRight = Integer.MIN_VALUE;
+        ListNode pre = null;
+        while (!deque.isEmpty()) {
+            if (maxFromRight <= deque.peek().val) {
+                ListNode cur = deque.pop();
+                cur.next = pre;
+                pre = cur;
+                maxFromRight = pre.val;
+            } else {
+                // 移除
+                deque.pop();
+            }
+        }
+        return pre;
     }
 
     /**
