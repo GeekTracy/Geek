@@ -22,6 +22,57 @@ import java.util.stream.Collectors;
  */
 public class ChainTable {
 
+
+    @Test
+    public void test_2487 () {
+        //输入：head = [5,2,13,3,8]
+        //输出：[13,8]
+        removeNodes(ListNode.init(5,2,13,3,8));
+    }
+
+    /**
+     * 2487.从链表中移除节点
+     *
+     * * 给你一个链表的头节点 head 。
+     * * 移除每个右侧有一个更大数值的节点。
+     * * 返回修改后链表的头节点 head
+     * @param head
+     * @return
+     */
+    public ListNode removeNodes(ListNode head) {
+        // 遍历得到数值的顺序数组
+        ListNode cur = head;
+        List<Integer> list = new ArrayList<>();
+        while (cur != null) {
+            list.add(cur.val);
+            cur = cur.next;
+        }
+        // 反向遍历数组，获取当前值右侧最大值
+        int[] maxFromRight = new int[list.size()];
+        int curMax = Integer.MIN_VALUE;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            curMax = Math.max(list.get(i), curMax);
+            maxFromRight[i] = curMax;
+        }
+
+        ListNode pre = new ListNode(0, head);
+        ListNode res = pre;
+        cur = head;
+        int index = 0;
+        while (cur != null) {
+            if (cur.val < maxFromRight[index++]) {
+                // 移除 cur
+                pre.next = cur.next;
+                // cur 后移
+                cur = cur.next;
+            } else {
+                pre = cur;
+                cur = cur.next;
+            }
+        }
+        return res.next;
+    }
+
     /**
      * 1019.链表中下一个最大节点
      * @param head
