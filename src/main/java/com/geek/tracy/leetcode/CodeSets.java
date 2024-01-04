@@ -2,16 +2,20 @@ package com.geek.tracy.leetcode;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.jmx.JmxException;
 
 import java.text.MessageFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -67,14 +71,52 @@ public class CodeSets {
         return res;
     }
 
+    @Test
+    public void test_2866 () {
+        List<Integer> list = new ArrayList<>();
+
+    }
+
     /**
-     * 2865.美丽塔 Ⅱ
-     *
+     * 2866.美丽塔 Ⅱ
+     *  范围增大，暴力解法超时，需要使用单调栈
      * @param maxHeights
      * @return
      */
     public long maximumSumOfHeightsII(List<Integer> maxHeights) {
-        return 0;
+        int[] a = maxHeights.stream().mapToInt(i -> i).toArray();
+        int n = a.length;
+        long[] suf = new long[n + 1];
+        Deque<Integer> st = new ArrayDeque<Integer>();
+        st.push(n); // 哨兵
+        long sum = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = a[i];
+            while (st.size() > 1 && x <= a[st.peek()]) {
+                int j = st.pop();
+                sum -= (long) a[j] * (st.peek() - j); // 撤销之前加到 sum 中的
+            }
+            sum += (long) x * (st.peek() - i); // 从 i 到 st.peek()-1 都是 x
+            suf[i] = sum;
+            st.push(i);
+        }
+
+        long ans = sum;
+        st.clear();
+        st.push(-1); // 哨兵
+        long pre = 0;
+        for (int i = 0; i < n; i++) {
+            int x = a[i];
+            while (st.size() > 1 && x <= a[st.peek()]) {
+                int j = st.pop();
+                pre -= (long) a[j] * (j - st.peek()); // 撤销之前加到 pre 中的
+            }
+            pre += (long) x * (i - st.peek()); // 从 st.peek()+1 到 i 都是 x
+            ans = Math.max(ans, pre + suf[i + 1]);
+            st.push(i);
+        }
+        return ans;
+
     }
 
 
@@ -1407,6 +1449,361 @@ public class CodeSets {
         int[] newDigits = new int[length + 1];
         newDigits[0] = 1;
         return newDigits;
+    }
+
+    /**
+     * 2496.一个由字母和数字组成的字符串的 值 定义如下：
+     *
+     * 如果字符串 只 包含数字，那么值为该字符串在 10 进制下的所表示的数字。
+     * 否则，值为字符串的 长度 。
+     * 给你一个字符串数组 strs ，每个字符串都只由字母和数字组成，请你返回 strs 中字符串的 最大值 。
+     * @param strs
+     * @return
+     */
+    public int maximumValue(String[] strs) {
+        // 记录数组strs中的最大值
+        int max = 0;
+        for (String str : strs) {
+            if (allNum(str)) {
+                if (max < Integer.parseInt(str)) {
+                    max = Integer.parseInt(str);
+                }
+            } else {
+                if (max < str.length()) {
+                    max = str.length();
+                }
+            }
+        }
+        return max;
+    }
+
+    private boolean allNum(String str) {
+        char[] chars = str.toCharArray();
+        for (char aChar : chars) {
+            if (aChar < '0' || aChar > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Test
+    public void test_2496 () {
+        String[] str1 = new String[] {"alic3","bob","3","4","00000"};
+        System.out.println(maximumValue(str1));
+        String[] str2 = new String[] {"1","01","001","0001"};
+        System.out.println(maximumValue(str2));
+        String[] str3 = new String[] {"89","bob","3","4","00000"};
+        System.out.println(maximumValue(str3));
+    }
+
+    /**
+     * 2032
+     */
+    public List<Integer> twoOutOfThree(int[] nums1, int[] nums2, int[] nums3) {
+        Map<Integer, Integer> map = new HashMap<>();
+        put(nums1, map);
+        put(nums2, map);
+        put(nums3, map);
+        List<Integer> result = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() > 1) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
+    private void put(int[] nums, Map<Integer, Integer> map) {
+        Set<Integer> collect = Arrays.stream(nums).boxed().distinct().collect(Collectors.toSet());
+
+        collect.stream().forEach(item -> {
+            if (map.containsKey(item)) {
+                map.put(item, map.get(item) + 1);
+            } else {
+                map.put(item, 1);
+            }
+        });
+    }
+
+    @Test
+    public void test_2032() {
+        System.out.println(twoOutOfThree(new int[]{3,1}, new int[]{2,3}, new int[]{1,2}));
+        System.out.println(twoOutOfThree(new int[]{1,2,2}, new int[]{4,3}, new int[]{5}));
+    }
+
+    /**
+     * 1769. 移动所有球到每个盒子所需的最小操作数
+     */
+    public int[] minOperations(String boxes) {
+        char[] chars = boxes.toCharArray();
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '1') {
+                indexList.add(i);
+            }
+        }
+        int [] answer = new int[chars.length];
+        for (int i = 0; i < chars.length; i++) {
+            int sum = 0;
+            for (Integer index : indexList) {
+                sum += Math.abs(index - i);
+            }
+            answer[i] = sum;
+        }
+        return answer;
+    }
+
+    public void printArray(int [] arr) {
+        Arrays.stream(arr).forEach(item -> System.out.print(item + " "));
+        System.out.println();
+    }
+    @Test
+    public void test_1769() {
+        printArray(minOperations("110"));
+        printArray(minOperations("001011"));
+    }
+
+    /**
+     * 946. 验证栈序列
+     * @Author Tracy
+     * @Date 2022/11/2
+     */
+    public boolean validateStackSequences(int[] pushed, int[] popped) {
+        Deque<Integer> stack = new LinkedList<>();
+        int pushIndex = 0;
+        int popIndex = 0;
+        for (int i = 0; i < pushed.length; i++) {
+            if (stack.isEmpty() || stack.peek() != popped[popIndex]) {
+                stack.push(pushed[pushIndex++]);
+            }
+            while (!stack.isEmpty() && stack.peek() == popped[popIndex]) {
+                stack.pop();
+                popIndex++;
+            }
+        }
+        return pushIndex == popIndex && pushIndex == pushed.length;
+
+    }
+
+    @Test
+    public void test_946 () {
+        int[] pushed = {1, 2, 3, 4, 5};
+        int[] popped = {4, 5, 3, 2, 1};
+        Assert.assertEquals(true, validateStackSequences(pushed, popped));
+    }
+
+    /**
+     * 769. 最多能完成排序的块
+     * 给定一个长度为 n 的整数数组 arr ，它表示在 [0, n - 1] 范围内的整数的排列。
+     * 我们将 arr 分割成若干 块 (即分区)，并对每个块单独排序。将它们连接起来后，使得连接的结果和按升序排序后的原数组相同。
+     * 返回数组能分成的最多块数量。
+     * <p>
+     * 提示:
+     * <p>
+     * · n == arr.length
+     * · 1 <= n <= 10
+     * · 0 <= arr[i] < n
+     * · arr 中每个元素都 不同
+     */
+    public int maxChunksToSorted(int[] arr) {
+        // 特点：数组arr元素具有特殊性，值唯一
+        // 组合排序后各数的大小刚好会等于其下标大小，遍历数组，只要前k个数的最大值为k，则可以计为一个块
+        int max = -1;
+        int count = 0;
+        for (int i = 0; i < arr.length; i++) {
+            max = Math.max(max, arr[i]);
+            if (i == max) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 2706.购买两块巧克力
+     */
+    public int buyChoco(int[] prices, int money) {
+        Arrays.sort(prices);
+        return prices[0] + prices[1] <= money ? money - prices[0] - prices[1]  : money;
+    }
+
+
+
+    /**
+     * 496.下一个更大元素Ⅰ
+     */
+    public int[] nextGreaterElementI(int[] nums1, int[] nums2) {
+        // 定义哈希表，保存nums2的值与下标，反向遍历nums2，保存单调栈
+        HashMap<Integer, Integer> numIndexMap = new HashMap<>();
+        int[] nextBigger = new int[nums2.length];
+        int[] ans = new int[nums1.length];
+        Deque<Integer> deque = new ArrayDeque<>();  // 单调栈
+        for (int i = nums2.length - 1; i >= 0 ; i--) {
+            numIndexMap.put(nums2[i], i);
+            // 固定结构：栈不为空，若栈顶元素小于候选元素，则出栈知道栈顶元素大于候选
+            while (!deque.isEmpty() && deque.peek() < nums2[i]) {
+                deque.pop();
+            }
+            nextBigger[i] = deque.isEmpty() ? -1 : deque.peek();
+            // 较大候选元素压栈
+            deque.push(nums2[i]);
+        }
+        for (int i = 0; i < nums1.length; i++) {
+            ans[i] = nextBigger[numIndexMap.get(nums1[i])];
+        }
+        return ans;
+    }
+
+    @Test
+    public void test_496() {
+        // 输入：nums1 = [4,1,2], nums2 = [1,3,4,2].
+        // 输出：[-1,3,-1]
+        int[] actualResult = nextGreaterElementI(new int[]{4, 1, 2}, new int[]{1, 3, 4, 2});
+        System.out.println("输入：nums1 = [4,1,2], nums2 = [1,3,4,2],输出：[-1,3,-1]");
+        int[] actualResult1 = nextGreaterElementI(new int[]{2,4}, new int[]{1,2,3,4});
+        System.out.println("输入：nums1 = [2,4], nums2 = [1,2,3,4],输出：[3,-1]");
+    }
+
+    /**
+     * 503.下一个更大元素Ⅱ
+     *
+     * nums是一个循环数组
+     */
+    public int[] nextGreaterElementsII(int[] nums) {
+        int[] ans = new int [nums.length];
+        // 找到循环数组的最大值，从最大值处开始倒叙循环
+        int maxInArray = Integer.MIN_VALUE;
+        int index = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (maxInArray < nums[i]) {
+                maxInArray = nums[i];
+                index = i;
+            }
+        }
+        Deque<Integer> deque = new ArrayDeque<>();
+        for (int i = 0; i < nums.length; i++) { // 方向遍历
+            // 转换遍历时的index
+            int trueIndex = (index + nums.length - i) % nums.length;
+            while (!deque.isEmpty() && deque.peek() <= nums[trueIndex]) {
+                deque.pop();
+            }
+            ans[trueIndex] = deque.isEmpty() ? -1 : deque.peek();
+            deque.push(nums[trueIndex]);
+        }
+        return ans;
+    }
+
+    @Test
+    public void test_503() {
+        // 输入: nums = [1,2,3,4,3]
+        //输出: [2,3,4,-1,4]
+        int[] actualResult = nextGreaterElementsII(new int[]{1,2,3,4,3});
+        System.out.println("输入：nums = [1,2,3,4,3],输出：[2,3,4,-1,4]");
+    }
+
+    /**
+     * 2333.最小差值平方差
+     *
+     * 给你两个下标从 0 开始的整数数组 nums1 和 nums2 ，长度为 n 。
+     * 数组 nums1 和 nums2 的 差值平方和 定义为所有满足 0 <= i < n 的 (nums1[i] - nums2[i])^2 之和。
+     * 同时给你两个正整数 k1 和 k2 。你可以将 nums1 中的任意元素 +1 或者 -1 至多 k1 次。类似的，你可以将 nums2 中的任意元素 +1 或者 -1 至多 k2 次。
+     * 请你返回修改数组 nums1 至多 k1 次且修改数组 nums2 至多 k2 次后的最小 差值平方和 。
+     *
+     * 注意：你可以将数组中的元素变成 负 整数。
+     */
+    public long minSumSquareDiff(int[] nums1, int[] nums2, int k1, int k2) {
+        // 获取num1和num2差值数组dis
+        Integer[] dis = new Integer[nums1.length];
+        for (int i = 0; i < nums1.length; i++) {
+            dis[i] = Math.abs(nums1[i] - nums2[i]);
+        }
+        Arrays.sort(dis, Comparator.reverseOrder());
+        // 排序数组dis，贪心减去k1,k2
+        int sum = k1 + k2;
+        // 时间复杂度过大   TODO 待修改；
+        while (sum > 0 && dis[0] > 0) {
+            dis[0] -= 1;
+            sum--;
+            Arrays.sort(dis, Comparator.reverseOrder());
+        }
+        long res = 0;
+        for (int i = 0; i < dis.length; i++) {
+            res += dis[i] * dis[i];
+        }
+        return res;
+    }
+
+    @Test
+    public void test_2333() {
+        // 示例 1：
+        //
+        //输入：nums1 = [1,2,3,4], nums2 = [2,10,20,19], k1 = 0, k2 = 0
+        //输出：579
+        //解释：nums1 和 nums2 中的元素不能修改，因为 k1 = 0 和 k2 = 0 。
+        //差值平方和为：(1 - 2)2 + (2 - 10)2 + (3 - 20)2 + (4 - 19)2 = 579 。
+        //
+        Assert.assertEquals(579, minSumSquareDiff(new int[]{1,2,3,4}, new int[]{2,10,20,19}, 0, 0));
+
+        //示例 2：
+        //输入：nums1 = [1,4,10,12], nums2 = [5,8,6,9], k1 = 1, k2 = 1
+        //输出：43
+        //解释：一种得到最小差值平方和的方式为：
+        //- 将 nums1[0] 增加一次。
+        //- 将 nums2[2] 增加一次。
+        //最小差值平方和为：
+        //(2 - 5)2 + (4 - 8)2 + (10 - 7)2 + (12 - 9)2 = 43 。
+        //注意，也有其他方式可以得到最小差值平方和，但没有得到比 43 更小答案的方案。
+        Assert.assertEquals(43, minSumSquareDiff(new int[]{1,4,10,12}, new int[]{5,8,6,9}, 1, 1));
+
+    }
+
+    /**
+     * 2397.被列覆盖的最多行数
+     */
+    public int maximumRows(int[][] matrix, int numSelect) {
+        // 可转化为二级制，或运算，等于覆盖数组
+        int row = matrix.length;  // 行
+        int col = matrix[0].length;
+        if (numSelect == col) {
+            return row;
+        }
+        // 遍历区间 2^col - 1
+        int size = (int) (Math.pow(2, col));
+        int maximumRow = 0;
+        for (int i = 0; i < size; i++) {
+            // ** 重点 **
+            if (numSelect != Integer.bitCount(i)) {
+                continue;
+            }
+            int res = 0;
+            // 行当做二进制，转为十进制rowCount，如果rowCount | i = i，则覆盖，否则不能覆盖
+            for (int rowNum = 0; rowNum < row; rowNum++) {
+                int rowCount = 0;
+                for (int num : matrix[rowNum]) {
+                    rowCount = (rowCount << 1) + num;
+                }
+                if ((rowCount | i) == i) {
+                    res++;
+                }
+            }
+            maximumRow = Math.max(maximumRow, res); // 当numSelect构成的值为i时，取res的最大值
+        }
+
+        return maximumRow;
+    }
+
+    @Test
+    public void test_2397() {
+        // 输入：matrix = [[0,0,0],[1,0,1],[0,1,1],[0,0,1]], numSelect = 2
+        // 输出：3
+        Assert.assertEquals(3, maximumRows(new int[][]{{0,0,0},{1,0,1},{0,1,1},{0,0,1}}, 2));
+        // 输入：matrix = [[1],[0]], numSelect = 1
+        // 输出：2
+        Assert.assertEquals(2, maximumRows(new int[][]{{1},{0}}, 1));
+        // 输入：[[0,1],[1,0]], numSelect = 2
+        // 输出：2
+        Assert.assertEquals(2, maximumRows(new int[][]{{1,0,0,0,0,0,0},{0,1,0,1,1,1,1},{0,0,0,1,0,0,1}}, 5));
     }
 
 }
