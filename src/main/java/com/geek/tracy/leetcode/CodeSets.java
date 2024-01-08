@@ -1806,5 +1806,57 @@ public class CodeSets {
         Assert.assertEquals(2, maximumRows(new int[][]{{1,0,0,0,0,0,0},{0,1,0,1,1,1,1},{0,0,0,1,0,0,1}}, 5));
     }
 
+    /**
+     * 447. 回旋镖的数量
+     *
+     * 提示：
+     *
+     * * n == points.length
+     * * 1 <= n <= 500
+     * * points[i].length == 2
+     * * -104 <= xi, yi <= 104
+     * * 所有点都 互不相同
+     */
+    public int numberOfBoomerangs(int[][] points) {
+        if (points.length == 1) {
+            return 0;
+        }
+        int ans = 0;
+        // 遍历坐标点数组，暴力匹配每一对与其余各个节点距离平方和，记录和出现的次数，由于有序即次数n大于等于2时全排列即（n * (n - 1)）
+        Map<Integer, Integer> hashMap = new HashMap<>();
+        for (int[] point1 : points) {
+            hashMap.clear();
+            for (int[] point2 : points) {
+                Integer distanse = (point1[0] - point2[0]) * (point1[0] - point2[0]) + (point1[1] - point2[1]) * (point1[1] - point2[1]);
+                hashMap.putIfAbsent(distanse, 0);
+                hashMap.put(distanse, hashMap.get(distanse) + 1);
+            }
+            for (Map.Entry<Integer, Integer> entry : hashMap.entrySet()) {
+                Integer value = entry.getValue();
+                if (value > 1) {
+                    ans += value * (value - 1);
+                }
+            }
+        }
+        return ans;
+    }
+
+    @Test
+    public void test_447() {
+        // 输入：points = [[0,0],[1,0],[2,0]]
+        //输出：2
+        //解释：两个回旋镖为 [[1,0],[0,0],[2,0]] 和 [[1,0],[2,0],[0,0]]
+        Assert.assertEquals(2, numberOfBoomerangs(new int[][]{{0,0}, {1,0}, {2,0}}));
+
+        // 输入：points = [[1,1],[2,2],[3,3]]
+        //输出：2
+
+        //输入：points = [[1,1]]
+        //输出：0
+
+    }
+
+
+
 }
 
