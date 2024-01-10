@@ -1,8 +1,15 @@
 package com.geek.tracy.leetcode.dp;
 
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 动态规划 Dynamic Programming 集合
@@ -11,6 +18,41 @@ import java.util.Arrays;
  * @Date 2023/6/27
  */
 public class DynamicProgrammingMethod {
+
+    @Test
+    public void test_2707 () {
+        // "dwmodizxvvbosxxw"
+        // ["ox","lb","diz","gu","v","ksv","o","nuq","r","txhe","e","wmo","cehy","tskz","ds","kzbu"]  except:7
+        Assert.assertEquals(7, minExtraChar("dwmodizxvvbosxxw", new String[]{"ox","lb","diz","gu","v","ksv","o","nuq","r","txhe","e","wmo","cehy","tskz","ds","kzbu"}));
+        // "rkmsilizktprllwoimafyuqmeqrujxdzgp"
+        // "rkmsilizktprllwoimafyuqmeqrujxdzgp"
+        // ["afy","lyso","ymdt","uqm","cfybt","lwoim","hdzeg","th","rkmsi","d","e","tp","r","jx","tofxe","etjx","llqs","cpir","p","ncz","ofeyx","eqru","l","demij","tjky","jgodm","y","ernt","jfns","akjtl","wt","tk","zg","lxoi","kt"]
+        Assert.assertEquals(2, minExtraChar("rkmsilizktprllwoimafyuqmeqrujxdzgp", new String[]{"afy","lyso","ymdt","uqm","cfybt","lwoim","hdzeg","th","rkmsi","d","e","tp","r","jx","tofxe","etjx","llqs","cpir","p","ncz","ofeyx","eqru","l","demij","tjky","jgodm","y","ernt","jfns","akjtl","wt","tk","zg","lxoi","kt"}));
+    }
+
+    /**
+     * 2707.字符串中的额外字符
+     *
+     *  定义f[i]标识下标为i的字串的额外字符个数，则原题可转换为转移方程中f[i - 1] + 1 和 f[j]的大小。其中f[0]=0
+     *  状态转移方程： f[i] = Min(f[i - 1] + 1, f[j]),说明：f[j]，其中j∈（0，i-1）,s[j]--s[i-1] 为字典中存在的单词，则f[i] = f[j]
+     */
+    public int minExtraChar(String s, String[] dictionary) {
+        HashSet<String> set = new HashSet<>();
+        Collections.addAll(set, dictionary);
+        int length = s.length();
+        int[] f = new int[length + 1];
+        f[0] = 0;
+        for (int i = 1; i <= length; i++) {
+            f[i] = f[i - 1] + 1;
+            for (int j = 0; j < i; j++) {
+                if (set.contains(s.substring(j, i))){
+                    f[i] = Math.min(f[i], f[j]);
+                }
+            }
+        }
+
+        return f[length];
+    }
 
     @Test
     public void minFallingPathSumIITest() {
