@@ -1856,7 +1856,39 @@ public class CodeSets {
 
     }
 
+    /**
+     * 2645.构造有效字符串的最少插入数
+     *
+     *  给你一个字符串 word ，你可以向其中任何位置插入 "a"、"b" 或 "c" 任意次，返回使 word 有效 需要插入的最少字母数。
+     *  如果字符串可以由 "abc" 串联多次得到，则认为该字符串 有效 。
+     *
+     *  提示：
+     *  * 1 <= word.length <= 50
+     *  * word 仅由字母 "a"、"b" 和 "c" 组成。
+     */
+    public int addMinimum(String word) {
+        int cnt = 0;
+        word = word.replace("abc", "-");
+        while (word.contains("ab")) {
+            word = word.replaceFirst("ab", "-");
+            cnt++;
+        }
+        while (word.contains("bc")) {
+            word = word.replaceFirst("bc", "-");
+            cnt++;
+        }
+        while (word.contains("ac")) {
+            word = word.replaceFirst("ac", "-");
+            cnt++;
+        }
+        word = word.replace("-", "");
 
+        return cnt + word.length() * 2;
+    }
 
+    @Test
+    public void test_2645() {
+        Assert.assertEquals(6, addMinimum("aaabab"));
+    }
 }
 
