@@ -461,7 +461,6 @@ public class ChainTable {
     }
 
     /**
-     *
      * 817. 链表组件
      *
      * 给定链表头结点 head，该链表上的每个结点都有一个 唯一的整型值 。同时给定列表 nums，该列表是上述链表中整型值的一个子集。
@@ -694,6 +693,59 @@ public class ChainTable {
         ListNode reverse2 = reverseKGroup(ListNode.init(1, 2), 3);
     }
 
+    /**
+     * 83.删除排序链表中的重复元素
+     *
+     * 给定一个已排序的链表的头 head ， 删除所有重复的元素，使每个元素只出现一次 。返回 已排序的链表 。
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        ListNode cur = head;
+        while (cur != null) {
+            while (cur.next != null && cur.val == cur.next.val) {
+                cur.next = cur.next.next;
+            }
+            cur = cur.next;
+        }
+        return head;
+    }
+
+    /**
+     * 82.删除排序链表中的重复元素II
+     *
+     * 给定一个已排序的链表的头 head ， 删除原始链表中所有重复数字的节点，只留下不同的数字 。返回 已排序的链表 。
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        ListNode dummy = new ListNode(0, head); // 哨兵
+        ListNode cur = dummy;
+        ListNode flagNote = null;
+        while (cur.next != null) {
+            if (cur.next.next != null) {
+                if (cur.next.val == cur.next.next.val) {
+                    flagNote = cur.next;
+                } else {
+                    flagNote = null;
+                    cur = cur.next;
+                }
+            } else {
+                cur = cur.next;
+            }
+            // flagNote 不为空，且cur.next 值为flagNote.val时，移除cur.next
+            while (flagNote != null && cur.next != null && cur.next.val == flagNote.val) {
+                cur.next = cur.next.next;
+            }
+        }
+        return dummy.next;
+    }
+    //  dummy --> 1 --> 1 --> 1 --> 2 --> --> 2 --> --> 3 --> null
+    //     cur
+    //     flagNote = 1
+
+    @Test
+    public void test_83() {
+        ListNode root1 = deleteDuplicatesII(ListNode.init(1, 1, 1, 2, 2, 2, 3, 3, 4, 5));
+        ListNode root2 = deleteDuplicatesII(ListNode.init(1, 2, 3, 4, 4, 4, 4, 5));
+        System.out.println("check");
+    }
 
 
 }
