@@ -1890,5 +1890,82 @@ public class CodeSets {
     public void test_2645() {
         Assert.assertEquals(6, addMinimum("aaabab"));
     }
+
+    public int countWords(String[] words1, String[] words2) {
+        Map<String, Integer> map = new HashMap<>();
+        for (String word : words1) {
+            map.put(word, map.getOrDefault(word, 0) + 1);
+        }
+        Set<String> set = new HashSet<>();
+        for (String word : words2) {
+            if (set.contains(word)) {
+                // 将map中的标记值+1，移除set
+//                map.put(word, map.getOrDefault(word, 0) + 1);
+                map.merge(word, 1, Integer::sum);
+                set.remove(word);
+            }
+            if (map.getOrDefault(word, 0) == 1) {
+                set.add(word);
+            }
+        }
+        return set.size();
+    }
+
+    /**
+     * 26.删除有序数组中的重复项
+     * 快慢指针
+     */
+    public int removeDuplicates(int[] nums) {
+        int point = Integer.MIN_VALUE;
+        int cnt = 0;
+        int index = 0;
+        int length = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            int cur = nums[i];
+            if (cur > point) {
+                point = cur;
+                nums[index++] = point;
+            } else {
+                cnt++;
+            }
+        }
+        return length - cnt;
+    }
+
+    /**
+     * 27.移除元素
+     */
+    public int removeElement(int[] nums, int val) {
+        int index = 0;  // 慢指针
+        for (int i = 0; i < nums.length; i++) {
+            int cur = nums[i];
+            if (cur != val) {
+                nums[index++] = cur;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * 28.找出字符串中第一个匹配项的下标
+     */
+    public int strStr(String haystack, String needle) {
+        int p1 = 0;
+        while (p1 < haystack.length()) {
+            int p2 = 0;
+            int tempP1 = p1;
+            while (tempP1 < haystack.length() && p2 < needle.length() && haystack.charAt(tempP1) == needle.charAt(p2)) {
+                p2++;
+                tempP1++;
+            }
+            if (p2 == needle.length()) {
+                return tempP1 - p2;
+            }
+            p1++;
+        }
+        return -1;
+    }
+
+
 }
 
