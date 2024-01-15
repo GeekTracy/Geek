@@ -131,41 +131,12 @@ public class ChainTable {
     }
 
 
-    /**
-     * 206.反转链表
-     *
-     * 双指针解法，pre、cur，
-     * 例如：    1 --> 2 --> 3 --> 4 --> 5 --> null ，5个节点，最后一个节点为5；
-     *         cur                             pre
-     *         (后移)                          (后移)
-     * 第一次：
-     * null <-- 1     2 --> 3 --> 4 --> 5 --> null
-     *          pre  cur
-     * 第二次：
-     * null <-- 1 <-- 2     3 --> 4 --> 5 --> null
-     *                pre  cur
-     *  ...  依次类推
-     * 最后一次：
-     * null <-- 1 <-- 2 <-- 3 <-- 4 <-- 5   null
-     *                                 pre  cur
-     */
-    public ListNode reverseList(ListNode head) {
-        ListNode pre = null;  // 指向前一节点，初始化为null，即反转前head的下一节点
-        ListNode cur = head;  // 指向当前节点，初始指向head
-        while (cur != null) {
-            ListNode temp = cur.next;  // 暂存下一节点
-            cur.next = pre;  // 当前节点next指向pre
-            pre = cur;       // pre节点后移
-            cur = temp;      // 当前节点指向暂存的下一节点
-        }
-        return pre;  // 此时cur指向null，pre指向头节点
-    }
-
     @Test
     public void test_024() {
         ListNode listNode = swapPairs(ListNode.init(1, 2, 3));
         ListNode.printListNode(listNode);
     }
+
     /**
      * 24.两两交换链表中的节点  -- 暴力总结解答，不推荐，思考递归解法
      */
@@ -192,7 +163,6 @@ public class ChainTable {
         }
         return list.get(1);
     }
-
 
     /**
      * 23.合并k个升序链表
@@ -229,6 +199,7 @@ public class ChainTable {
         ListNode.printListNode(root);
         ListNode.printListNode(removeNthFromEnd(root, 1));
     }
+
     /**
      * 19.删除链表的倒数第N个节点
      * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
@@ -252,7 +223,6 @@ public class ChainTable {
         temp.next = temp.next.next;
         return head;
     }
-
     @Test
     public void recorderListTest() {
         // 初始化链表
@@ -548,8 +518,8 @@ public class ChainTable {
         }
         return count;
     }
-    // 注：做复杂了，值遍历一次即可
 
+    // 注：做复杂了，值遍历一次即可
     /**
      * 示例1：
      * - 输入: head = [0,1,2,3], nums = [0,1,3]
@@ -592,4 +562,138 @@ public class ChainTable {
         int componentsNum = numComponents(listNode0, new int[]{1,0});
         Assert.assertEquals(componentsNum, 1);
     }
+
+    /**
+     * 206.反转链表
+     *
+     * 双指针解法，pre、cur，
+     * 例如：    1 --> 2 --> 3 --> 4 --> 5 --> null ，5个节点，最后一个节点为5；
+     *         cur                             pre
+     *         (后移)                          (后移)
+     * 第一次：
+     * null <-- 1     2 --> 3 --> 4 --> 5 --> null
+     *          pre  cur
+     * 第二次：
+     * null <-- 1 <-- 2     3 --> 4 --> 5 --> null
+     *                pre  cur
+     *  ...  依次类推
+     * 最后一次：
+     * null <-- 1 <-- 2 <-- 3 <-- 4 <-- 5   null
+     *                                 pre  cur
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;  // 指向前一节点，初始化为null，即反转前head的下一节点
+        ListNode cur = head;  // 指向当前节点，初始指向head
+        while (cur != null) {
+            ListNode temp = cur.next;  // 暂存下一节点
+            cur.next = pre;  // 当前节点next指向pre
+            pre = cur;       // pre节点后移
+            cur = temp;      // 当前节点指向暂存的下一节点
+        }
+        return pre;  // 此时cur指向null，pre指向头节点
+    }
+
+    /**
+     * 25.K个一组反转链表
+     *
+     * 给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
+     * k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
+     * 你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        Deque<ListNode> deque = new ArrayDeque<>();
+        ListNode beforeEnd = null;  // 上一组最后一个
+        ListNode nextFirst = null;  // 下一组第一个
+        ListNode curEnd = null;     // 当前组最后一个
+        ListNode ans = new ListNode(0, head);     // 哨兵
+        int tempNum = k;
+        while (head != null || !deque.isEmpty()) {
+            if (head == null && tempNum > 0 && tempNum < k) {
+                break; // 栈未放满k个元素，停止循环
+            }
+            if (tempNum == 0) {
+                curEnd = deque.peek();
+                nextFirst = curEnd.next;
+                // 上一组最后一个为null时，则栈为第一组，第一组的栈顶元素即为反转后的头元素，设置为哨兵的下一个
+                if (beforeEnd == null) {
+                    ans.next = curEnd;
+                }
+                // 栈顶元素出栈
+                ListNode pop = null;
+                while (!deque.isEmpty()) {
+                    pop = deque.pop();
+                    pop.next = deque.peek();
+                }
+                pop.next = nextFirst;
+                if (beforeEnd != null) {
+                    beforeEnd.next = curEnd;
+                }
+                beforeEnd = pop;  // 上一组最后一元素即为当前的pop
+                tempNum = k;
+            } else if (tempNum > 0) {
+                deque.push(head);
+                head = head.next;
+                tempNum--;
+            }
+        }
+        return ans.next;
+    }
+
+    /**
+     * 25.K个一组反转链表
+     *
+     * 指针法：
+     *      [哨兵] -> [1 -> 2 -> 3] >断开< [4 -> 5 -> 6] -> [7 -> 8 -> 9] -> [...]
+     *       ans       |         |        |
+     *       pre     start     end      next
+     *      [哨兵] -> [3 -> 2 -> 1] -> [4 -> 5 -> 6] >断开< [7 -> 8 -> 9] -> [...]
+     *       ans                |      |         |          |
+     *                          pre   start     end       next
+     *
+     *  说明：此前有【206.反转链表】可直接反转链表，此题分解为分段反转kGroup，依上图示，使用：pre/start/end/next标记，其中：
+     *  [start - end]区段反转返回temp,   pre --> temp --> next --> ....，即可解决分段反转
+     */
+    public ListNode reverseKGroupII(ListNode head, int k) {
+        ListNode ans = new ListNode(0, head);     // 哨兵
+        ListNode pre = ans;
+        ListNode start = ans;
+        ListNode end = ans;
+        ListNode next;
+
+        while (end.next != null) {
+            // 遍历链表，找去k个节点的最后一节点end
+            for (int i = 0; i < k && end != null; i++) {
+                end = end.next;
+            }
+            // 区段不足k个元素时，元素不反转，即 end!=null
+            if (end == null) {
+                break;
+            }
+            next = end.next; // 下一区段第一个元素
+            start = pre.next;  // 区段起始元素，使用链表反转，表头为:reverseList(start)
+            // 断开end与之后的连接
+            end.next = null;
+            // 调用链表反转方法
+            pre.next = reverseList(start);
+            start.next = next;   // 本区段反转后，start指向下一区段第一个元素
+            // 指针开始后移，pre/end均指向当前区段反转后的最后一个元素，即反转前的start
+            pre = start;
+            end = start;
+        }
+        return ans.next;
+    }
+
+    @Test
+    public void test_25() {
+        // 输入：head = [1,2,3,4,5], k = 2
+        //输出：[2,1,4,3,5]
+        ListNode reverse1 = reverseKGroup(ListNode.init(1, 2, 3, 4, 5), 2);
+
+        //输入：head = [1,2,3,4,5], k = 3
+        //输出：[3,2,1,4,5]
+        ListNode reverse2 = reverseKGroup(ListNode.init(1, 2), 3);
+    }
+
+
+
 }
