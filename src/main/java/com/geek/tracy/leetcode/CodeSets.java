@@ -7,6 +7,7 @@ import java.text.MessageFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -2071,6 +2072,34 @@ public class CodeSets {
         Assert.assertEquals(repeatLimitedString2("bplpcfifosybmjxphbxdltxtfrjspgixoxzbpwrtkopepjxfooazjyosengdlvyfchqhqxznnhuuxhtbrojyhxwlsrklsryvmufoibgfyxgjw", 1),
                 repeatLimitedString("bplpcfifosybmjxphbxdltxtfrjspgixoxzbpwrtkopepjxfooazjyosengdlvyfchqhqxznnhuuxhtbrojyhxwlsrklsryvmufoibgfyxgjw", 1));
     }
+
+    /**
+     * 2744.最大字符串匹配对数目
+     */
+    public int maximumNumberOfStringPairs(String[] words) {
+        // 哈希
+        Set<String> wordSet = Arrays.stream(words).collect(Collectors.toSet());
+        int cnt = 0;
+        for (String word : words) {
+            StringBuilder sb = new StringBuilder();
+            char[] chars = word.toCharArray();
+            for (int i = chars.length - 1; i >= 0; i--) {
+                sb.append(chars[i]);
+            }
+            wordSet.remove(word); // 先移除自身
+            if (wordSet.contains(sb.toString())) {
+                cnt++;
+                wordSet.remove(sb.toString());
+            }
+        }
+        return cnt;
+    }
+
+    @Test
+    public void test_2744() {
+        Assert.assertEquals(2, maximumNumberOfStringPairs(new String[]{"cd","ac","dc","ca","zz"}));
+    }
+
 
 }
 
