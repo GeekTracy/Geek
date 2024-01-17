@@ -1966,6 +1966,111 @@ public class CodeSets {
         return -1;
     }
 
+    /**
+     * 2182.构造限制重复的字符串
+     *
+     * 给你一个字符串 s 和一个整数 repeatLimit ，用 s 中的字符构造一个新字符串 repeatLimitedString ，使任何字母 连续 出现的次数都不超过
+     * repeatLimit 次。你不必使用 s 中的全部字符。
+     *
+     * 返回 字典序最大的 repeatLimitedString 。
+     *
+     * 如果在字符串 a 和 b 不同的第一个位置，字符串 a 中的字母在字母表中出现时间比字符串 b 对应的字母晚，则认为字符串 a 比字符串 b 字典序更大 。
+     * 如果字符串中前 min(a.length, b.length) 个字符都相同，那么较长的字符串字典序更大。
+     */
+    public String repeatLimitedString(String s, int repeatLimit) {
+        int[] cnt = new int[26];
+        for (char c : s.toCharArray()) {
+            cnt[c - 'a'] += 1;
+        }
+        /**
+         * 双指针法：
+         * 1）数据初始化，统计出原数组每个字符出现的次数；
+         * 2）定义2个指针，最大字符编号 max，次最大字符编号 sec；
+         * 3）循环
+         *   3.1）如果当前max个数小于等于repeatLimit，则使用完最大字符后，更新最大字符max、次最大字符sec；
+         *   3.2）否则，使用完repeatLimit个最大字符后，使用一个次最大字符，更新次最大字符sec（次最大可能无？）；
+         *   3.3）最大字符不存在，即可返回
+         */
+        // 找到出现的字符中字典序最大字母索引
+        int maxIndex = 25;
+        while (cnt[maxIndex] == 0) {
+            maxIndex--;
+        }
+        // 找到出现的字符中字典序次 最大字母索引
+        int secIndex = maxIndex - 1;
+        while (secIndex >= 0 && cnt[secIndex] == 0) {
+            secIndex--;
+        }
+        // 遍历组装字符串
+        StringBuilder ans = new StringBuilder();
+        while (maxIndex >= 0) {
+            // 拼接最大序列字符
+            int times = Math.min(repeatLimit, cnt[maxIndex]);
+            cnt[maxIndex] -= times;
+            while (times > 0) {
+                ans.append((char)('a' + maxIndex));
+                times--;
+            }
+            // 次最大序列下标小于0停止
+            if (secIndex < 0) {
+                break;
+            }
+            // 最大字符使用完，更新最大、次最大字符，否则拼接次最大，更新次最大下标
+            if (cnt[maxIndex] == 0) {
+                maxIndex = secIndex;
+                secIndex = maxIndex - 1;
+            } else {
+                ans.append((char)('a' + secIndex));
+                cnt[secIndex]--;
+            }
+            while (secIndex >= 0 && cnt[secIndex] == 0) {
+                secIndex--;
+            }
+        }
+        return ans.toString();
+    }
+
+    public String repeatLimitedString2(String s, int repeatLimit) {
+        // 统计每个字符出现的次数，即初始可用次数
+        int[] counts  = new int[26];
+        int n = s.length();
+        for(int i = 0; i < n; i++){
+            counts[s.charAt(i) - 'a']++;
+        }
+        // 找到出现的字符中字典序最大字母的索引
+        int maxChar = 25;
+        while(counts[maxChar] == 0)maxChar--;
+        // 找到出现的字符中字典序次大字母的索引
+        int secondMaxChar = maxChar - 1;
+        while(secondMaxChar >= 0 && counts[secondMaxChar] == 0)secondMaxChar--;
+        // 开始构造字符串
+        StringBuilder newStr = new StringBuilder();
+        while(maxChar >= 0){
+            int repeat = Math.min(repeatLimit, counts[maxChar]);     // 最大字符重复次数取其当前可用次数和最大限制的较小值
+            counts[maxChar] -= repeat;      // 更新字符可用次数
+            while(repeat-- > 0)newStr.append((char)('a' + maxChar)); // 重复最大字符
+            if(secondMaxChar < 0)break; 	// 如果没有可用的次大字符，构造结束
+            if(counts[maxChar] == 0){
+                // 最大字符使用完了，使用次大字符
+                maxChar = secondMaxChar;
+                secondMaxChar--;    // 次大字符索引前移一位，以找到出现字符中下一个次大字符
+            }else{
+                // 最大字符没用完，肯定用了最大限制个，插入一个次大字符间隔
+                newStr.append((char)('a' + secondMaxChar));
+                counts[secondMaxChar]--;    // 更新次大字符可用次数
+            }
+            while(secondMaxChar >= 0 && counts[secondMaxChar] == 0)secondMaxChar--;    // 确保指针始终指向一个可用的次大字符
+        }
+        return newStr.toString();
+    }
+
+    @Test
+    public void test_2182() {
+//        Assert.assertEquals("eeddcbaa", repeatLimitedString("abcdeeda", 2));
+//        Assert.assertEquals(repeatLimitedString2("pdprlxqryxdirdr", 10), repeatLimitedString("pdprlxqryxdirdr", 10));
+        Assert.assertEquals(repeatLimitedString2("bplpcfifosybmjxphbxdltxtfrjspgixoxzbpwrtkopepjxfooazjyosengdlvyfchqhqxznnhuuxhtbrojyhxwlsrklsryvmufoibgfyxgjw", 1),
+                repeatLimitedString("bplpcfifosybmjxphbxdltxtfrjspgixoxzbpwrtkopepjxfooazjyosengdlvyfchqhqxznnhuuxhtbrojyhxwlsrklsryvmufoibgfyxgjw", 1));
+    }
 
 }
 
