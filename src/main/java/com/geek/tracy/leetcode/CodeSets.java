@@ -16,7 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -2100,6 +2102,98 @@ public class CodeSets {
         Assert.assertEquals(2, maximumNumberOfStringPairs(new String[]{"cd","ac","dc","ca","zz"}));
     }
 
+    /**
+     * 2171.拿出最少数目的魔法豆
+     */
+    public long minimumRemoval(int[] beans) {
+        long min = Long.MAX_VALUE;
+        Arrays.sort(beans); // 排列
+        // 遍历，每一个数为最终相等的个数时，大于beans[i]的，拿出beans[x]-beans[i]个，小于beans[i]的全部拿出
+        long sum = Arrays.stream(beans).mapToLong(item -> item).sum();
+        for (int i = 0; i < beans.length; i++) {
+            if (i - 1 > 0 && beans[i] == beans[i - 1]) continue;
+            min = Math.min(min, sum - (long) beans[i] * (beans.length - i));
+        }
+        return min;
+    }
+
+    @Test
+    public void test_2171() {
+//        输入：beans = [2,10,3,2]
+//        输出：7
+        Assert.assertEquals(7, minimumRemoval(new int[]{2,10,3,2}));
+    }
+
+    /**
+     * 29.两数相除
+     *
+     * 给你两个整数，被除数 dividend 和除数 divisor。将两数相除，要求 不使用 乘法、除法和取余运算。
+     *
+     * 整数除法应该向零截断，也就是截去（truncate）其小数部分。例如，8.345 将被截断为 8 ，-2.7335 将被截断至 -2 。
+     *
+     * 返回被除数 dividend 除以除数 divisor 得到的 商 。
+     *
+     * 注意：假设我们的环境只能存储 32 位 有符号整数，其数值范围是 [−2^31,  2^31 − 1] 。本题中，如果商 严格大于 2^31 − 1 ，则返回 2^31 − 1 ；如果商 严格小于 -2^31 ，则返回 -2^31 。
+     */
+    public int divide(int dividend, int divisor) {
+        // 处理边界
+        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
+        if (divisor == 0) return 0;
+        if (divisor == Integer.MIN_VALUE) return dividend == Integer.MIN_VALUE ? 1 : 0;
+
+        // 全部转换为正数，由于dividend可能为Min_Value(2^32 - 1)，转正数超出范围，故使用long来记性转换
+        int flag = 1;
+        long a = dividend;
+        long b = divisor;
+        if (a < 0) {
+            a = -a;
+            flag *= -1;
+        }
+        if (b < 0) {
+            b = -b;
+            flag *= -1;
+        }
+        long ans = div(a, b);
+        return (int) (flag > 0 ? ans : -ans);
+    }
+
+    /**
+     * 倍增法实现乘法
+     */
+    public long multy(long a, long b) {
+        long ans = 0;
+        while (b > 0) {
+            if ((b & 1) == 1) ans += a;
+            b = b >> 1;
+            a += a;
+        }
+        return ans;
+    }
+
+    /**
+     * 倍减法实现除法
+     */
+    public long div(long a, long b) {
+        if (a < b) return 0;
+        int cnt = 1;  // a 大于 b时，商至少为1，开始加倍减
+        long temp = b; // 暂存除数
+        while (a > (temp << 1)) { // a > b * 2 ，a 比 b的2倍大，则商至少为2
+            cnt = cnt << 1;   // cnt * 2
+            temp = temp<< 1;  // temp * 2
+        }
+        return cnt + div(a - temp, b);
+    }
+
+    long div2(long dividend, long divisor) {
+        if (dividend < divisor) return 0;
+        long tmp = divisor;
+        long cnt = 1;
+        while (dividend >= tmp + tmp) {
+            tmp = tmp + tmp;
+            cnt = cnt + cnt;
+        }
+        return cnt + div(dividend-tmp, divisor);
+    }
 
 }
 
