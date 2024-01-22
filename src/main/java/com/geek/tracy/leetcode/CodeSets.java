@@ -2184,16 +2184,5 @@ public class CodeSets {
         return cnt + div(a - temp, b);
     }
 
-    long div2(long dividend, long divisor) {
-        if (dividend < divisor) return 0;
-        long tmp = divisor;
-        long cnt = 1;
-        while (dividend >= tmp + tmp) {
-            tmp = tmp + tmp;
-            cnt = cnt + cnt;
-        }
-        return cnt + div(dividend-tmp, divisor);
-    }
-
 }
 
