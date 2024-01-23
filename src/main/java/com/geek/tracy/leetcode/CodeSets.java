@@ -2184,5 +2184,70 @@ public class CodeSets {
         return cnt + div(a - temp, b);
     }
 
+    /**
+     * 670.最大交换
+     * 给定一个非负整数，你至多可以交换一次数字中的任意两位。返回你能得到的最大值。
+     */
+    public int maximumSwap(int num) {
+        char[] chars = String.valueOf(num).toCharArray();
+        // 双指针，first,max，找到后面一个下标max比first大的，交换
+        for (int i = 0; i < chars.length; i++) {
+            int max = i;
+            for (int j = i; j < chars.length; j++) {
+                if (chars[j] > chars[i] && chars[j] >= chars[max]) {
+                    max = j;
+                }
+            }
+            if (max > i) {
+                char temp = chars[max];
+                chars[max] = chars[i];
+                chars[i] = temp;
+                break;
+            }
+        }
+        return Integer.parseInt(String.valueOf(chars));
+    }
+
+    @Test
+    public void test_670() {
+        Assert.assertEquals(98863, maximumSwap(98368));
+        Assert.assertEquals(9913, maximumSwap(1993));
+    }
+
+    /**
+     * 2765.最长交替子数组
+     * 给你一个下标从 0 开始的整数数组 nums 。如果 nums 中长度为 m 的子数组 s 满足以下条件，我们称它是一个 交替子数组 ：
+     *
+     * m 大于 1 。
+     * s1 = s0 + 1 。
+     * 下标从 0 开始的子数组 s 与数组 [s0, s1, s0, s1,...,s(m-1) % 2] 一样。也就是说，s1 - s0 = 1 ，s2 - s1 = -1 ，s3 - s2 = 1 ，
+     * s4 - s3 = -1 ，以此类推，直到 s[m - 1] - s[m - 2] = (-1)m 。
+     */
+    public int alternatingSubarray(int[] nums) {
+        int max = -1;
+        int length = nums.length;
+        for (int i = 0; i < length; i++) {
+            int move = i + 1;
+            int change = 1;
+            while (move < length) {
+                if (nums[move] - nums[move - 1] == change) {
+                    change *= -1;
+                    move++;
+                } else {
+                    break;
+                }
+            }
+            if (move == i + 1) continue;
+            max = Math.max(max, move - i);
+        }
+        return max;
+    }
+
+    @Test
+    public void test_2765() {
+        Assert.assertEquals(4, alternatingSubarray(new int[]{2, 3, 4, 3, 4}));
+        Assert.assertEquals(2, alternatingSubarray(new int[]{2, 3}));
+    }
+
 }
 
