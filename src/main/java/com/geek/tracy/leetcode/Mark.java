@@ -90,4 +90,63 @@ public class Mark {
 
     }
 
+
+
+    /**
+     * 31.下一个排列
+     *
+     * 分析：题意即寻找下一个较大的排列，当当前排列是最大的排列时，返回最小的那个排列。
+     *      例如：[1,2,3]，所有的排列有：[1,2,3]、[1,3,2]、[2,1,3]、[2,3,1]、[3,1,2]、[3,2,1]，按大小顺序排列，
+     *      当当前序列是最后一个，即[3,2,1]时，下一个排列即为第一个[1,2,3]。
+     *     1）从右往左找，找到第一个[i < j 且 nums[i] < nums[j] ]（升序）,则从j到end一定是递减；
+     *     2）在[j,end]找到k，满足[nums[i] < nums[k] ]，交换i和k的值；
+     *     3）i之后的区间一定为降序排列，将i之后调整为升序；
+     *     4）如果第1步没有找到满足条件的i，j，说明nums为降序排列，即最大的那个排列，直接执行第3步将整个数组调整为升序；
+     */
+    public void nextPermutation(int[] nums) {
+        int i = -1;
+        int length = nums.length;
+        for (int n = length - 1; n > 0; n--) {
+            if (nums[n - 1] < nums[n]) {
+                i = n -1;
+                break;
+            }
+        }
+        // 特殊情况，原数组为降序
+        if (i == -1) {
+            reverse(nums, 0, length - 1);
+            return;
+        }
+        int k = 0;
+        for (int n = length - 1; n > i; n--) {
+            if (nums[n] > nums[i]) {
+                k = n;
+                break;
+            }
+        }
+        // 交换i 和 k，并将i之后的改为升序
+        int temp = nums[k];
+        nums[k] = nums[i];
+        nums[i] = temp;
+
+        // i + 1 --- end 倒叙排列
+        reverse(nums, i + 1, length - 1);
+        System.out.println("----end----");
+    }
+
+    public void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int i1 = nums[end];
+            nums[end] = nums[start];
+            nums[start] = i1;
+            start++;
+            end--;
+        }
+    }
+
+    @Test
+    public void test_31() {
+        nextPermutation(new int[]{1,2,3,8,5,7,6,4});
+    }
+
 }
