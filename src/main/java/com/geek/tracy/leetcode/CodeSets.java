@@ -7,7 +7,6 @@ import java.text.MessageFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -16,9 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 /**
@@ -1631,8 +1628,6 @@ public class CodeSets {
         return prices[0] + prices[1] <= money ? money - prices[0] - prices[1]  : money;
     }
 
-
-
     /**
      * 496.下一个更大元素Ⅰ
      */
@@ -2247,6 +2242,186 @@ public class CodeSets {
     public void test_2765() {
         Assert.assertEquals(4, alternatingSubarray(new int[]{2, 3, 4, 3, 4}));
         Assert.assertEquals(2, alternatingSubarray(new int[]{2, 3}));
+    }
+
+
+    public int search(int[] nums, int target) {
+        // 依题意，数组：0 - k - end ，存在已个下标k，0 - k 递增，k- end 递增，且 nums[k] > nums[k + 1]
+        // 从end -- 0 遍历，找到nums[k] > nums[k + 1]的k值
+
+        int length = nums.length;
+        if (length == 0) return -1;
+        if (length == 1) return nums[0] == target ? 0 : -1;
+        int k = 0;
+        for (int i = length - 1; i > 0; i--) {
+            if (nums[i] < nums[i - 1]) {
+                k = i;
+                break;
+            }
+        }
+        // 原数组分为2段，0 -- (k - 1) 和 k -- end，前后2段均为升序，且nums[0] > nums[end]，如果target<nums[0]，则遍历前半段，否则遍历后半段
+        int left,right;
+        if (target >= nums[0]) {
+            left = 0;
+            right = k - 1;
+        } else {
+            left = k;
+            right = length - 1;
+        }
+        int find = -1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] > target) {
+                right = mid - 1;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                find = mid;
+                break;
+            }
+        }
+        return find;
+    }
+
+    @Test
+    public void test_33() {
+//        示例 1：
+//
+//        输入：nums = [4,5,6,7,0,1,2], target = 0
+//        输出：4
+//        Assert.assertEquals(4, search(new int[]{4,5,6,7,0,1,2}, 0));
+//
+//        示例 2：
+//        输入：nums = [4,5,6,7,0,1,2], target = 3
+//        输出：-1
+//        Assert.assertEquals(-1, search(new int[]{4,5,6,7,0,1,2}, 3));
+//        示例 3：
+//        输入：nums = [1], target = 0
+//        输出：-1
+//        Assert.assertEquals(-1, search(new int[]{1}, 0));
+        Assert.assertEquals(0, search(new int[]{1, 3}, 1));
+    }
+
+    /**
+     * 36.有效的数独
+     *  注意：遍历一次，同事获取到行、列、宫格内的元素，难点宫格的下标index和row/col的关系 （index=(row/3) * 3 + col/3）
+     */
+    public boolean isValidSudoku(char[][] board) {
+        // 数字 1-9 在每一行只能出现一次
+        for (int i = 0; i < board.length; i++) {
+            int numCnt = 0;
+            Set<Character> set = new HashSet<>();
+            char[] currArr = board[i];
+            for (int j = 0; j < currArr.length; j++) {
+                if (currArr[j] >= '1' && currArr[j] <= '9') {
+                    set.add(currArr[j]);
+                    numCnt++;
+                }
+            }
+            // 存在数值，且数字的个数不等于set的size，即说明有重复的数字，返回false
+            if (numCnt != 0 && numCnt != set.size()) {
+                return false;
+            }
+        }
+        // 数字 1-9 在每一列只能出现一次。
+        for (int col = 0; col < board[0].length; col++) {
+            int numCnt = 0;
+            Set<Character> set = new HashSet<>();
+            for (int row = 0; row < board.length; row++) {
+                char curr = board[row][col];
+                if (curr >= '1' && curr <= '9') {
+                    set.add(curr);
+                    numCnt++;
+                }
+            }
+            // 存在数值，且数字的个数不等于set的size，即说明有重复的数字，返回false
+            if (numCnt != 0 && numCnt != set.size()) {
+                return false;
+            }
+        }
+
+        // 数字 1-9 在每一个以粗实线分隔的 3x3 宫内只能出现一次。
+        for (int row = 0; row < 9; row += 3) {
+            for (int col = 0; col < 9; col += 3) {
+                // 枚举出每个宫格内的元素集合
+                char[] arr = new char[]{
+                        board[row][col],board[row][col + 1],board[row][col + 2],
+                        board[row + 1][col],board[row + 1][col + 1],board[row + 1][col + 2],
+                        board[row + 2][col],board[row + 2][col + 1],board[row + 2][col + 2]
+                };
+                int numCnt = 0;
+                Set<Character> set = new HashSet<>();
+                for (char curr : arr) {
+                    if (curr >= '1' && curr <= '9') {
+                        set.add(curr);
+                        numCnt++;
+                    }
+                }
+                // 存在数值，且数字的个数不等于set的size，即说明有重复的数字，返回false
+                if (numCnt != 0 && numCnt != set.size()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+
+    }
+
+
+    public boolean isValidSudokuII(char[][] board) {
+        // 注意：遍历一次，同事获取到行、列、宫格内的元素，难点宫格的下标index和row/col的关系 （index=(row/3) * 3 + col/3）
+        // 定义3个集合，分别保存行、列、宫格的数字
+        Map<Integer, List<Integer>> rowMap = new HashMap<>();
+        Map<Integer, List<Integer>> colMap = new HashMap<>();
+        Map<Integer, List<Integer>> squareMap = new HashMap<>(); // index=(row/3) * 3 + col/3
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                char cur = board[row][col];
+                if ('.' == cur) continue;
+                int num = cur - '0';
+                List<Integer> rowList = rowMap.computeIfAbsent(row, key -> new ArrayList<>());
+                List<Integer> colList = colMap.computeIfAbsent(col, key -> new ArrayList<>());
+                int squareIndex = row / 3 * 3 + col / 3;
+                List<Integer> squareList = squareMap.computeIfAbsent(squareIndex, key -> new ArrayList<>());
+                if (rowList.contains(num) || colList.contains(num) || squareList.contains(num)) {
+                    return false;
+                } else {
+                    rowList.add(num);
+                    colList.add(num);
+                    squareList.add(num);
+                }
+            }
+        }
+        return true;
+    }
+    @Test
+    public void test_36() {
+        // 输入：board =
+        //[["5","3",".",".","7",".",".",".","."]
+        //,["6",".",".","1","9","5",".",".","."]
+        //,[".","9","8",".",".",".",".","6","."]
+        //,["8",".",".",".","6",".",".",".","3"]
+        //,["4",".",".","8",".","3",".",".","1"]
+        //,["7",".",".",".","2",".",".",".","6"]
+        //,[".","6",".",".",".",".","2","8","."]
+        //,[".",".",".","4","1","9",".",".","5"]
+        //,[".",".",".",".","8",".",".","7","9"]]
+        //输出：true
+        Assert.assertEquals(true, isValidSudoku(new char[][]{{'5','3','.','.','7','.','.','.','.'},{'6','.','.','1','9','5','.','.','.'},{'.','9','8','.','.','.','.','6','.'},{'8','.','.','.','6','.','.','.','3'},{'4','.','.','8','.','3','.','.','1'},{'7','.','.','.','2','.','.','.','6'},{'.','6','.','.','.','.','2','8','.'},{'.','.','.','4','1','9','.','.','5'},{'.','.','.','.','8','.','.','7','9'}}));
+        //示例 2：
+        //
+        //输入：board =
+        //[["8","3",".",".","7",".",".",".","."]
+        //,["6",".",".","1","9","5",".",".","."]
+        //,[".","9","8",".",".",".",".","6","."]
+        //,["8",".",".",".","6",".",".",".","3"]
+        //,["4",".",".","8",".","3",".",".","1"]
+        //,["7",".",".",".","2",".",".",".","6"]
+        //,[".","6",".",".",".",".","2","8","."]
+        //,[".",".",".","4","1","9",".",".","5"]
+        //,[".",".",".",".","8",".",".","7","9"]]
+        //输出：false
+        //解释：除了第一行的第一个数字从 5 改为 8 以外，空格内其他数字均与 示例1 相同。 但由于位于左上角的 3x3 宫内有两个 8 存在, 因此这个数独是无效的。
     }
 
 }
