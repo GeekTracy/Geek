@@ -1,5 +1,6 @@
 package com.geek.tracy.leetcode.tree;
 
+import com.geek.tracy.leetcode.tree.bean.Node;
 import com.geek.tracy.leetcode.tree.bean.TreeNode;
 import org.junit.Test;
 
@@ -12,6 +13,14 @@ import java.util.List;
  * @Date 2023/6/26
  */
 public class CodeTreeSets extends TreeTraversal {
+
+    /**
+     * 2415.反转二叉树的奇数层
+     */
+    public TreeNode reverseOddLevels(TreeNode root) {
+        return null;
+    }
+
 
     @Test
     public void goodNodesTest() {
@@ -160,5 +169,24 @@ public class CodeTreeSets extends TreeTraversal {
         // 后续序遍历
         postOrder(root, list);
         return list;
+    }
+
+    /**
+     * 590.N叉树的后续遍历
+     */
+    public List<Integer> postorder(Node root) {
+        // 递归访问N叉树：以此访问字数1，2，3...，最后根节点
+        List<Integer> ans = new ArrayList<>();
+        dfs(root, ans);
+        return ans;
+    }
+
+    public void dfs(Node root, List<Integer> ans) {
+        if (root == null) return;
+        // 依次访问子树
+        for (Node child : root.children) {
+            dfs(child, ans);
+        }
+        ans.add(root.val);
     }
 }
