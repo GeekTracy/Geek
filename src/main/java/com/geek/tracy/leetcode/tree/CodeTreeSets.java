@@ -2,11 +2,19 @@ package com.geek.tracy.leetcode.tree;
 
 import com.geek.tracy.leetcode.tree.bean.Node;
 import com.geek.tracy.leetcode.tree.bean.TreeNode;
+import com.google.common.collect.Comparators;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.sql.Array;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -193,6 +201,13 @@ public class CodeTreeSets extends TreeTraversal {
         ans.add(root.val);
     }
 
+
+
+    /**
+     * 105. 从前序与中序遍历序列构造二叉树
+     */
+
+
     /**
      * 106.从中序与后序遍历序列构造二叉树 -- 分治法递归处理子问题
      */
@@ -268,6 +283,59 @@ public class CodeTreeSets extends TreeTraversal {
         // 输入：preorder = [1,2,4,5,3,6,7], postorder = [4,5,2,6,7,3,1]
         //输出：[1,2,3,4,5,6,7]
         TreeNode treeNode = constructFromPrePost(new int[]{1, 2, 4, 5, 3, 6, 7}, new int[]{4, 5, 2, 6, 7, 3, 1});
+    }
+
+
+    /**
+     * 2583.二叉树中的第K大层和
+     *
+     * 给你一棵二叉树的根节点 root 和一个正整数 k 。
+     * 树中的 层和 是指 同一层 上节点值的总和。
+     * 返回树中第 k 大的层和（不一定不同）。如果树少于 k 层，则返回 -1 。
+     * 注意，如果两个节点与根节点的距离相同，则认为它们在同一层。
+     */
+    public long kthLargestLevelSum(TreeNode root, int k) {
+        // 计算每一层的和，层序遍历
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        stack.push(root);
+        List<Long> sum = new ArrayList<>();
+        // 栈保存某一层所有节点
+        while (!stack.isEmpty()) {
+            List<TreeNode> list = new ArrayList<>(); // 保存当前层的节点
+            Long levelSum = 0L;
+            for (TreeNode treeNode : stack) {
+                list.add(treeNode);
+                levelSum += treeNode.val;
+            }
+            sum.add(levelSum);
+            stack.clear();
+            for (TreeNode treeNode : list) {
+                if (treeNode.left != null) stack.push(treeNode.left);
+                if (treeNode.right != null) stack.push(treeNode.right);
+            }
+        }
+        sum.sort(Comparator.reverseOrder());// 倒叙
+        return sum.size() < k ? -1 : sum.get(k - 1);
+
+    }
+
+    @Test
+    public void test_2583() {
+        // 输入：root = [5,8,9,2,1,3,7,4,6], k = 2
+        //输出：13
+        //解释：树中每一层的层和分别是：
+        //- Level 1: 5
+        //- Level 2: 8 + 9 = 17
+        //- Level 3: 2 + 1 + 3 + 7 = 13
+        //- Level 4: 4 + 6 = 10
+        //第 2 大的层和等于 13 。
+        TreeNode root = constructFromPrePost(new int[]{5,8,2,4,6,1,9,3,7}, new int[]{4,6,2,1,8,3,7,9,5});
+        long l = kthLargestLevelSum(root, 2);
+        Assert.assertEquals(13, l);
+        // 输入：root = [1,2,null,3], k = 1
+        //输出：3
+        //解释：最大的层和是 3 。
+
     }
 
 }
