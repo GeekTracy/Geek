@@ -2424,5 +2424,121 @@ public class CodeSets {
         //解释：除了第一行的第一个数字从 5 改为 8 以外，空格内其他数字均与 示例1 相同。 但由于位于左上角的 3x3 宫内有两个 8 存在, 因此这个数独是无效的。
     }
 
+
+    /**
+     * 2670.找出不同元素数目差数组  (可优化)
+     */
+    public int[] distinctDifferenceArray(int[] nums) {
+        int[] ans = new int[nums.length];
+        Set<Integer> set1 = new HashSet<>();
+        Set<Integer> set2 = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            set1.clear();
+            set2.clear();
+            for (int m = 0; m <= i; m++) {
+                set1.add(nums[m]);
+            }
+            for (int j = i + 1; j < nums.length; j++) {
+                set2.add(nums[j]);
+            }
+            ans[i] = set1.size() - set2.size();
+        }
+        return ans;
+    }
+
+    // 优化
+    public int[] distinctDifferenceArrayII(int[] nums) {
+        int[] ans = new int[nums.length];
+        // 后缀个数
+        int[] sufNum = new int[nums.length + 1];
+        Set<Integer> sufSet = new HashSet<>();
+        for (int i = nums.length - 1; i >= 0; i--) {
+            sufSet.add(nums[i]);
+            sufNum[i] = sufSet.size();
+        }
+        // 前缀个数
+        Set<Integer> preSet = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            preSet.add(nums[i]);
+            ans[i] = preSet.size() - sufNum[i + 1];
+        }
+        return ans;
+    }
+
+    /**
+     * 1686.石子游戏 VI
+     * Alice 和 Bob 轮流玩一个游戏，Alice 先手。
+     *
+     * 一堆石子里总共有 n 个石子，轮到某个玩家时，他可以 移出 一个石子并得到这个石子的价值。Alice 和 Bob 对石子价值有 不一样的的评判标准 。双方都知道对方的评判标准。
+     *
+     * 给你两个长度为 n 的整数数组 aliceValues 和 bobValues 。aliceValues[i] 和 bobValues[i] 分别表示 Alice 和 Bob 认为第 i 个石子的价值。
+     *
+     * 所有石子都被取完后，得分较高的人为胜者。如果两个玩家得分相同，那么为平局。两位玩家都会采用 最优策略 进行游戏。
+     *
+     * 请你推断游戏的结果，用如下的方式表示：
+     *
+     * 如果 Alice 赢，返回 1 。
+     * 如果 Bob 赢，返回 -1 。
+     * 如果游戏平局，返回 0 。
+     *
+     * 分析：因为n个石子，一人取一个。假设alice数组的价值总值A，bob的为B。假设bob拿走了所有的石子，则bob得到的石子的价值是B，alice的价值是0，则得分差值：0 - B；
+     * 由于alice也要拿石子，如果拿的下标为i的石子，则分差值会减少：aliceValues[i] + bobValues[i]，即bob只取i石子，差值为：0 - B - （aliceValues[i] + bobValues[i]），
+     * 由此可分析得知，alice取 aliceValues[i] + bobValues[i] 最大的值时，alice可获取最大的价值，又由于二人都按最优策略进行，则可定义C数组表示 aliceValues，bobValues
+     * 数组相同石子的价值和，并且进行降序排列，则alice、bob以此从前往后取石子即为最有取法。
+     *
+     */
+    public int stoneGameVI(int[] aliceValues, int[] bobValues) {
+        Integer[] c = new Integer[aliceValues.length];
+        for (int i = 0; i < c.length; i++) {
+            c[i] = i;
+        }
+        // 排序巧妙，按aliceValues[i] + bobValues[i]降序排列()
+        Arrays.sort(c, (o1, o2) -> aliceValues[o2] + bobValues[o2] - aliceValues[o1] - bobValues[o1]);
+        int diff = 0;
+        for (int i = 0; i < c.length; i++) {
+            Integer index = c[i];
+            diff += (i % 2 == 0 ? aliceValues[index] : -bobValues[index]);
+        }
+        return diff > 0 ? 1 : (diff == 0 ? 0 : -1);
+
+    }
+
+    @Test
+    public void test_1686() {
+        // 输入：aliceValues = [1,2], bobValues = [3,1]
+        //输出：0
+        //解释：
+        //Alice 拿石子 0 ， Bob 拿石子 1 ，他们得分都为 1 分。
+        //打平。
+        Assert.assertEquals(1, stoneGameVI(new int[]{1, 3}, new int[]{2,1}));
+    }
+
+
+    /**
+     * 2808.使循环数组所有元素相等的最少秒数
+     */
+    public int minimumSeconds(List<Integer> nums) {
+        return 0;
+    }
+
+
+    /**
+     * 514.自由之路
+     */
+    public int findRotateSteps(String ring, String key) {
+
+        return 0;
+    }
+
+    @Test
+    public void test_514() {
+        // 输入: ring = "godding", key = "gd"
+        //输出: 4
+
+        //输入: ring = "godding", key = "godding"
+        //输出: 13
+    }
+
+
 }
 
