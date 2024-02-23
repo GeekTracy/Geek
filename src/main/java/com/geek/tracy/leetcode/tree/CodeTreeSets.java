@@ -2,21 +2,15 @@ package com.geek.tracy.leetcode.tree;
 
 import com.geek.tracy.leetcode.tree.bean.Node;
 import com.geek.tracy.leetcode.tree.bean.TreeNode;
-import com.google.common.collect.Comparators;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 树 -- 相关题目
@@ -201,8 +195,6 @@ public class CodeTreeSets extends TreeTraversal {
         ans.add(root.val);
     }
 
-
-
     /**
      * 105. 从前序与中序遍历序列构造二叉树
      */
@@ -271,8 +263,15 @@ public class CodeTreeSets extends TreeTraversal {
         if (length == 0) return null;
         if (length == 1) return new TreeNode(preorder[0]);
 
-        // 找到对应的左右子树  leftTree rightTree
-        int leftTreeSize = leftTreeSize(postorder, preorder[1]);
+        // 找左子树的长度：遍历后序遍历数组，直到rootValue的值，其长度即为rootValue为根的左子树长度
+        int count = 0;
+        for (int i = 0; i < postorder.length; i++) {
+            count++;
+            if (postorder[i] == preorder[1]) {
+               break;
+           }
+        }
+        int leftTreeSize = count;
         // 画出示意实例进行分析设值
         int[] leftPreOrder = Arrays.copyOfRange(preorder, 1, leftTreeSize + 1);    // 左子树-前序遍历
         int[] leftPostOrder = Arrays.copyOfRange(postorder, 0, leftTreeSize);   // 左子树-后序遍历
@@ -280,22 +279,6 @@ public class CodeTreeSets extends TreeTraversal {
         int[] rightPostOrder = Arrays.copyOfRange(postorder, leftTreeSize, length - 1);  // 右子树-后序遍历
 
         return new TreeNode(preorder[0], constructFromPrePost(leftPreOrder, leftPostOrder), constructFromPrePost(rightPreOrder, rightPostOrder));
-    }
-
-    /**
-     * 找左子树的长度：遍历后序遍历数组，直到rootValue的值，其长度即为rootValue为根的左子树长度
-     * @param postorder 后序遍历数组
-     * @param rootValue 根节点值
-     */
-    public int leftTreeSize(int[] postorder, int rootValue) {
-        int count = 0;
-        for (int i = 0; i < postorder.length; i++) {
-            count++;
-            if (postorder[i] == rootValue) {
-               break;
-           }
-        }
-        return count;
     }
 
     @Test
