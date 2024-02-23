@@ -206,12 +206,32 @@ public class CodeTreeSets extends TreeTraversal {
     /**
      * 105. 从前序与中序遍历序列构造二叉树
      */
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int n = preorder.length;
+        if (n == 0) return null;
+        if (n == 1) return new TreeNode(preorder[0]);
+        // 左子树长度
+        int leftSubSize = 0;
+        for (int i : inorder) {
+            if (i != preorder[0]) {
+                leftSubSize++;
+            } else {
+                break;
+            }
+        }
+        // 按前序、中序特点，截取左子树前序、中序，右子树前序、中序
+        int[] leftPre  = Arrays.copyOfRange(preorder, 1, leftSubSize + 1);
+        int[] leftIn = Arrays.copyOfRange(inorder, 0, leftSubSize);
+        int[] rightPre = Arrays.copyOfRange(preorder, leftSubSize + 1, n);
+        int[] rightIn = Arrays.copyOfRange(inorder, leftSubSize + 1, n);
+        return new TreeNode(preorder[0], buildTree(leftPre, leftIn), buildTree(rightPre, rightIn));
+    }
 
 
     /**
      * 106.从中序与后序遍历序列构造二叉树 -- 分治法递归处理子问题
      */
-    public TreeNode buildTree(int[] inorder, int[] postorder) {
+    public TreeNode buildTreeInPost(int[] inorder, int[] postorder) {
         int n = inorder.length;
         if (n == 0) return null;
         if (n == 1) return new TreeNode(inorder[0]);
