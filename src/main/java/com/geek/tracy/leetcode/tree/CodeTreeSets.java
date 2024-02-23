@@ -5,7 +5,10 @@ import com.geek.tracy.leetcode.tree.bean.TreeNode;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 树 -- 相关题目
@@ -172,7 +175,7 @@ public class CodeTreeSets extends TreeTraversal {
     }
 
     /**
-     * 590.N叉树的后续遍历
+     * 590.N叉树的后序遍历
      */
     public List<Integer> postorder(Node root) {
         // 递归访问N叉树：以此访问字数1，2，3...，最后根节点
@@ -189,4 +192,82 @@ public class CodeTreeSets extends TreeTraversal {
         }
         ans.add(root.val);
     }
+
+    /**
+     * 106.从中序与后序遍历序列构造二叉树 -- 分治法递归处理子问题
+     */
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        int n = inorder.length;
+        if (n == 0) return null;
+        if (n == 1) return new TreeNode(inorder[0]);
+
+        // 左子树长度：遍历中序数组，找到postorder[n - 1]时，左侧长度即为左子树长度
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            if (postorder[n - 1] == inorder[i]) {
+                break;
+            } else {
+                count++;
+            }
+        }
+        // 截取左子树中序、后序，右子树中序、后续
+        int[] leftTreeInorder = Arrays.copyOfRange(inorder, 0, count);
+        int[] leftTreePostorder = Arrays.copyOfRange(postorder, 0, count);
+        int[] rightTreeInorder = Arrays.copyOfRange(inorder,count + 1, n);
+        int[] rightTreePostorder = Arrays.copyOfRange(postorder, count, n - 1);
+        // 构建树：TreeNode(根节点值， 左子树， 右子树)
+        return new TreeNode(postorder[n - 1], buildTree(leftTreeInorder, leftTreePostorder), buildTree(rightTreeInorder, rightTreePostorder));
+    }
+
+    @Test
+    public void test_106() {
+        // 输入：inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]
+        //输出：[3,9,20,null,null,15,7]
+    }
+
+    /**
+     * 889.根据前序和后序遍历构造二叉树
+     *
+     * 分析：仅通过前序、后续，得到的解不唯一，可以拆分为子问题处理，即分治法，递归处理子问题。通过前序的根，找到对应的左右子树递归处理，前序数组为1时返回节点，为空时返回null
+     */
+    public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
+        // 前序数组为1时返回节点，为空时返回null
+        int length = preorder.length;
+        if (length == 0) return null;
+        if (length == 1) return new TreeNode(preorder[0]);
+
+        // 找到对应的左右子树  leftTree rightTree
+        int leftTreeSize = leftTreeSize(postorder, preorder[1]);
+        // 画出示意实例进行分析设值
+        int[] leftPreOrder = Arrays.copyOfRange(preorder, 1, leftTreeSize + 1);    // 左子树-前序遍历
+        int[] leftPostOrder = Arrays.copyOfRange(postorder, 0, leftTreeSize);   // 左子树-后序遍历
+        int[] rightPreOrder = Arrays.copyOfRange(preorder, leftTreeSize + 1, length);   // 右子树-前序遍历
+        int[] rightPostOrder = Arrays.copyOfRange(postorder, leftTreeSize, length - 1);  // 右子树-后序遍历
+
+        return new TreeNode(preorder[0], constructFromPrePost(leftPreOrder, leftPostOrder), constructFromPrePost(rightPreOrder, rightPostOrder));
+    }
+
+    /**
+     * 找左子树的长度：遍历后序遍历数组，直到rootValue的值，其长度即为rootValue为根的左子树长度
+     * @param postorder 后序遍历数组
+     * @param rootValue 根节点值
+     */
+    public int leftTreeSize(int[] postorder, int rootValue) {
+        int count = 0;
+        for (int i = 0; i < postorder.length; i++) {
+            count++;
+            if (postorder[i] == rootValue) {
+               break;
+           }
+        }
+        return count;
+    }
+
+    @Test
+    public void test_889() {
+        // 输入：preorder = [1,2,4,5,3,6,7], postorder = [4,5,2,6,7,3,1]
+        //输出：[1,2,3,4,5,6,7]
+        TreeNode treeNode = constructFromPrePost(new int[]{1, 2, 4, 5, 3, 6, 7}, new int[]{4, 5, 2, 6, 7, 3, 1});
+    }
+
 }
