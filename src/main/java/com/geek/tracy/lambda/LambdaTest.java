@@ -3,6 +3,7 @@ package com.geek.tracy.lambda;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -59,5 +60,33 @@ public class LambdaTest {
         public void setAge(String age) {
             this.age = age;
         }
+    }
+
+
+    @Test
+    public void testMap12() {
+        Map<String, Integer> map1 = new HashMap<>();
+        map1.put("a", 1);
+        map1.put("b", 2);
+//        map1.put("c", 3);
+
+        Map<String, Integer> map2 = new HashMap<>();
+        map2.put("a", 1);
+//        map2.put("b", 2);
+        map2.put("c", 3);
+
+        Map<String, Integer> map3 = new HashMap<>();
+//        map3.put("a", 1);
+        map3.put("b", 22);
+        map3.put("c", 33);
+
+        List<Map<String, Integer>> list = new ArrayList<>();
+        list.add(map1);
+        list.add(map2);
+        list.add(map3);
+
+
+
+        // 打印求和后的 Map
     }
 }
