@@ -28,6 +28,44 @@ public class CodeSets {
 
 
     @Test
+    public void test_2951() {
+        // 输入：mountain = [2,4,4]
+        //输出：[]
+
+        // 输入：mountain = [1,4,3,8,5]
+        //输出：[1,3]
+    }
+
+    /**
+     * 2951.寻找峰值
+     *
+     * 给你一个下标从 0 开始的数组 mountain 。你的任务是找出数组 mountain 中的所有 峰值。
+     *
+     * 以数组形式返回给定数组中 峰值 的下标，顺序不限 。
+     *
+     * 注意：
+     *
+     * 峰值 是指一个严格大于其相邻元素的元素。
+     * 数组的第一个和最后一个元素 不 是峰值。
+     * @param mountain
+     * @return
+     */
+    public List<Integer> findPeaks(int[] mountain) {
+        List<Integer> ans = new ArrayList<>();
+        if (mountain == null || mountain.length <= 2) {
+            return ans;
+        }
+        // 遍历mountain，去掉收尾值
+        for (int i = 1; i < mountain.length - 1; i++) {
+            if (mountain[i] > mountain[i - 1] && mountain[i] > mountain[i + 1]) {
+                ans.add(i);
+            }
+        }
+        return ans;
+    }
+
+
+    @Test
     public void test_2865 () {
 //        Assert.assertEquals(13, maximumSumOfHeightsI(Arrays.asList(5,3,4,1,1)));
         Assert.assertEquals(22, maximumSumOfHeightsI(Arrays.asList(6,5,3,9,2,7)));
@@ -2512,6 +2550,16 @@ public class CodeSets {
         //打平。
         Assert.assertEquals(1, stoneGameVI(new int[]{1, 3}, new int[]{2,1}));
     }
+
+    /**
+     * 204.计数质数
+     *
+     * 利用枚举的方法，
+     */
+    public int countPrimes(int n) {
+        return 0;
+    }
+
 
 
     /**
