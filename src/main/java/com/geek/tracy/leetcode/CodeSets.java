@@ -1725,7 +1725,7 @@ public class CodeSets {
         Deque<Integer> deque = new ArrayDeque<>();  // 单调栈
         for (int i = nums2.length - 1; i >= 0 ; i--) {
             numIndexMap.put(nums2[i], i);
-            // 固定结构：栈不为空，若栈顶元素小于候选元素，则出栈知道栈顶元素大于候选
+            // 固定结构：栈不为空，若栈顶元素小于候选元素，则出栈直到栈顶元素大于候选
             while (!deque.isEmpty() && deque.peek() < nums2[i]) {
                 deque.pop();
             }
