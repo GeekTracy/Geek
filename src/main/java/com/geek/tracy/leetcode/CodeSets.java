@@ -28,6 +28,54 @@ public class CodeSets {
 
 
     @Test
+    public void test_2981() {
+        // 输入：s = "aaaa"
+        //输出：2
+        //解释：出现三次的最长特殊子字符串是 "aa" ：子字符串 "aaaa"、"aaaa" 和 "aaaa"。
+        //可以证明最大长度是 2 。
+        System.out.println(maximumLength("aaaa"));
+        System.out.println(maximumLength("axxaaavwww"));
+    }
+
+    /**
+     * 2981.找出出现至少三次的最长特殊子字符串I
+     *
+     * 提示：
+     *
+     * 3 <= s.length <= 50
+     * s 仅由小写英文字母组成。
+     */
+    public int maximumLength(String s) {
+        // 两个概念：1）最长子字符串，连续的子字符；2）至少出现3次，则最长字串长度小于size - 2；3）特殊串是相同的串
+        if (s == null) {
+            return -1;
+        }
+        char[] chars = s.toCharArray();
+        if (chars.length < 3) {
+            return -1;
+        }
+        int maxSub = -1;
+        // 按字串长度遍历
+        for (int subLen = 1; subLen <= chars.length - 2; subLen++) {
+            sub2:
+            for (int i = 0; i < chars.length - 2; i++) {
+                int count = 1;
+                // 字串：从i到i+subLen
+                for (int j = i + 1; j + subLen <= chars.length; j++) {
+                    if (s.substring(i, subLen + i).equals(s.substring(j, subLen + j))) {
+                        count++;
+                    }
+                }
+                if (count >= 3) {
+                    maxSub = Math.max(maxSub, subLen);
+                    break sub2;
+                }
+            }
+        }
+        return maxSub;
+    }
+
+    @Test
     public void test_2951() {
         // 输入：mountain = [2,4,4]
         //输出：[]
