@@ -12,6 +12,46 @@ import java.util.List;
 public class UtilTest {
 
 
+    public List<String> numDecodings(String s) {
+        List<String> result = new ArrayList<>();
+        if (s == null || s.length() == 0 || s.charAt(0) == '0') {
+            return result;
+        }
+
+        dfs(s, 0, new StringBuilder(), result);
+        return result;
+    }
+
+    private void dfs(String s, int index, StringBuilder current, List<String> result) {
+        if (index == s.length()) {
+            result.add(current.toString());
+            return;
+        }
+
+        // 尝试一个字符的解码
+        if (s.charAt(index) != '0') {
+            current.append((char) ('a' + (s.charAt(index) - '1')));
+            dfs(s, index + 1, current, result);
+            current.deleteCharAt(current.length() - 1); // 回溯
+        }
+
+        // 尝试两个字符的解码（如果可行）
+        if (index + 1 < s.length() && (s.charAt(index) == '1' || (s.charAt(index) == '2' && s.charAt(index + 1) <= '6'))) {
+            int twoDigitNum = (s.charAt(index) - '0') * 10 + (s.charAt(index + 1) - '0');
+            current.append((char) ('a' + (twoDigitNum - 11)));
+            dfs(s, index + 2, current, result);
+            current.deleteCharAt(current.length() - 1); // 回溯
+        }
+    }
+
+    @Test
+    public void test1111() {
+        List<String> result = numDecodings("111");
+        System.out.println(result); // 输出: [aa, k]
+
+        result = numDecodings("113");
+        System.out.println(result); // 输出: [aac, kc, am]
+    }
     /**
      * 最大收益，计算dp[]数组，本体6块土地总油耗：25，
      *
@@ -32,43 +72,42 @@ public class UtilTest {
 
     @Test
     public void testMaxIncome() {
-        maxIncome2();
         for (int i = 0; i < 30; i++) {
             System.out.println("总油耗：" + i + ", 最大收益" + maxIncome(i));
         }
     }
-
-
+    /**
+     * 记录最大收益
+     */
     private static Integer MaxIncome = 0;
     /**
      * 回溯法，遍历所有的可能情况，算出汽车油耗范围内最大的收益
      *
-     * @param oil 汽车油量
+     * @param carOil 汽车油量
      */
-    public int maxIncome(int oil) {
+    public int maxIncome(int carOil) {
         // 土地二维数组，第一列表示油耗，第二列表示收益
         int[][] land = new int[][]{{1, 1},{7, 9},{6, 10},{2, 4},{3, 5},{6, 10}};
         // 所有土地总油耗
         int landOilSum = Arrays.stream(land).mapToInt(item -> item[0]).sum();
         // 汽车耗油量大于等于所有土地油耗，活全干了收益最大
-        if (oil >= landOilSum) {
+        if (carOil >= landOilSum) {
             return Arrays.stream(land).mapToInt(item -> item[1]).sum();
         }
         // 按油耗升序排序
         Arrays.sort(land, Comparator.comparingInt(item -> item[0]));
         // 回溯法遍历所有土地的组合，使油耗小于等于汽车油耗时的最大收益
-        backSource(new ArrayList<>(), landOilSum, oil, land);
+        backSource(new ArrayList<>(), carOil, land);
         return MaxIncome;
     }
 
     /**
-     *
-     * @param landNum
-     * @param landOilSum
-     * @param land
-     * @return
+     * 回溯遍历可能的情况，当没有可继续耕种的土地时，计算最大收益MaxIncome
+     * @param landNum 土地二维数组的下边，记录耕种的土地下标index
+     * @param carOilSum 车拥有的油量
+     * @param land 土地二维数组
      */
-    private void backSource(List<Integer> landNum, Integer landOilSum, int carOilSum, int[][] land) {
+    private void backSource(List<Integer> landNum, int carOilSum, int[][] land) {
         // 当前油耗
         int currOil = landNum.stream().mapToInt(index -> land[index][0]).sum();
         // 剩下的油
@@ -82,18 +121,19 @@ public class UtilTest {
             boolean firstOne = true;
             // 遍历未使用的土地
             for (int i = 0; i < land.length; i++) {
+                // 耕种过的土地，跳过
                 if (landNum.contains(i)) {
                     continue;
                 } else if (firstOne && land[i][0] > carLeftOil) {
-                    // 遍历时第一个就大于车剩下的油量，已不再有可处理的地，直接返回
-                    // 计算收益
+                    // 因为土地已按照耗油量排序，遍历时第一个就大于车剩下的油量，已不再有可处理的地，直接返回并计算最大收益
                     MaxIncome = Math.max(MaxIncome, landNum.stream().mapToInt(index -> land[index][1]).sum());
                     return;
                 } else if (land[i][0] <= carLeftOil) {
                     firstOne = false;
-                    // 增加处理土地，往下钻
+                    // 增加处理土地
                     landNum.add(i);
-                    backSource(landNum, landOilSum, carOilSum, land);
+                    // 下钻处理
+                    backSource(landNum, carOilSum, land);
                     // 回退
                     landNum.remove(landNum.size() - 1);
                 }
@@ -101,14 +141,15 @@ public class UtilTest {
         }
     }
 
+
     @Test
     public void testDecode() {
-
+        System.out.println("113" + " 可能的译码结果：");
         decode("113").stream().forEach(item -> System.out.print(item + " "));
-        System.out.println("-------------");
-        System.out.println("111111");
-        decode("111111").stream().forEach(item -> System.out.print(item + " "));
-
+        System.out.println("\r\n121232" + " 可能的译码结果：");
+        decode("121232").stream().forEach(item -> System.out.print(item + " "));
+        System.out.println("\r\n2354689512156532456" + " 可能的译码结果：");
+        decode("2354689512156532456").stream().forEach(item -> System.out.print(item + " "));
     }
 
     /**
