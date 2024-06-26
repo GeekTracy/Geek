@@ -20,6 +20,55 @@ import java.util.Map;
 public class DynamicProgrammingMethod {
 
     @Test
+    public void test_5() {
+        System.out.println(longestPalindrome("erecbabcpoip"));
+        System.out.println(longestPalindrome("adacbazxz"));
+        System.out.println(longestPalindrome("adacbaabczxz"));
+    }
+
+    /**
+     * 5.最长回文字串
+     *
+     * 提示：
+     * 1 <= s.length <= 1000
+     * s 仅由数字和英文字母组成
+     */
+    public String longestPalindrome(String s) {
+        if (s.length() == 1) {
+            return s;
+        }
+        int len = s.length();
+        // dp[i][j] 表示下标i--j的字串是否为回文字串
+        boolean dp[][] = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
+            dp[i][i] = true; // 每一个单独的字符都是一个回文字串
+        }
+        int maxLen = 1;
+        int start = 0;
+        char[] chars = s.toCharArray();
+        // 字串长度为length时，
+        for (int length = 2; length <= len; length++) {
+            for (int i = 0; i < len; i++) {
+                // 长度 length = j - i + 1，所以，j = length + i - 1
+                int j = length + i - 1;
+                if (j >= len) {
+                    break;
+                }
+                if (chars[i] == chars[j]) {
+                    if ((j - i >= 2 && dp[i + 1][j - 1]) || j - i == 1) {
+                        dp[i][j] = true;
+                        if (length > maxLen) {
+                            maxLen = length;
+                            start = i;
+                        }
+                    }
+                }
+            }
+        }
+        return s.substring(start, maxLen + start);
+    }
+
+    @Test
     public void test_2707 () {
         // "dwmodizxvvbosxxw"
         // ["ox","lb","diz","gu","v","ksv","o","nuq","r","txhe","e","wmo","cehy","tskz","ds","kzbu"]  except:7
