@@ -10,6 +10,10 @@ import java.util.concurrent.CyclicBarrier;
  *      1）每一次调用await()方法都将使阻塞的线程数+1，只有阻塞的线程数达到设定值时，屏障才会打开，允许阻塞的所有线程继续执行；
  *      2）CyclicBarrier的计数器可以重置，而CountDownLatch不行，这意味着CyclicBarrier实例可以被重复使用，而CountDownLatch只能使用一次；
  *      3）CyclicBarrier可以自定义barrierAction操作，这是个可选操作，可以再创建CyclicBarrier对象时指定；
+ *      4）await()方法只阻塞子线程，不会阻塞主线程；CyclicBarrier是通过ReentrantLock的"独占锁"和Conditon来实现一组线程的阻塞唤醒的
+ *
+ *      5）有一个重入锁(ReentrantLock lock)，一个条件对象(Condition trip)，一个计数器数(parties)，一个等待线程的数量(count)，
+ *         一个内部类实例(Generation generation)和一个计数结束执行的实现Runnable的实例（Runnable barrierCommand）
  *
  * @Author Tracy
  * @Date 2023/9/7
@@ -27,9 +31,8 @@ public class CyclicBarrierExample {
     public static void waitToHaveLunch() {
         final int num = 10;  // 10名员工聚餐
         // 初始化循环屏障，parties:10
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(10, () -> {
-            System.out.println("人已到齐..........");
-        });
+        Runnable barrierAction = () -> System.out.println("人已到齐..........");  // 自定义barrierAction操作
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(num, barrierAction);
         for (int i = 0; i < num; i++) {
             Thread thread = new Thread(() -> {
                 try {
@@ -43,6 +46,7 @@ public class CyclicBarrierExample {
 
                     long arriveTime = System.currentTimeMillis();
                     // 该员工到达后开始等待其他人到齐，即当阻塞线程数量=parties时，所有线程将被激活执行
+                    // 阻塞子线程
                     cyclicBarrier.await();
                     long allArrivedTime = System.currentTimeMillis();
                     System.out.println("所有人到齐，准备开饭！" + Thread.currentThread().getName() + "，等待了：" + (allArrivedTime - arriveTime) + " ms");
