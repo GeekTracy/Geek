@@ -21,6 +21,55 @@ import java.util.Map;
 public class Mark {
 
     @Test
+    public void test_2866 () {
+        Assert.assertEquals(22, maximumSumOfHeightsII(Arrays.asList(6, 5, 3, 9, 2, 7)));
+    }
+
+    /**
+     * 2866.美丽塔 Ⅱ
+     *  范围增大，暴力解法超时，需要使用单调栈。
+     *  美丽塔即是一个有峰顶的山，做半段0--i单点递增，右半段i+1--n-1单调递减；遍历maxHeights，计算当i为峰顶时，满足条件的美丽塔的和。右半段
+     *  从n-1 -- i，定义个数组suf[j]表示j下标节点后的美丽塔和的最大值。
+     *
+     * 思路：单调栈
+     */
+    public long maximumSumOfHeightsII(List<Integer> maxHeights) {
+        int[] a = maxHeights.stream().mapToInt(i -> i).toArray();
+        int n = a.length;
+        long[] suf = new long[n + 1];
+        Deque<Integer> st = new ArrayDeque<Integer>();
+        st.push(n); // 哨兵：存放临界点处的值，用于临界点兼容
+        long sum = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = a[i];
+            while (st.size() > 1 && x <= a[st.peek()]) {
+                int j = st.pop();
+                sum -= (long) a[j] * (st.peek() - j); // 撤销之前加到 sum 中的
+            }
+            sum += (long) x * (st.peek() - i); // 从 i 到 st.peek()-1 都是 x
+            suf[i] = sum;
+            st.push(i);
+        }
+
+        long ans = sum;
+        st.clear();
+        st.push(-1); // 哨兵：存放临界点处的值，用于临界点兼容
+        long pre = 0;
+        for (int i = 0; i < n; i++) {
+            int x = a[i];
+            while (st.size() > 1 && x <= a[st.peek()]) {
+                int j = st.pop();
+                pre -= (long) a[j] * (j - st.peek()); // 撤销之前加到 pre 中的
+            }
+            pre += (long) x * (i - st.peek()); // 从 st.peek()+1 到 i 都是 x
+            ans = Math.max(ans, pre + suf[i + 1]);
+            st.push(i);
+        }
+        return ans;
+
+    }
+
+    @Test
     public void test_42() {
         Assert.assertEquals(6, trap(new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}));
         Assert.assertEquals(9, trap(new int[]{4, 2, 0, 3, 2, 5}));
@@ -34,6 +83,7 @@ public class Mark {
      * n == height.length
      * 1 <= n <= 2 * 10^4
      * 0 <= height[i] <= 10^5
+     * 思路：单调栈
      */
     public int trap(int[] height) {
         int len = height.length;
