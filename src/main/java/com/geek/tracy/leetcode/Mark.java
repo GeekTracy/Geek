@@ -14,21 +14,108 @@ import java.util.Map;
 
 /**
  * 难题，经典汇总mark
+ *
  * @author Tracy
  * @date 2024/1/19
  */
 public class Mark {
 
+    @Test
+    public void test_2866 () {
+        Assert.assertEquals(22, maximumSumOfHeightsII(Arrays.asList(6, 5, 3, 9, 2, 7)));
+    }
+
+    /**
+     * 2866.美丽塔 Ⅱ
+     *  范围增大，暴力解法超时，需要使用单调栈。
+     *  美丽塔即是一个有峰顶的山，做半段0--i单点递增，右半段i+1--n-1单调递减；遍历maxHeights，计算当i为峰顶时，满足条件的美丽塔的和。右半段
+     *  从n-1 -- i，定义个数组suf[j]表示j下标节点后的美丽塔和的最大值。
+     *
+     * 思路：单调栈
+     */
+    public long maximumSumOfHeightsII(List<Integer> maxHeights) {
+        int[] a = maxHeights.stream().mapToInt(i -> i).toArray();
+        int n = a.length;
+        long[] suf = new long[n + 1];
+        Deque<Integer> st = new ArrayDeque<Integer>();
+        st.push(n); // 哨兵：存放临界点处的值，用于临界点兼容
+        long sum = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            int x = a[i];
+            while (st.size() > 1 && x <= a[st.peek()]) {
+                int j = st.pop();
+                sum -= (long) a[j] * (st.peek() - j); // 撤销之前加到 sum 中的
+            }
+            sum += (long) x * (st.peek() - i); // 从 i 到 st.peek()-1 都是 x
+            suf[i] = sum;
+            st.push(i);
+        }
+
+        long ans = sum;
+        st.clear();
+        st.push(-1); // 哨兵：存放临界点处的值，用于临界点兼容
+        long pre = 0;
+        for (int i = 0; i < n; i++) {
+            int x = a[i];
+            while (st.size() > 1 && x <= a[st.peek()]) {
+                int j = st.pop();
+                pre -= (long) a[j] * (j - st.peek()); // 撤销之前加到 pre 中的
+            }
+            pre += (long) x * (i - st.peek()); // 从 st.peek()+1 到 i 都是 x
+            ans = Math.max(ans, pre + suf[i + 1]);
+            st.push(i);
+        }
+        return ans;
+
+    }
+
+    @Test
+    public void test_42() {
+        Assert.assertEquals(6, trap(new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}));
+        Assert.assertEquals(9, trap(new int[]{4, 2, 0, 3, 2, 5}));
+    }
+
+    /**
+     * 42.接雨水
+     * <p>
+     * 提示：
+     * <p>
+     * n == height.length
+     * 1 <= n <= 2 * 10^4
+     * 0 <= height[i] <= 10^5
+     * 思路：单调栈
+     */
+    public int trap(int[] height) {
+        int len = height.length;
+        // 遍历2次，分别获取从左往右，从右往左的当前最大值数组maxToRight,maxToLeft
+        int[] arrMaxToRight = new int[len];
+        int[] arrMaxToLeft = new int[len];
+        int toRightMax = 0;
+        int toLetfMax = 0;
+        for (int i = 0; i < height.length; i++) {
+            arrMaxToRight[i] = Math.max(toRightMax, height[i]);
+            toRightMax = arrMaxToRight[i];
+        }
+        for (int i = height.length - 1; i >= 0; i--) {
+            arrMaxToLeft[i] = Math.max(toLetfMax, height[i]);
+            toLetfMax = arrMaxToLeft[i];
+        }
+        int ans = 0;
+        for (int i = 0; i < height.length; i++) {
+            ans += Math.min(arrMaxToRight[i] - height[i], arrMaxToLeft[i] - height[i]);
+        }
+        return ans;
+    }
 
     /**
      * 2809.使数组和小于等于x的最少时间
-     *
+     * <p>
      * 给你两个长度相等下标从 0 开始的整数数组 nums1 和 nums2 。每一秒，对于所有下标 0 <= i < nums1.length ，nums1[i] 的值都增加 nums2[i] 。
      * 操作 完成后 ，你可以进行如下操作：
-     *
+     * <p>
      * 选择任一满足 0 <= i < nums1.length 的下标 i ，并使 nums1[i] = 0 。
      * 同时给你一个整数 x 。
-     *
+     * <p>
      * 请你返回使 nums1 中所有元素之和 小于等于 x 所需要的 最少 时间，如果无法实现，那么返回 -1
      */
     public int minimumTime(List<Integer> nums1, List<Integer> nums2, int x) {
@@ -40,7 +127,7 @@ public class Mark {
         for (int i = 0; i < n; ++i) {
             s1 += nums1.get(i);
             s2 += nums2.get(i);
-            nums[i] = new int[] {nums1.get(i), nums2.get(i)};
+            nums[i] = new int[]{nums1.get(i), nums2.get(i)};
         }
         // 按照nums2数组的值，对nums1,nums2进行升序排序，即可按顺序进行操作
         Arrays.sort(nums, Comparator.comparingInt(a -> a[1]));
@@ -62,7 +149,7 @@ public class Mark {
         return -1;
     }
 
-//    作者：ylb
+    //    作者：ylb
 //    链接：https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/solutions/2610313/python3javacgotypescript-yi-ti-yi-jie-pa-nyni/
     public int minimumTime02(List<Integer> nums1, List<Integer> nums2, int x) {
         int n = nums1.size();
@@ -72,7 +159,7 @@ public class Mark {
         for (int i = 0; i < n; ++i) {
             s1 += nums1.get(i);
             s2 += nums2.get(i);
-            nums[i] = new int[] {nums1.get(i), nums2.get(i)};
+            nums[i] = new int[]{nums1.get(i), nums2.get(i)};
         }
         Arrays.sort(nums, Comparator.comparingInt(a -> a[1]));
         for (int[] e : nums) {
@@ -99,21 +186,21 @@ public class Mark {
 
     /**
      * 31.下一个排列
-     *
+     * <p>
      * 分析：题意即寻找下一个较大的排列，当当前排列是最大的排列时，返回最小的那个排列。
-     *      例如：[1,2,3]，所有的排列有：[1,2,3]、[1,3,2]、[2,1,3]、[2,3,1]、[3,1,2]、[3,2,1]，按大小顺序排列，
-     *      当当前序列是最后一个，即[3,2,1]时，下一个排列即为第一个[1,2,3]。
-     *     1）从右往左找，找到第一个[i < j 且 nums[i] < nums[j] ]（升序）,则从j到end一定是递减；
-     *     2）在[j,end]找到k，满足[nums[i] < nums[k] ]，交换i和k的值；
-     *     3）i之后的区间一定为降序排列，将i之后调整为升序；
-     *     4）如果第1步没有找到满足条件的i，j，说明nums为降序排列，即最大的那个排列，直接执行第3步将整个数组调整为升序；
+     * 例如：[1,2,3]，所有的排列有：[1,2,3]、[1,3,2]、[2,1,3]、[2,3,1]、[3,1,2]、[3,2,1]，按大小顺序排列，
+     * 当当前序列是最后一个，即[3,2,1]时，下一个排列即为第一个[1,2,3]。
+     * 1）从右往左找，找到第一个[i < j 且 nums[i] < nums[j] ]（升序）,则从j到end一定是递减；
+     * 2）在[j,end]找到k，满足[nums[i] < nums[k] ]，交换i和k的值；
+     * 3）i之后的区间一定为降序排列，将i之后调整为升序；
+     * 4）如果第1步没有找到满足条件的i，j，说明nums为降序排列，即最大的那个排列，直接执行第3步将整个数组调整为升序；
      */
     public void nextPermutation(int[] nums) {
         int i = -1;
         int length = nums.length;
         for (int n = length - 1; n > 0; n--) {
             if (nums[n - 1] < nums[n]) {
-                i = n -1;
+                i = n - 1;
                 break;
             }
         }
@@ -151,18 +238,18 @@ public class Mark {
 
     @Test
     public void test_31() {
-        nextPermutation(new int[]{1,2,3,8,5,7,6,4});
+        nextPermutation(new int[]{1, 2, 3, 8, 5, 7, 6, 4});
     }
 
     /**
      * 2846.边权重均等查询
-     *
+     * <p>
      * 现有一棵由 n 个节点组成的无向树，节点按从 0 到 n - 1 编号。给你一个整数 n 和一个长度为 n - 1 的二维整数数组 edges ，其中 edges[i] = [ui, vi, wi] 表示树中存在一条位于节点 ui 和节点 vi 之间、权重为 wi 的边。
-     *
+     * <p>
      * 另给你一个长度为 m 的二维整数数组 queries ，其中 queries[i] = [ai, bi] 。对于每条查询，请你找出使从 ai 到 bi 路径上每条边的权重相等所需的 最小操作次数 。在一次操作中，你可以选择树上的任意一条边，并将其权重更改为任意值。
-     *
+     * <p>
      * 注意：
-     *
+     * <p>
      * 查询之间 相互独立 的，这意味着每条新的查询时，树都会回到 初始状态 。
      * 从 ai 到 bi的路径是一个由 不同 节点组成的序列，从节点 ai 开始，到节点 bi 结束，且序列中相邻的两个节点在树中共享一条边。
      * 返回一个长度为 m 的数组 answer ，其中 answer[i] 是第 i 条查询的答案。
@@ -232,12 +319,12 @@ public class Mark {
     public void test_2846() {
         //输入：n = 7, edges = [[0,1,1],[1,2,1],[2,3,1],[3,4,2],[4,5,2],[5,6,2]], queries = [[0,3],[3,6],[2,6],[0,6]]
         //输出：[0,0,1,3]
-        Assert.assertArrayEquals(new int[]{0,0,1,3}, minOperationsQueries(7,
-                new int[][]{{0,1,1},{1,2,1},{2,3,1},{3,4,2},{4,5,2}, {5,6,2}}, new int[][]{{0,3},{3,6},{2,6},{0,6}}));
+        Assert.assertArrayEquals(new int[]{0, 0, 1, 3}, minOperationsQueries(7,
+                new int[][]{{0, 1, 1}, {1, 2, 1}, {2, 3, 1}, {3, 4, 2}, {4, 5, 2}, {5, 6, 2}}, new int[][]{{0, 3}, {3, 6}, {2, 6}, {0, 6}}));
         // 输入：n = 8, edges = [[1,2,6],[1,3,4],[2,4,6],[2,5,3],[3,6,6],[3,0,8],[7,0,2]], queries = [[4,6],[0,4],[6,5],[7,4]]
         //输出：[1,2,2,3]
-        Assert.assertArrayEquals(new int[]{1,2,2,3}, minOperationsQueries(8,
-                new int[][]{{1,2,6},{1,3,4},{2,4,6},{2,5,3},{3,6,6},{3,0,8},{7,0,2}}, new int[][]{{4,6},{0,4},{6,5},{7,4}}));
+        Assert.assertArrayEquals(new int[]{1, 2, 2, 3}, minOperationsQueries(8,
+                new int[][]{{1, 2, 6}, {1, 3, 4}, {2, 4, 6}, {2, 5, 3}, {3, 6, 6}, {3, 0, 8}, {7, 0, 2}}, new int[][]{{4, 6}, {0, 4}, {6, 5}, {7, 4}}));
     }
 
 
