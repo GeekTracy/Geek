@@ -26,6 +26,64 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+    @Test
+    public void test_2974() {
+        Assert.assertArrayEquals(new int[]{3, 2 , 5, 4}, numberGame(new int[]{5, 4, 2, 3}));
+        Assert.assertArrayEquals(new int[]{5, 2}, numberGame(new int[]{2, 5}));
+    }
+
+    /**
+     * 2974. 最小数字游戏
+     */
+    public int[] numberGame(int[] nums) {
+        int len = nums.length;
+        int[] arr = new int[len];
+        Arrays.sort(nums);
+        for (int i = 0; i < len; i = i + 2) {
+            arr[i] = nums[i + 1];
+            arr[i + 1] = nums[i];
+        }
+        return arr;
+    }
+
+
+    @Test
+    public void test_724() {
+        Assert.assertEquals(3, pivotIndex(new int[]{1, 7, 3, 6, 5, 6}));
+        Assert.assertEquals(-1, pivotIndex(new int[]{1, 2, 3}));
+        Assert.assertEquals(0, pivotIndex(new int[]{2, 1, -1}));
+    }
+
+    /**
+     * 724.寻找数组的中心下标
+     *
+     * 提示：
+     *
+     * 1 <= nums.length <= 104
+     * -1000 <= nums[i] <= 1000
+     */
+    public int pivotIndex(int[] nums) {
+        if (nums.length == 0) {
+            return -1;
+        }
+        if (nums.length == 1) {
+            return 0;
+        }
+        int sum = Arrays.stream(nums).sum();
+        int leftSum = 0;
+        int pivot;
+        for (int i = 0; i < nums.length; i++) {
+            pivot = i;
+            if (pivot - 1 >= 0) {
+                leftSum += nums[pivot - 1];
+            }
+            int rightSum = sum - nums[pivot] - leftSum;
+            if (leftSum == rightSum) {
+                return pivot;
+            }
+        }
+        return -1;
+    }
 
     @Test
     public void test_2981() {
