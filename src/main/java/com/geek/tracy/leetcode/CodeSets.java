@@ -27,6 +27,43 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
     @Test
+    public void test_3011() {
+        int[] nums = {3, 16, 8, 4, 2};
+        canSortArray(nums);
+    }
+
+    /**
+     * 3011.判断一个数组是否可以变成有序
+     * @param nums
+     * @return
+     */
+    public boolean canSortArray(int[] nums) {
+        // 计算素组中二进制的个数
+        int len = nums.length;
+        int[] bitArr = new int[len];
+        for (int i = 0; i < len; i++) {
+            bitArr[i] = Integer.bitCount(nums[i]);
+        }
+        for (int i = 0; i < len;) {
+            int fromIndex = i;
+            int toIndex = i;
+            while (toIndex + 1 < len && bitArr[fromIndex] == bitArr[toIndex + 1]) {
+                toIndex++;
+            }
+            if (fromIndex != toIndex) {
+                Arrays.sort(nums, fromIndex, toIndex + 1);
+            }
+            i = toIndex + 1;
+        }
+        for (int i = 1; i < len; i++) {
+            if (nums[i] < nums[i - 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Test
     public void test_2974() {
         Assert.assertArrayEquals(new int[]{3, 2 , 5, 4}, numberGame(new int[]{5, 4, 2, 3}));
         Assert.assertArrayEquals(new int[]{5, 2}, numberGame(new int[]{2, 5}));
