@@ -4,17 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.MessageFormat;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -25,6 +15,80 @@ import java.util.stream.Collectors;
  * @Date 2023/6/26
  */
 public class CodeSets {
+
+    /**
+     * 721.账户合并  哈希表+dfs
+     */
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        // 哈希集合，保存邮箱与accounts下表
+        Map<String, List<Integer>> emailToIndexMap = new HashMap<>();
+        for (int i = 0; i < accounts.size(); i++) {
+            // 从下标为1开始遍历，第0个元素为用户名字
+            for (int j = 1; j < accounts.get(i).size(); j++) {
+                emailToIndexMap.computeIfAbsent(accounts.get(i).get(j), k -> new ArrayList<>()).add(i);
+            }
+        }
+
+        Set<String> emailSet = new HashSet<>();  // 保存合并后的email账号集合
+        boolean[] visit = new boolean[accounts.size()]; // 标记访问过的行
+        List<List<String>> ans = new ArrayList<>();
+        // 遍历访问每一行数据
+        for (int i = 0; i < accounts.size(); i++) {
+            if (visit[i]) {
+                continue;
+            }
+            emailSet.clear();
+            // 遍历当前行，且根据emailToIndexMap找到有相同账号的其他行，并将邮箱进行合并
+            dfs(i, accounts, emailSet, visit, emailToIndexMap);
+            List<String> emails = new ArrayList<>(emailSet);
+            Collections.sort(emails);
+            List<String> rowData = new ArrayList<>();
+            rowData.add(accounts.get(i).get(0));
+            rowData.addAll(emails);
+            ans.add(rowData);
+        }
+        return ans;
+    }
+
+    private void dfs(int i, List<List<String>> accounts, Set<String> emailSet, boolean[] visit, Map<String, List<Integer>> emailToIndexMap) {
+        visit[i] = true;
+        for (int n = 1; n < accounts.get(i).size(); n++) {
+            if (emailSet.contains(accounts.get(i).get(n))) {
+                continue;
+            }
+            emailSet.add(accounts.get(i).get(n));
+            if (emailToIndexMap.get(accounts.get(i).get(n)).size() > 1) {
+                emailToIndexMap.get(accounts.get(i).get(n)).stream().filter(index -> !visit[index]).forEach(index -> dfs(index, accounts, emailSet, visit, emailToIndexMap));
+            }
+        }
+    }
+
+    /**
+     * 807.保持城市天际线
+     * @param grid
+     * @return
+     */
+    public int maxIncreaseKeepingSkyline(int[][] grid) {
+        // 寻找横向、纵向最大值数组colMax,rowMax
+        int n = grid.length;
+        int m = grid[0].length;
+        int[] rowMax = new int[n];
+        int[] colMax = new int[n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                rowMax[i] = Math.max(rowMax[i], grid[i][j]);
+                colMax[j] = Math.max(colMax[j], grid[i][j]);
+            }
+        }
+        int maxIncrease = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                maxIncrease += Math.min(rowMax[i], colMax[j]) - grid[i][j];
+            }
+        }
+        return maxIncrease;
+
+    }
 
     @Test
     public void test_3011() {
