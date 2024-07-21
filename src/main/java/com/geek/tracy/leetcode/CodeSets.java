@@ -16,6 +16,92 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+    @Test
+    public void test_2850() {
+//        Assert.assertEquals(3, minimumMoves(new int[][]{{1, 1, 0}, {1, 1, 1}, {1, 2, 1}}));
+        Assert.assertEquals(4, minimumMoves(new int[][]{{1,3,0}, {1,0,0}, {1,0,3}}));
+    }
+
+    private List<List<Integer>> allPermutation(int[] arr) {
+        List<List<Integer>> ans = new ArrayList<>();
+        List<Integer> row = new ArrayList<>();
+        backSource(arr, ans, row);
+        return ans;
+    }
+
+    private void backSource(int[] nums, List<List<Integer>> list, List<Integer> curr) {
+        if (curr.size() == nums.length) {
+            list.add(new ArrayList<>(curr));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            int temp = nums[i];
+            // 剪枝
+            if (temp == Integer.MAX_VALUE) {
+                continue;
+            }
+            nums[i] = Integer.MAX_VALUE;
+            curr.add(temp);
+            backSource(nums, list, curr);
+            curr.remove(curr.size() - 1);
+            nums[i] = temp;
+        }
+    }
+
+    /**
+     * 2850.将石头分散到网格图的最少移动次数
+     */
+    public int minimumMoves(int[][] grid) {
+        List<List<Integer>> zeroArr = new ArrayList<>();
+        List<List<Integer>> biggerArr = new ArrayList<>();
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                List<Integer> item = new ArrayList<>();
+                item.add(i);
+                item.add(j);
+                if (grid[i][j] == 0) {
+                   zeroArr.add(item);
+                } else if (grid[i][j] > 1) {
+                    for (int loop = 1; loop < grid[i][j]; loop++) {
+                        biggerArr.add(item);
+                    }
+                }
+            }
+        }
+        int moveNum = Integer.MAX_VALUE;
+        // 数组zeroArr、biggerArr 分别按照i+j进行排序
+        int [] arr = new int[zeroArr.size()];
+        for (int i = 0; i < zeroArr.size(); i++) {
+            arr[i] = i;
+        }
+        List<List<Integer>> indexPermutation = allPermutation(arr);
+        for (List<Integer> indexList : indexPermutation) {
+            int currMoves = 0;
+            for (int i = 0; i < indexList.size(); i++) {
+                int index = indexList.get(i);
+                List<Integer> cur = biggerArr.get(i);
+                List<Integer> zeroPoint = zeroArr.get(index);
+                currMoves += Math.abs(zeroPoint.get(0) - cur.get(0)) + Math.abs(zeroPoint.get(1) - cur.get(1));
+            }
+            moveNum = Math.min(moveNum, currMoves);
+        }
+        return moveNum;
+    }
+
+    /**
+     * 2956.找到两个数组中的公共元素
+     * @param nums1
+     * @param nums2
+     * @return
+     */
+    public int[] findIntersectionValues(int[] nums1, int[] nums2) {
+        Set<Integer> set1 = Arrays.stream(nums1).boxed().collect(Collectors.toSet());
+        Set<Integer> set2 = Arrays.stream(nums2).boxed().collect(Collectors.toSet());
+        long ans1 = Arrays.stream(nums1).filter(item -> set2.contains(item)).count();
+        long ans2 = Arrays.stream(nums2).filter(item -> set1.contains(item)).count();
+        return new int[]{(int) ans1, (int) ans2};
+    }
+
     /**
      * 721.账户合并  哈希表+dfs
      */
