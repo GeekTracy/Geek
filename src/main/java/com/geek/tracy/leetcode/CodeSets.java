@@ -15,6 +15,36 @@ import java.util.stream.Collectors;
  * @Date 2023/6/26
  */
 public class CodeSets {
+    /**
+     * 1186. Maximum Subarray Sum with One Deletion 删除一次得到子数组最大和
+     * <p>
+     * Kadane's Algorithm思想求解，解决最大子数组和问题（最大子数组表示连续的最大子数组）
+     */
+    public int maximumSum(int[] arr) {
+        // 最大子数组，且可删除一个元素，利用Kadane算法思想，额外定义一个数组，从i节点开始的数组startFromHere表示i节点开始的最大值
+        int length = arr.length;
+        int[] endHereMax = new int[length];
+        int max = arr[0]; // 记录不删除子数组元素时的
+        // Kadane算法得到endHereMax，endHereMax[i]的值为endHereMax[i-1]+arr[i]、arr[i]中较大的值（由其特性决定，子数组为连续的子数组）
+        endHereMax[0] = arr[0];
+        for (int i = 1; i < length; i++) {
+            endHereMax[i] = Math.max(endHereMax[i - 1] + arr[i], arr[i]);
+            max = Math.max(max, endHereMax[i]);
+        }
+
+        int[] startHereMax = new int[length];
+        startHereMax[length - 1] = arr[length - 1];
+        for (int i = length - 2; i >= 0; i--) {
+            startHereMax[i] = Math.max(arr[i] + startHereMax[i + 1], arr[i]);
+        }
+
+        // endHerMax[i-1]+startHereMax[i+1] 表示删除了arr[i]值，因为可以自由决定删或不删，则将通过卡登算法得到的max与其比较大小即可
+        for (int i = 1; i < length - 1; i++) {
+            max = Math.max(max, startHereMax[i + 1] + endHereMax[i - 1]);
+        }
+        return max;
+
+    }
 
     @Test
     public void test_2850() {
