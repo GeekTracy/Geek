@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
 
@@ -15,6 +16,32 @@ import java.util.stream.Collectors;
  * @Date 2023/6/26
  */
 public class CodeSets {
+
+    @Test
+    public void test_2766() {
+        // 输入：nums = [1,6,7,8], moveFrom = [1,7,2], moveTo = [2,9,5]
+        //输出：[5,6,8,9]
+        List<Integer> ans = relocateMarbles(new int[]{1, 6, 7, 8}, new int[]{1, 7, 2}, new int[]{2, 9, 5});
+        System.out.println(ans);
+    }
+
+    /**
+     * 2766.重新放置石块
+     */
+    public List<Integer> relocateMarbles(int[] nums, int[] moveFrom, int[] moveTo) {
+        Set<Integer> numSet = Arrays.stream(nums).boxed().collect(Collectors.toSet());
+        // 开始移动石头
+        for (int i = 0; i < moveFrom.length; i++) {
+            numSet.remove(moveFrom[i]);
+            numSet.add(moveTo[i]);
+        }
+        ArrayList<Integer> ansList = new ArrayList<>(numSet);
+        Collections.sort(ansList);
+        return ansList;
+
+    }
+
+
     /**
      * 1186. Maximum Subarray Sum with One Deletion 删除一次得到子数组最大和
      * <p>
@@ -49,7 +76,7 @@ public class CodeSets {
     @Test
     public void test_2850() {
 //        Assert.assertEquals(3, minimumMoves(new int[][]{{1, 1, 0}, {1, 1, 1}, {1, 2, 1}}));
-        Assert.assertEquals(4, minimumMoves(new int[][]{{1,3,0}, {1,0,0}, {1,0,3}}));
+        Assert.assertEquals(4, minimumMoves(new int[][]{{1, 3, 0}, {1, 0, 0}, {1, 0, 3}}));
     }
 
     private List<List<Integer>> allPermutation(int[] arr) {
@@ -90,7 +117,7 @@ public class CodeSets {
                 item.add(i);
                 item.add(j);
                 if (grid[i][j] == 0) {
-                   zeroArr.add(item);
+                    zeroArr.add(item);
                 } else if (grid[i][j] > 1) {
                     for (int loop = 1; loop < grid[i][j]; loop++) {
                         biggerArr.add(item);
@@ -100,7 +127,7 @@ public class CodeSets {
         }
         int moveNum = Integer.MAX_VALUE;
         // 数组zeroArr、biggerArr 分别按照i+j进行排序
-        int [] arr = new int[zeroArr.size()];
+        int[] arr = new int[zeroArr.size()];
         for (int i = 0; i < zeroArr.size(); i++) {
             arr[i] = i;
         }
@@ -120,6 +147,7 @@ public class CodeSets {
 
     /**
      * 2956.找到两个数组中的公共元素
+     *
      * @param nums1
      * @param nums2
      * @return
@@ -181,6 +209,7 @@ public class CodeSets {
 
     /**
      * 807.保持城市天际线
+     *
      * @param grid
      * @return
      */
@@ -214,6 +243,7 @@ public class CodeSets {
 
     /**
      * 3011.判断一个数组是否可以变成有序
+     *
      * @param nums
      * @return
      */
@@ -224,7 +254,7 @@ public class CodeSets {
         for (int i = 0; i < len; i++) {
             bitArr[i] = Integer.bitCount(nums[i]);
         }
-        for (int i = 0; i < len;) {
+        for (int i = 0; i < len; ) {
             int fromIndex = i;
             int toIndex = i;
             while (toIndex + 1 < len && bitArr[fromIndex] == bitArr[toIndex + 1]) {
@@ -245,7 +275,7 @@ public class CodeSets {
 
     @Test
     public void test_2974() {
-        Assert.assertArrayEquals(new int[]{3, 2 , 5, 4}, numberGame(new int[]{5, 4, 2, 3}));
+        Assert.assertArrayEquals(new int[]{3, 2, 5, 4}, numberGame(new int[]{5, 4, 2, 3}));
         Assert.assertArrayEquals(new int[]{5, 2}, numberGame(new int[]{2, 5}));
     }
 
@@ -273,9 +303,9 @@ public class CodeSets {
 
     /**
      * 724.寻找数组的中心下标
-     *
+     * <p>
      * 提示：
-     *
+     * <p>
      * 1 <= nums.length <= 104
      * -1000 <= nums[i] <= 1000
      */
@@ -314,9 +344,9 @@ public class CodeSets {
 
     /**
      * 2981.找出出现至少三次的最长特殊子字符串I
-     *
+     * <p>
      * 提示：
-     *
+     * <p>
      * 3 <= s.length <= 50
      * s 仅由小写英文字母组成。
      */
@@ -361,15 +391,16 @@ public class CodeSets {
 
     /**
      * 2951.寻找峰值
-     *
+     * <p>
      * 给你一个下标从 0 开始的数组 mountain 。你的任务是找出数组 mountain 中的所有 峰值。
-     *
+     * <p>
      * 以数组形式返回给定数组中 峰值 的下标，顺序不限 。
-     *
+     * <p>
      * 注意：
-     *
+     * <p>
      * 峰值 是指一个严格大于其相邻元素的元素。
      * 数组的第一个和最后一个元素 不 是峰值。
+     *
      * @param mountain
      * @return
      */
@@ -389,14 +420,16 @@ public class CodeSets {
 
 
     @Test
-    public void test_2865 () {
+    public void test_2865() {
 //        Assert.assertEquals(13, maximumSumOfHeightsI(Arrays.asList(5,3,4,1,1)));
-        Assert.assertEquals(22, maximumSumOfHeightsI(Arrays.asList(6,5,3,9,2,7)));
-        Assert.assertEquals(18, maximumSumOfHeightsI(Arrays.asList(3,2,5,5,2,3)));
+        Assert.assertEquals(22, maximumSumOfHeightsI(Arrays.asList(6, 5, 3, 9, 2, 7)));
+        Assert.assertEquals(18, maximumSumOfHeightsI(Arrays.asList(3, 2, 5, 5, 2, 3)));
     }
+
     /**
      * 2865.美丽塔 Ⅰ
      * 存在一个峰顶下标i，其左右两边分别递增、递减
+     *
      * @param maxHeights
      * @return
      */
@@ -433,14 +466,15 @@ public class CodeSets {
     }
 
     @Test
-    public void test_2866 () {
+    public void test_2866() {
         List<Integer> list = new ArrayList<>();
 
     }
 
     /**
      * 2866.美丽塔 Ⅱ
-     *  范围增大，暴力解法超时，需要使用单调栈
+     * 范围增大，暴力解法超时，需要使用单调栈
+     *
      * @param maxHeights
      * @return
      */
@@ -483,7 +517,7 @@ public class CodeSets {
 
     @Test
     public void test_1144() {
-        movesToMakeZigzag(new int[]{7,4,8,9,7,7,5});
+        movesToMakeZigzag(new int[]{7, 4, 8, 9, 7, 7, 5});
     }
 
     private void print(int[] array) {
@@ -497,13 +531,13 @@ public class CodeSets {
 
     /**
      * 1144.递减元素是数组呈锯齿状
-     *
+     * <p>
      * 题解说明：存在两种锯齿，偶数下标或奇数下标为齿峰，不管哪一种，齿峰值不变。
-     *
+     * <p>
      * * 以偶下标为齿峰为例：则nums[0]、nums[2]、nums[4]...不变，改变奇数下标nums[1]、nums[3]、nums[5]使其成为齿谷。
      * * 若下标i为要改变为峰谷的数，则需要改动的次数为：nums[i - 1]和nums[i + 1]中较小的为：min= min(nums[i - 1], nums[i + 1])，
      * * 要移动的次数为：count = num[i] - min + 1 次，则又可优化为：count = max(num[i] - min + 1, 0)次.(说明：小于0不需要修改，即count=0)
-     *
+     * <p>
      * 此解法秒在：边界值的处理，常规表达式为：count = max(nums[i] - min(nums[i - 1], nums[i + 1]) + 1, 0)，本题边界值nums[i - 1]和nums[i + 1]
      * 的处理，由于对其二者是取min，所以将边界值设定为Integer.MAX，即可将边界值常规化处理
      */
@@ -517,7 +551,6 @@ public class CodeSets {
         }
         return Math.min(res[0], res[1]);
     }
-
 
 
     @Test
@@ -1814,10 +1847,11 @@ public class CodeSets {
 
     /**
      * 2496.一个由字母和数字组成的字符串的 值 定义如下：
-     *
+     * <p>
      * 如果字符串 只 包含数字，那么值为该字符串在 10 进制下的所表示的数字。
      * 否则，值为字符串的 长度 。
      * 给你一个字符串数组 strs ，每个字符串都只由字母和数字组成，请你返回 strs 中字符串的 最大值 。
+     *
      * @param strs
      * @return
      */
@@ -1849,12 +1883,12 @@ public class CodeSets {
     }
 
     @Test
-    public void test_2496 () {
-        String[] str1 = new String[] {"alic3","bob","3","4","00000"};
+    public void test_2496() {
+        String[] str1 = new String[]{"alic3", "bob", "3", "4", "00000"};
         System.out.println(maximumValue(str1));
-        String[] str2 = new String[] {"1","01","001","0001"};
+        String[] str2 = new String[]{"1", "01", "001", "0001"};
         System.out.println(maximumValue(str2));
-        String[] str3 = new String[] {"89","bob","3","4","00000"};
+        String[] str3 = new String[]{"89", "bob", "3", "4", "00000"};
         System.out.println(maximumValue(str3));
     }
 
@@ -1889,8 +1923,8 @@ public class CodeSets {
 
     @Test
     public void test_2032() {
-        System.out.println(twoOutOfThree(new int[]{3,1}, new int[]{2,3}, new int[]{1,2}));
-        System.out.println(twoOutOfThree(new int[]{1,2,2}, new int[]{4,3}, new int[]{5}));
+        System.out.println(twoOutOfThree(new int[]{3, 1}, new int[]{2, 3}, new int[]{1, 2}));
+        System.out.println(twoOutOfThree(new int[]{1, 2, 2}, new int[]{4, 3}, new int[]{5}));
     }
 
     /**
@@ -1904,7 +1938,7 @@ public class CodeSets {
                 indexList.add(i);
             }
         }
-        int [] answer = new int[chars.length];
+        int[] answer = new int[chars.length];
         for (int i = 0; i < chars.length; i++) {
             int sum = 0;
             for (Integer index : indexList) {
@@ -1915,10 +1949,11 @@ public class CodeSets {
         return answer;
     }
 
-    public void printArray(int [] arr) {
+    public void printArray(int[] arr) {
         Arrays.stream(arr).forEach(item -> System.out.print(item + " "));
         System.out.println();
     }
+
     @Test
     public void test_1769() {
         printArray(minOperations("110"));
@@ -1927,6 +1962,7 @@ public class CodeSets {
 
     /**
      * 946. 验证栈序列
+     *
      * @Author Tracy
      * @Date 2022/11/2
      */
@@ -1948,7 +1984,7 @@ public class CodeSets {
     }
 
     @Test
-    public void test_946 () {
+    public void test_946() {
         int[] pushed = {1, 2, 3, 4, 5};
         int[] popped = {4, 5, 3, 2, 1};
         Assert.assertEquals(true, validateStackSequences(pushed, popped));
@@ -1986,7 +2022,7 @@ public class CodeSets {
      */
     public int buyChoco(int[] prices, int money) {
         Arrays.sort(prices);
-        return prices[0] + prices[1] <= money ? money - prices[0] - prices[1]  : money;
+        return prices[0] + prices[1] <= money ? money - prices[0] - prices[1] : money;
     }
 
     /**
@@ -1998,7 +2034,7 @@ public class CodeSets {
         int[] nextBigger = new int[nums2.length];
         int[] ans = new int[nums1.length];
         Deque<Integer> deque = new ArrayDeque<>();  // 单调栈
-        for (int i = nums2.length - 1; i >= 0 ; i--) {
+        for (int i = nums2.length - 1; i >= 0; i--) {
             numIndexMap.put(nums2[i], i);
             // 固定结构：栈不为空，若栈顶元素小于候选元素，则出栈直到栈顶元素大于候选
             while (!deque.isEmpty() && deque.peek() < nums2[i]) {
@@ -2020,17 +2056,17 @@ public class CodeSets {
         // 输出：[-1,3,-1]
         int[] actualResult = nextGreaterElementI(new int[]{4, 1, 2}, new int[]{1, 3, 4, 2});
         System.out.println("输入：nums1 = [4,1,2], nums2 = [1,3,4,2],输出：[-1,3,-1]");
-        int[] actualResult1 = nextGreaterElementI(new int[]{2,4}, new int[]{1,2,3,4});
+        int[] actualResult1 = nextGreaterElementI(new int[]{2, 4}, new int[]{1, 2, 3, 4});
         System.out.println("输入：nums1 = [2,4], nums2 = [1,2,3,4],输出：[3,-1]");
     }
 
     /**
      * 503.下一个更大元素Ⅱ
-     *
+     * <p>
      * nums是一个循环数组
      */
     public int[] nextGreaterElementsII(int[] nums) {
-        int[] ans = new int [nums.length];
+        int[] ans = new int[nums.length];
         // 找到循环数组的最大值，从最大值处开始倒叙循环
         int maxInArray = Integer.MIN_VALUE;
         int index = 0;
@@ -2057,18 +2093,18 @@ public class CodeSets {
     public void test_503() {
         // 输入: nums = [1,2,3,4,3]
         //输出: [2,3,4,-1,4]
-        int[] actualResult = nextGreaterElementsII(new int[]{1,2,3,4,3});
+        int[] actualResult = nextGreaterElementsII(new int[]{1, 2, 3, 4, 3});
         System.out.println("输入：nums = [1,2,3,4,3],输出：[2,3,4,-1,4]");
     }
 
     /**
      * 2333.最小差值平方差
-     *
+     * <p>
      * 给你两个下标从 0 开始的整数数组 nums1 和 nums2 ，长度为 n 。
      * 数组 nums1 和 nums2 的 差值平方和 定义为所有满足 0 <= i < n 的 (nums1[i] - nums2[i])^2 之和。
      * 同时给你两个正整数 k1 和 k2 。你可以将 nums1 中的任意元素 +1 或者 -1 至多 k1 次。类似的，你可以将 nums2 中的任意元素 +1 或者 -1 至多 k2 次。
      * 请你返回修改数组 nums1 至多 k1 次且修改数组 nums2 至多 k2 次后的最小 差值平方和 。
-     *
+     * <p>
      * 注意：你可以将数组中的元素变成 负 整数。
      */
     public long minSumSquareDiff(int[] nums1, int[] nums2, int k1, int k2) {
@@ -2102,7 +2138,7 @@ public class CodeSets {
         //解释：nums1 和 nums2 中的元素不能修改，因为 k1 = 0 和 k2 = 0 。
         //差值平方和为：(1 - 2)2 + (2 - 10)2 + (3 - 20)2 + (4 - 19)2 = 579 。
         //
-        Assert.assertEquals(579, minSumSquareDiff(new int[]{1,2,3,4}, new int[]{2,10,20,19}, 0, 0));
+        Assert.assertEquals(579, minSumSquareDiff(new int[]{1, 2, 3, 4}, new int[]{2, 10, 20, 19}, 0, 0));
 
         //示例 2：
         //输入：nums1 = [1,4,10,12], nums2 = [5,8,6,9], k1 = 1, k2 = 1
@@ -2113,7 +2149,7 @@ public class CodeSets {
         //最小差值平方和为：
         //(2 - 5)2 + (4 - 8)2 + (10 - 7)2 + (12 - 9)2 = 43 。
         //注意，也有其他方式可以得到最小差值平方和，但没有得到比 43 更小答案的方案。
-        Assert.assertEquals(43, minSumSquareDiff(new int[]{1,4,10,12}, new int[]{5,8,6,9}, 1, 1));
+        Assert.assertEquals(43, minSumSquareDiff(new int[]{1, 4, 10, 12}, new int[]{5, 8, 6, 9}, 1, 1));
 
     }
 
@@ -2156,20 +2192,20 @@ public class CodeSets {
     public void test_2397() {
         // 输入：matrix = [[0,0,0],[1,0,1],[0,1,1],[0,0,1]], numSelect = 2
         // 输出：3
-        Assert.assertEquals(3, maximumRows(new int[][]{{0,0,0},{1,0,1},{0,1,1},{0,0,1}}, 2));
+        Assert.assertEquals(3, maximumRows(new int[][]{{0, 0, 0}, {1, 0, 1}, {0, 1, 1}, {0, 0, 1}}, 2));
         // 输入：matrix = [[1],[0]], numSelect = 1
         // 输出：2
-        Assert.assertEquals(2, maximumRows(new int[][]{{1},{0}}, 1));
+        Assert.assertEquals(2, maximumRows(new int[][]{{1}, {0}}, 1));
         // 输入：[[0,1],[1,0]], numSelect = 2
         // 输出：2
-        Assert.assertEquals(2, maximumRows(new int[][]{{1,0,0,0,0,0,0},{0,1,0,1,1,1,1},{0,0,0,1,0,0,1}}, 5));
+        Assert.assertEquals(2, maximumRows(new int[][]{{1, 0, 0, 0, 0, 0, 0}, {0, 1, 0, 1, 1, 1, 1}, {0, 0, 0, 1, 0, 0, 1}}, 5));
     }
 
     /**
      * 447. 回旋镖的数量
-     *
+     * <p>
      * 提示：
-     *
+     * <p>
      * * n == points.length
      * * 1 <= n <= 500
      * * points[i].length == 2
@@ -2205,7 +2241,7 @@ public class CodeSets {
         // 输入：points = [[0,0],[1,0],[2,0]]
         //输出：2
         //解释：两个回旋镖为 [[1,0],[0,0],[2,0]] 和 [[1,0],[2,0],[0,0]]
-        Assert.assertEquals(2, numberOfBoomerangs(new int[][]{{0,0}, {1,0}, {2,0}}));
+        Assert.assertEquals(2, numberOfBoomerangs(new int[][]{{0, 0}, {1, 0}, {2, 0}}));
 
         // 输入：points = [[1,1],[2,2],[3,3]]
         //输出：2
@@ -2217,13 +2253,13 @@ public class CodeSets {
 
     /**
      * 2645.构造有效字符串的最少插入数
-     *
-     *  给你一个字符串 word ，你可以向其中任何位置插入 "a"、"b" 或 "c" 任意次，返回使 word 有效 需要插入的最少字母数。
-     *  如果字符串可以由 "abc" 串联多次得到，则认为该字符串 有效 。
-     *
-     *  提示：
-     *  * 1 <= word.length <= 50
-     *  * word 仅由字母 "a"、"b" 和 "c" 组成。
+     * <p>
+     * 给你一个字符串 word ，你可以向其中任何位置插入 "a"、"b" 或 "c" 任意次，返回使 word 有效 需要插入的最少字母数。
+     * 如果字符串可以由 "abc" 串联多次得到，则认为该字符串 有效 。
+     * <p>
+     * 提示：
+     * * 1 <= word.length <= 50
+     * * word 仅由字母 "a"、"b" 和 "c" 组成。
      */
     public int addMinimum(String word) {
         int cnt = 0;
@@ -2327,12 +2363,12 @@ public class CodeSets {
 
     /**
      * 2182.构造限制重复的字符串
-     *
+     * <p>
      * 给你一个字符串 s 和一个整数 repeatLimit ，用 s 中的字符构造一个新字符串 repeatLimitedString ，使任何字母 连续 出现的次数都不超过
      * repeatLimit 次。你不必使用 s 中的全部字符。
-     *
+     * <p>
      * 返回 字典序最大的 repeatLimitedString 。
-     *
+     * <p>
      * 如果在字符串 a 和 b 不同的第一个位置，字符串 a 中的字母在字母表中出现时间比字符串 b 对应的字母晚，则认为字符串 a 比字符串 b 字典序更大 。
      * 如果字符串中前 min(a.length, b.length) 个字符都相同，那么较长的字符串字典序更大。
      */
@@ -2367,7 +2403,7 @@ public class CodeSets {
             int times = Math.min(repeatLimit, cnt[maxIndex]);
             cnt[maxIndex] -= times;
             while (times > 0) {
-                ans.append((char)('a' + maxIndex));
+                ans.append((char) ('a' + maxIndex));
                 times--;
             }
             // 次最大序列下标小于0停止
@@ -2379,7 +2415,7 @@ public class CodeSets {
                 maxIndex = secIndex;
                 secIndex = maxIndex - 1;
             } else {
-                ans.append((char)('a' + secIndex));
+                ans.append((char) ('a' + secIndex));
                 cnt[secIndex]--;
             }
             while (secIndex >= 0 && cnt[secIndex] == 0) {
@@ -2391,34 +2427,34 @@ public class CodeSets {
 
     public String repeatLimitedString2(String s, int repeatLimit) {
         // 统计每个字符出现的次数，即初始可用次数
-        int[] counts  = new int[26];
+        int[] counts = new int[26];
         int n = s.length();
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             counts[s.charAt(i) - 'a']++;
         }
         // 找到出现的字符中字典序最大字母的索引
         int maxChar = 25;
-        while(counts[maxChar] == 0)maxChar--;
+        while (counts[maxChar] == 0) maxChar--;
         // 找到出现的字符中字典序次大字母的索引
         int secondMaxChar = maxChar - 1;
-        while(secondMaxChar >= 0 && counts[secondMaxChar] == 0)secondMaxChar--;
+        while (secondMaxChar >= 0 && counts[secondMaxChar] == 0) secondMaxChar--;
         // 开始构造字符串
         StringBuilder newStr = new StringBuilder();
-        while(maxChar >= 0){
+        while (maxChar >= 0) {
             int repeat = Math.min(repeatLimit, counts[maxChar]);     // 最大字符重复次数取其当前可用次数和最大限制的较小值
             counts[maxChar] -= repeat;      // 更新字符可用次数
-            while(repeat-- > 0)newStr.append((char)('a' + maxChar)); // 重复最大字符
-            if(secondMaxChar < 0)break; 	// 如果没有可用的次大字符，构造结束
-            if(counts[maxChar] == 0){
+            while (repeat-- > 0) newStr.append((char) ('a' + maxChar)); // 重复最大字符
+            if (secondMaxChar < 0) break;    // 如果没有可用的次大字符，构造结束
+            if (counts[maxChar] == 0) {
                 // 最大字符使用完了，使用次大字符
                 maxChar = secondMaxChar;
                 secondMaxChar--;    // 次大字符索引前移一位，以找到出现字符中下一个次大字符
-            }else{
+            } else {
                 // 最大字符没用完，肯定用了最大限制个，插入一个次大字符间隔
-                newStr.append((char)('a' + secondMaxChar));
+                newStr.append((char) ('a' + secondMaxChar));
                 counts[secondMaxChar]--;    // 更新次大字符可用次数
             }
-            while(secondMaxChar >= 0 && counts[secondMaxChar] == 0)secondMaxChar--;    // 确保指针始终指向一个可用的次大字符
+            while (secondMaxChar >= 0 && counts[secondMaxChar] == 0) secondMaxChar--;    // 确保指针始终指向一个可用的次大字符
         }
         return newStr.toString();
     }
@@ -2455,7 +2491,7 @@ public class CodeSets {
 
     @Test
     public void test_2744() {
-        Assert.assertEquals(2, maximumNumberOfStringPairs(new String[]{"cd","ac","dc","ca","zz"}));
+        Assert.assertEquals(2, maximumNumberOfStringPairs(new String[]{"cd", "ac", "dc", "ca", "zz"}));
     }
 
     /**
@@ -2477,18 +2513,18 @@ public class CodeSets {
     public void test_2171() {
 //        输入：beans = [2,10,3,2]
 //        输出：7
-        Assert.assertEquals(7, minimumRemoval(new int[]{2,10,3,2}));
+        Assert.assertEquals(7, minimumRemoval(new int[]{2, 10, 3, 2}));
     }
 
     /**
      * 29.两数相除
-     *
+     * <p>
      * 给你两个整数，被除数 dividend 和除数 divisor。将两数相除，要求 不使用 乘法、除法和取余运算。
-     *
+     * <p>
      * 整数除法应该向零截断，也就是截去（truncate）其小数部分。例如，8.345 将被截断为 8 ，-2.7335 将被截断至 -2 。
-     *
+     * <p>
      * 返回被除数 dividend 除以除数 divisor 得到的 商 。
-     *
+     * <p>
      * 注意：假设我们的环境只能存储 32 位 有符号整数，其数值范围是 [−2^31,  2^31 − 1] 。本题中，如果商 严格大于 2^31 − 1 ，则返回 2^31 − 1 ；如果商 严格小于 -2^31 ，则返回 -2^31 。
      */
     public int divide(int dividend, int divisor) {
@@ -2535,7 +2571,7 @@ public class CodeSets {
         long temp = b; // 暂存除数
         while (a > (temp << 1)) { // a > b * 2 ，a 比 b的2倍大，则商至少为2
             cnt = cnt << 1;   // cnt * 2
-            temp = temp<< 1;  // temp * 2
+            temp = temp << 1;  // temp * 2
         }
         return cnt + div(a - temp, b);
     }
@@ -2573,7 +2609,7 @@ public class CodeSets {
     /**
      * 2765.最长交替子数组
      * 给你一个下标从 0 开始的整数数组 nums 。如果 nums 中长度为 m 的子数组 s 满足以下条件，我们称它是一个 交替子数组 ：
-     *
+     * <p>
      * m 大于 1 。
      * s1 = s0 + 1 。
      * 下标从 0 开始的子数组 s 与数组 [s0, s1, s0, s1,...,s(m-1) % 2] 一样。也就是说，s1 - s0 = 1 ，s2 - s1 = -1 ，s3 - s2 = 1 ，
@@ -2621,7 +2657,7 @@ public class CodeSets {
             }
         }
         // 原数组分为2段，0 -- (k - 1) 和 k -- end，前后2段均为升序，且nums[0] > nums[end]，如果target<nums[0]，则遍历前半段，否则遍历后半段
-        int left,right;
+        int left, right;
         if (target >= nums[0]) {
             left = 0;
             right = k - 1;
@@ -2665,7 +2701,7 @@ public class CodeSets {
 
     /**
      * 36.有效的数独
-     *  注意：遍历一次，同事获取到行、列、宫格内的元素，难点宫格的下标index和row/col的关系 （index=(row/3) * 3 + col/3）
+     * 注意：遍历一次，同事获取到行、列、宫格内的元素，难点宫格的下标index和row/col的关系 （index=(row/3) * 3 + col/3）
      */
     public boolean isValidSudoku(char[][] board) {
         // 数字 1-9 在每一行只能出现一次
@@ -2706,9 +2742,9 @@ public class CodeSets {
             for (int col = 0; col < 9; col += 3) {
                 // 枚举出每个宫格内的元素集合
                 char[] arr = new char[]{
-                        board[row][col],board[row][col + 1],board[row][col + 2],
-                        board[row + 1][col],board[row + 1][col + 1],board[row + 1][col + 2],
-                        board[row + 2][col],board[row + 2][col + 1],board[row + 2][col + 2]
+                        board[row][col], board[row][col + 1], board[row][col + 2],
+                        board[row + 1][col], board[row + 1][col + 1], board[row + 1][col + 2],
+                        board[row + 2][col], board[row + 2][col + 1], board[row + 2][col + 2]
                 };
                 int numCnt = 0;
                 Set<Character> set = new HashSet<>();
@@ -2755,6 +2791,7 @@ public class CodeSets {
         }
         return true;
     }
+
     @Test
     public void test_36() {
         // 输入：board =
@@ -2768,7 +2805,7 @@ public class CodeSets {
         //,[".",".",".","4","1","9",".",".","5"]
         //,[".",".",".",".","8",".",".","7","9"]]
         //输出：true
-        Assert.assertEquals(true, isValidSudoku(new char[][]{{'5','3','.','.','7','.','.','.','.'},{'6','.','.','1','9','5','.','.','.'},{'.','9','8','.','.','.','.','6','.'},{'8','.','.','.','6','.','.','.','3'},{'4','.','.','8','.','3','.','.','1'},{'7','.','.','.','2','.','.','.','6'},{'.','6','.','.','.','.','2','8','.'},{'.','.','.','4','1','9','.','.','5'},{'.','.','.','.','8','.','.','7','9'}}));
+        Assert.assertEquals(true, isValidSudoku(new char[][]{{'5', '3', '.', '.', '7', '.', '.', '.', '.'}, {'6', '.', '.', '1', '9', '5', '.', '.', '.'}, {'.', '9', '8', '.', '.', '.', '.', '6', '.'}, {'8', '.', '.', '.', '6', '.', '.', '.', '3'}, {'4', '.', '.', '8', '.', '3', '.', '.', '1'}, {'7', '.', '.', '.', '2', '.', '.', '.', '6'}, {'.', '6', '.', '.', '.', '.', '2', '8', '.'}, {'.', '.', '.', '4', '1', '9', '.', '.', '5'}, {'.', '.', '.', '.', '8', '.', '.', '7', '9'}}));
         //示例 2：
         //
         //输入：board =
@@ -2829,24 +2866,23 @@ public class CodeSets {
     /**
      * 1686.石子游戏 VI
      * Alice 和 Bob 轮流玩一个游戏，Alice 先手。
-     *
+     * <p>
      * 一堆石子里总共有 n 个石子，轮到某个玩家时，他可以 移出 一个石子并得到这个石子的价值。Alice 和 Bob 对石子价值有 不一样的的评判标准 。双方都知道对方的评判标准。
-     *
+     * <p>
      * 给你两个长度为 n 的整数数组 aliceValues 和 bobValues 。aliceValues[i] 和 bobValues[i] 分别表示 Alice 和 Bob 认为第 i 个石子的价值。
-     *
+     * <p>
      * 所有石子都被取完后，得分较高的人为胜者。如果两个玩家得分相同，那么为平局。两位玩家都会采用 最优策略 进行游戏。
-     *
+     * <p>
      * 请你推断游戏的结果，用如下的方式表示：
-     *
+     * <p>
      * 如果 Alice 赢，返回 1 。
      * 如果 Bob 赢，返回 -1 。
      * 如果游戏平局，返回 0 。
-     *
+     * <p>
      * 分析：因为n个石子，一人取一个。假设alice数组的价值总值A，bob的为B。假设bob拿走了所有的石子，则bob得到的石子的价值是B，alice的价值是0，则得分差值：0 - B；
      * 由于alice也要拿石子，如果拿的下标为i的石子，则分差值会减少：aliceValues[i] + bobValues[i]，即bob只取i石子，差值为：0 - B - （aliceValues[i] + bobValues[i]），
      * 由此可分析得知，alice取 aliceValues[i] + bobValues[i] 最大的值时，alice可获取最大的价值，又由于二人都按最优策略进行，则可定义C数组表示 aliceValues，bobValues
      * 数组相同石子的价值和，并且进行降序排列，则alice、bob以此从前往后取石子即为最有取法。
-     *
      */
     public int stoneGameVI(int[] aliceValues, int[] bobValues) {
         Integer[] c = new Integer[aliceValues.length];
@@ -2871,18 +2907,17 @@ public class CodeSets {
         //解释：
         //Alice 拿石子 0 ， Bob 拿石子 1 ，他们得分都为 1 分。
         //打平。
-        Assert.assertEquals(1, stoneGameVI(new int[]{1, 3}, new int[]{2,1}));
+        Assert.assertEquals(1, stoneGameVI(new int[]{1, 3}, new int[]{2, 1}));
     }
 
     /**
      * 204.计数质数
-     *
+     * <p>
      * 利用枚举的方法，
      */
     public int countPrimes(int n) {
         return 0;
     }
-
 
 
     /**
