@@ -18,6 +18,98 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
     @Test
+    public void test_2844() {
+        // 输入：num = "2245047"
+        //输出：2
+        Assert.assertEquals(2, minimumOperations("2245047"));
+        // 输入：num = "2908305"
+        //输出：3
+        Assert.assertEquals(3, minimumOperations("2908305"));
+
+        // 输入：num = "10"
+        //输出：1
+    }
+
+
+    /**
+     * 2844.生成特殊数字的最少操作
+     * 每次删除任意一位数字，且最后能被25整除。经分析：1*25=25,2*25=50,3*25=75,4*25=100,5*25=125....，由此可知最后两位为25/50/75/00
+     * 的可以被25整除，则此题可转换为查找num最后为25/50/75/00或最后一位为0即可被25整除。
+     */
+    public int minimumOperations(String num) {
+        // 经归纳总结，从num右往左遍历，若发现0时，则找到5、0时即可停止，计算需删除字符个数即可，若发现5，则找到2、7时即可停止。
+        int len = num.length();
+        char[] arr = num.toCharArray();
+        boolean flagZero = false;
+        boolean flagFive = false;
+        // 双指针，List<int[]>，数组值表示元素下标，
+        List<Integer> list = new ArrayList<>();
+        for (int i = len - 1; i >= 0; i--) {
+            if (arr[i] == '0' && !flagZero) {
+                int k = i - 1;
+                while (k >= 0) {
+                    if (arr[k] == '0' || arr[k] == '5') {
+                        list.add(k);
+                        break;
+                    } else {
+                        k--;
+                    }
+                }
+                flagZero = true;
+            }
+            if (arr[i] == '5' && !flagFive) {
+                int k = i - 1;
+                while (k >= 0) {
+                    if (arr[k] == '2' || arr[k] == '7') {
+                        list.add(k);
+                        break;
+                    } else {
+                        k--;
+                    }
+                }
+                flagFive = true;
+            }
+        }
+        if (list.size() > 0) {
+            Collections.sort(list);
+            return len - list.get(list.size() - 1) - 2;
+        }
+
+        return flagZero ? len - 1 : len;
+    }
+
+
+    @Test
+    public void test_2259() {
+//        System.out.println(removeDigit("1234566", '2'));
+//        System.out.println(removeDigit("876532", '7'));
+        System.out.println(removeDigit("87765792", '7'));
+//        System.out.println(removeDigit("8776532", '2'));
+    }
+
+    /**
+     * 2259
+     */
+    public String removeDigit(String number, char digit) {
+        // 假设删除的digit下标为i，从左往右遍历
+        // 1）num[i] < num[i+1]，则删除后值变大，则直接返回
+        // 2）num[i] >= num[i+1]，删除后值不变或变小，如果后面没有digit数字，则直接返回，如果有在重复1,2逻辑
+        char[] num = number.toCharArray();
+        String ans = "";
+        for (int i = 0; i < num.length; i++) {
+            if (num[i] == digit) {
+                ans = number.substring(0, i) + number.substring(i + 1);
+                if (i == num.length - 1 && num[i] == digit) {
+                    return ans;
+                }
+                if (num[i] < num[i + 1]) {
+                    return ans;
+                }
+            }
+        }
+        return ans;
+    }
+    @Test
     public void test_2766() {
         // 输入：nums = [1,6,7,8], moveFrom = [1,7,2], moveTo = [2,9,5]
         //输出：[5,6,8,9]
