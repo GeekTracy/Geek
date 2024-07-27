@@ -16,6 +16,126 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+
+    /**
+     * 1343.大小为k且平局值大于等于阈值的子数组数目
+     * @param arr
+     * @param k
+     * @param threshold
+     * @return
+     */
+    public int numOfSubarrays(int[] arr, int k, int threshold) {
+        int len = arr.length;
+        int sum = 0;
+        int count = 0;
+        for (int i = 0; i < len; i++) {
+            // 入窗
+            sum += arr[i];
+            if (i < k - 1) {
+                continue;
+            }
+            // 2更新个数
+            if (sum * 1.0 / k >= threshold) {
+                count++;
+            }
+            // 3出窗
+            sum -= arr[i - k + 1];
+
+        }
+        return count;
+    }
+
+    @Test
+    public void test_643() {
+        Assert.assertEquals(-1, findMaxAverage(new int[]{-1}, 1));
+    }
+
+    /**
+     * 643. 子数组最大平均数 I
+     * 给你一个由 n 个元素组成的整数数组 nums 和一个整数 k 。
+     *
+     * 请你找出平均数最大且 长度为 k 的连续子数组，并输出该最大平均数。
+     *
+     * 任何误差小于 10^5 的答案都将被视为正确答案。
+     * @param nums
+     * @param k
+     * @return
+     */
+    public double findMaxAverage(int[] nums, int k) {
+        int len = nums.length;
+        int sum = 0;
+        int maxSum = Integer.MIN_VALUE;
+        for (int i = 0; i < len; i++) {
+            // 1进入窗口
+            sum += nums[i];
+            if (i < k - 1) {
+                continue;
+            }
+            // 2更新平均数
+            maxSum = Math.max(maxSum,  sum);
+            // 3出窗口
+            sum -= nums[i - k + 1];
+        }
+        return 1.0 * maxSum / k;
+    }
+
+    /**
+     * 1984. 学生分数的最小差值
+     * 排序+滑动窗口
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int minimumDifference(int[] nums, int k) {
+        Arrays.sort(nums);
+        if (k == 1) {
+            return 0;
+        }
+        int min = Integer.MAX_VALUE;
+        for (int i = k - 1; i < nums.length; i++) {
+            // 1入窗
+            // 2更新min
+            min = Math.min(min, nums[i] - nums[i - k + 1]);
+            // 3出窗
+        }
+        return min;
+    }
+
+    /**
+     * 2269.找到一个数字的 K 美丽值
+     *
+     * 一个整数 num 的 k 美丽值定义为 num 中符合以下条件的 子字符串 数目：
+     *
+     * 子字符串长度为 k 。
+     * 子字符串能整除 num 。
+     * 给你整数 num 和 k ，请你返回 num 的 k 美丽值。
+     *
+     * 注意：
+     *
+     * 允许有 前缀 0 。
+     * 0 不能整除任何值。
+     * 一个 子字符串 是一个字符串里的连续一段字符序列。
+     *
+     * 滑动窗口
+     */
+    public int divisorSubstrings(int num, int k) {
+        String numStr = String.valueOf(num);
+        int count = 0;
+        for (int i = 0; i <= numStr.length() - k; i++) {
+            String sub = numStr.substring(i, i + k);
+            Integer cur = Integer.valueOf(sub);
+            if (cur != 0 && num % cur == 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+    @Test
+    public void test_2269() {
+        int i = divisorSubstrings(609070001, 3);
+    }
+
+
     @Test
     public void test_1456() {
 //        Assert.assertEquals(4, maxVowels("weallloveyou", 7));
