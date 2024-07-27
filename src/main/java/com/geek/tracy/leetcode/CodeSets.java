@@ -17,6 +17,75 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
     @Test
+    public void test_1456() {
+//        Assert.assertEquals(4, maxVowels("weallloveyou", 7));
+        Assert.assertEquals(3, maxVowels("abciiidef", 3));
+    }
+
+    public int maxVowels_(String s, int k) {
+        // 滑动窗口解答，套路格式：入窗-更新max-出窗
+        int max = 0;
+        char[] arr = s.toCharArray();
+        int vowels = 0;
+        for (int i = 0; i < arr.length; i++) {
+            // 1 入窗
+            if ('a' == arr[i] || 'e' == arr[i] || 'i' == arr[i] || 'o' == arr[i] || 'u' == arr[i]) {
+                vowels++;
+            }
+            // 入窗个数不足k个，继续入窗
+            if (i < k - 1) {
+                continue;
+            }
+            // 2 更新(入窗个数刚好k个)
+            max = Math.max(max, vowels);
+
+            // 3 出窗
+            int outIndex = i - k + 1;
+            if ('a' == arr[outIndex] || 'e' == arr[outIndex] || 'i' == arr[outIndex] || 'o' == arr[outIndex] || 'u' == arr[outIndex]) {
+                vowels--;
+            }
+        }
+        return max;
+
+    }
+
+    /**
+     * 1456.定长子串中元音的最大数目
+     * <p>
+     * 给你字符串 s 和整数 k 。
+     * 请返回字符串 s 中长度为 k 的单个子字符串中可能包含的最大元音字母数。
+     * 英文中的 元音字母 为（a, e, i, o, u）。
+     * <p>
+     * 移动窗口
+     */
+    public int maxVowels(String s, int k) {
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.add("a");
+        hashSet.add("e");
+        hashSet.add("i");
+        hashSet.add("o");
+        hashSet.add("u");
+
+        char[] arr = s.toCharArray();
+        // toHere[i]表示节点i之前的所有元素中元音的个数
+        int[] toHere = new int[arr.length];
+        toHere[0] = hashSet.contains(String.valueOf(arr[0])) ? 1 : 0;
+        for (int i = 1; i < arr.length; i++) {
+            String curr = String.valueOf(arr[i]);
+            if (hashSet.contains(curr)) {
+                toHere[i] = toHere[i - 1] + 1;
+            } else {
+                toHere[i] = toHere[i - 1];
+            }
+        }
+        int max = toHere[k - 1];
+        for (int i = k; i < toHere.length; i++) {
+            max = Math.max(max, toHere[i] - toHere[i - k]);
+        }
+        return max;
+    }
+
+    @Test
     public void test_3106() {
         Assert.assertEquals("aaaz", getSmallestString("zbbz", 3));
         Assert.assertEquals("aawcd", getSmallestString("xaxcd", 4));
@@ -66,13 +135,13 @@ public class CodeSets {
         Assert.assertEquals("1", countAndSay(1));
         Assert.assertEquals("1211", countAndSay(4));
     }
-    
+
     /**
      * 38.外观数列
      * 外观数列」是一个数位字符串序列，由递归公式定义：
-     *
-     *  countAndSay(1) = "1"
-     *  countAndSay(n) 是 countAndSay(n-1) 的行程长度编码。
+     * <p>
+     * countAndSay(1) = "1"
+     * countAndSay(n) 是 countAndSay(n-1) 的行程长度编码。
      */
     public String countAndSay(int n) {
         String[] dp = new String[n + 1];
@@ -133,7 +202,7 @@ public class CodeSets {
         int right = len - 1;
         int[] ans = new int[2];
         while (right >= left) {
-            int mid =(right + left) / 2;
+            int mid = (right + left) / 2;
             if (nums[mid] < target) {
                 left = mid + 1;
             }
