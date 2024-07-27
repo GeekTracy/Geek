@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.concurrent.LinkedTransferQueue;
 import java.util.stream.Collectors;
 
 
@@ -17,20 +16,170 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+    @Test
+    public void test_3106() {
+        Assert.assertEquals("aaaz", getSmallestString("zbbz", 3));
+        Assert.assertEquals("aawcd", getSmallestString("xaxcd", 4));
+        Assert.assertEquals("lol", getSmallestString("lol", 0));
+    }
+
+    /**
+     * 3106.满足距离约束且字典最小的字符串
+     */
+    public String getSmallestString(String s, int k) {
+        // 贪心思想，每次从第一个字母开始寻找字典最小字符串，依次往后寻找。
+        if (k == 0) {
+            return s;
+        }
+        char[] arr = s.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (k <= 0) {
+                break;
+            }
+            int dis = arr[i] - 'a';
+            // 当前字符到a的距离dis
+            // 1）如果小于等于13则在前半段，如果小于k，下标为i的节点直接修改为a，k的值变为k-dis，如果大于k则直接移动到arr[i] - k 停止
+            // 2）若大于13则在后半段，如果k小于26 - dis，则说明无法移动到a，则移动arr[i] - k 停止，如果k大于等于26 - dis，则i的节点修改为a，且k的值变为k - （26-dis）
+            if (dis <= 13) {
+                if (dis < k) {
+                    arr[i] = 'a';
+                    k -= dis;
+                } else {
+                    arr[i] = (char) (arr[i] - k);
+                    k = 0;
+                }
+            } else {
+                if (k < 26 - dis) {
+                    arr[i] = (char) (arr[i] - k);
+                    k = 0;
+                } else {
+                    arr[i] = 'a';
+                    k -= 26 - dis;
+                }
+            }
+        }
+        return new String(arr);
+    }
+
+    @Test
+    public void test_38() {
+        Assert.assertEquals("1", countAndSay(1));
+        Assert.assertEquals("1211", countAndSay(4));
+    }
+    
+    /**
+     * 38.外观数列
+     * 外观数列」是一个数位字符串序列，由递归公式定义：
+     *
+     *  countAndSay(1) = "1"
+     *  countAndSay(n) 是 countAndSay(n-1) 的行程长度编码。
+     */
+    public String countAndSay(int n) {
+        String[] dp = new String[n + 1];
+        dp[1] = "1";
+        for (int i = 2; i <= n; i++) {
+            dp[i] = code(dp[i - 1]);
+        }
+        System.out.println(dp);
+        return dp[n];
+    }
+
+    /**
+     * 行程长度编码：是一种字符串压缩方法，其工作原理是通过将连续相同字符（重复两次或更多次）替换为字符重复次数（运行长度）和字符的串联。例如，
+     * 要压缩字符串 "3322251" ，我们将 "33" 用 "23" 替换，将 "222" 用 "32" 替换，将 "5" 用 "15" 替换并将 "1" 用 "11" 替换。因此压
+     * 缩后字符串变为 "23321511"。
+     *
+     * @param str 待压缩字符串
+     */
+    private String code(String str) {
+        StringBuilder sb = new StringBuilder();
+        char[] arr = str.toCharArray();
+        for (int i = 0; i < arr.length; ) {
+            char curr = arr[i];
+            int k = 1;
+            i++;
+            while (i < arr.length && curr == arr[i]) {
+                k++;
+                i++;
+            }
+            sb.append(k).append(curr);
+        }
+        return sb.toString();
+    }
+
+
+    @Test
+    public void test_34() {
+        // 输入：nums = [5,7,7,8,8,10], target = 8
+        //输出：[3,4]
+//        Assert.assertArrayEquals(new int[]{3, 4}, searchRange(new int[]{5, 7, 7, 8, 8, 10}, 8));
+        // 输入：nums = [5,7,7,8,8,10], target = 6
+        //输出：[-1,-1]
+//        Assert.assertArrayEquals(new int[]{-1, -1}, searchRange(new int[]{5,7,7,8,8,10}, 6));
+
+        // 输入：nums = [], target = 0
+        //输出：[-1,-1]
+//        Assert.assertArrayEquals(new int[]{1, 1}, searchRange(new int[]{1, 2,3}, 2));
+        Assert.assertArrayEquals(new int[]{0, 0}, searchRange(new int[]{1}, 1));
+
+    }
+
+    /**
+     * 34.在排序数组中查找元素的第一个和最后一个位置
+     */
+    public int[] searchRange(int[] nums, int target) {
+        int len = nums.length;
+        int left = 0;
+        int right = len - 1;
+        int[] ans = new int[2];
+        while (right >= left) {
+            int mid =(right + left) / 2;
+            if (nums[mid] < target) {
+                left = mid + 1;
+            }
+            if (nums[mid] > target) {
+                right = mid - 1;
+            }
+            if (nums[mid] == target) {
+                // 朝左右两边找到等于target值的下标
+                left = mid;
+                right = mid;
+                while (nums[left] == target || nums[right] == target) {
+                    if (left - 1 >= 0 && nums[left - 1] == target) {
+                        left--;
+                    } else if (right + 1 < len && nums[right + 1] == target) {
+                        right++;
+                    } else {
+                        break;
+                    }
+                }
+                ans[0] = left;
+                ans[1] = right;
+                break;
+            }
+        }
+        if (left > right) {
+            ans[0] = -1;
+            ans[1] = -1;
+        }
+        return ans;
+    }
+
+
     /**
      * 2740.找出分区值
-     *
+     * <p>
      * 给你一个 正 整数数组 nums 。
-     *
+     * <p>
      * 将 nums 分成两个数组：nums1 和 nums2 ，并满足下述条件：
-     *
-     *  1）数组 nums 中的每个元素都属于数组 nums1 或数组 nums2 。
-     *  2）两个数组都 非空 。
-     *  3）分区值 最小 。
+     * <p>
+     * 1）数组 nums 中的每个元素都属于数组 nums1 或数组 nums2 。
+     * 2）两个数组都 非空 。
+     * 3）分区值 最小 。
      * 分区值的计算方法是 |max(nums1) - min(nums2)| 。
-     *
+     * <p>
      * 其中，max(nums1) 表示数组 nums1 中的最大元素，min(nums2) 表示数组 nums2 中的最小元素。
-     *
+     * <p>
      * 返回表示分区值的整数。
      */
     public int findValueOfPartition(int[] nums) {
@@ -135,6 +284,7 @@ public class CodeSets {
         }
         return ans;
     }
+
     @Test
     public void test_2766() {
         // 输入：nums = [1,6,7,8], moveFrom = [1,7,2], moveTo = [2,9,5]
