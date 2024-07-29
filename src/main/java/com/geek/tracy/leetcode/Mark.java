@@ -3,14 +3,8 @@ package com.geek.tracy.leetcode;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 难题，经典汇总mark
@@ -19,6 +13,45 @@ import java.util.Map;
  * @date 2024/1/19
  */
 public class Mark {
+
+    @Test
+    public void test_699() {
+        //
+        fallingSquares(new int[][]{{50,47},{95,48},{88,77},{84,3},{53,87},{98,79},{88,28},{13,22},{53,73},{85,55}});
+    }
+
+    /**
+     * 699.掉落的方块
+     * 分析+调试
+     */
+    public List<Integer> fallingSquares(int[][] positions) {
+        int len = positions.length;
+        int[] maxHere = new int[len];
+        int[] realHere = new int[len];
+        maxHere[0] = positions[0][1];
+        realHere[0] = positions[0][1];
+        for (int i = 1; i < len; i++) {
+            // 从 i - 1从前找到j，第一个left+r > positions[i][0]的，高度在maxHere[j]加positions[i][1]，否则高度为positions[i][1]
+            for (int j = i - 1; j >= 0; j--) {
+                // 节点j抵达的右侧坐标
+                int jRight = positions[j][0] + positions[j][1];
+                int jLeft = positions[j][0];
+                if (jRight > positions[i][0] && jLeft < positions[i][0] + positions[i][1]) {
+                    // 节点j的右侧大于i节点的左侧坐标，则i可以放到j上，放上去的高度为：maxHere[j] + positions[i][1]
+                    // maxHere[i]取放上去的高度与maxHere[i - 1]中较大的
+                    realHere[i] = Math.max(realHere[j] + positions[i][1], realHere[i]);
+                    maxHere[i] = Math.max(maxHere[i], Math.max(maxHere[i - 1], realHere[j] + positions[i][1]));
+                }
+            }
+            // 遍历完i之前的所有节点，如果没有找到符合条件的j，则maxHere[i]高度等于节点i的r与maxHere[i - 1]中较大的
+            if (maxHere[i] == 0) {
+                // 没有找到可以放上去的j点
+                realHere[i] = positions[i][1];
+                maxHere[i] = Math.max(maxHere[i - 1], positions[i][1]);
+            }
+        }
+        return Arrays.stream(maxHere).boxed().collect(Collectors.toList());
+    }
 
     @Test
     public void test_2866 () {
