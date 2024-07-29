@@ -17,6 +17,44 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
 
+    @Test
+    public void test_2090() {
+        getAverages(new int[]{7,4,3,9,1,8,5,2,6}, 3);
+    }
+
+
+    /**
+     * 2090.半径为k的子数组平均值
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] getAverages(int[] nums, int k) {
+        int len = nums.length;
+        int[] ans = new int[len];
+        Arrays.fill(ans, -1);
+        if (len <= k * 2) {
+            return ans;
+        }
+        long sum = 0;
+        int winLen = k * 2 + 1;
+        // l, i, r ,
+        for (int i = 0; i < len; i++) {
+            // 1入窗口，窗口长度为： k * 2 + 1
+            sum += nums[i];
+            if (i < winLen - 1) {
+                continue;
+            }
+            // 2更新ans[i]的值
+            int index = i - k;
+            ans[index] = (int) (sum / winLen);
+            // 3出窗口
+            sum -= nums[i - k * 2];
+        }
+        return ans;
+    }
+
+
     /**
      * 1343.大小为k且平局值大于等于阈值的子数组数目
      * @param arr
