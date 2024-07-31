@@ -16,6 +16,52 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+    @Test
+    public void test_3111() {
+        // 输入：[[2,1],[1,0],[1,4],[1,8],[3,5],[4,6]]   w=1
+        // 输出：2
+        Assert.assertEquals(2, minRectanglesToCoverPoints(
+                new int[][]{{2,1},{1,0},{1,4},{1,8},{3,5},{4,6}}, 1));
+    }
+
+    /**
+     * 3111.覆盖所有点的最少矩形数目
+     * 没有限制y的高度，可以用贪心的思想，先将数组按x坐标排序，每次矩形宽为：x1+w
+     */
+    public int minRectanglesToCoverPoints(int[][] points, int w) {
+        // 排序
+        Arrays.sort(points, Comparator.comparingInt(p -> p[0]));
+        int ans = 0;
+        int x2 = -1; // points中x坐标都大于0，所以将x2初始化为负数，便于计算
+        for (int[] px : points) {
+            if (px[0] > x2) {
+                ans++;
+                x2 += w;
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 50. POW(x, n)
+     * 快速幂
+     */
+    public double myPow(double x, int n) {
+        if (n < 0) {
+            x = 1 / x;
+            n = -n;
+        }
+        return quickMul(x, n);
+    }
+
+    private double quickMul(double x, int n) {
+        if (n == 0) {
+            return 1.0;
+        }
+        double y = quickMul(x, n / 2);
+        return n % 2 == 0 ? y * y : y * y * x;
+    }
+
 
     @Test
     public void test_2090() {
