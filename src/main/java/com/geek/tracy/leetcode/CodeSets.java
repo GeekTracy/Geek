@@ -17,11 +17,259 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
     @Test
+    public void test_3153() {
+        Assert.assertEquals(4, sumDigitDifferences(new int[] {13, 23, 12}));
+        Assert.assertEquals(0, sumDigitDifferences(new int[] {10, 10, 10, 10}));
+//        sumDigitDifferences02(new int[]{234,890,763,134,987,908,645});
+    }
+
+    /**
+     * 3153.所有数对中数位不同之和
+     */
+    public long sumDigitDifferences(int[] nums) {
+        // 定义二位数组，分别计算每位出现的数字的次数
+        int len = Integer.toString(nums[0]).length();
+        int[][] digitalNum = new int[len][10];  // len 表示nums元素的长度
+        // 从个位开始遍历nums数组
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            for (int j = 0; num > 0; j++) {
+                int dig = num % 10;
+                num /= 10;
+                digitalNum[j][dig] = digitalNum[j][dig] + 1;
+            }
+        }
+        // 计算每个位上不同数值可以出现的对数
+        long ans = 0;
+        for (int row = 0; row < len; row++) {
+            int sumLeft = nums.length;
+            for (int i = 0; i < 10; i++) {
+                if (digitalNum[row][i] != 0) {
+                    sumLeft = sumLeft - digitalNum[row][i];
+                    ans += (long) sumLeft * digitalNum[row][i];
+                }
+            }
+        }
+        return ans;
+
+    }
+
+
+    @Test
+    public void test0111() {
+        Node node1 = new Node(1, null);
+        Node node2 = new Node(2, null);
+        Node node3 = new Node(3, null);
+        Node node4 = new Node(2, null);
+        Node node5 = new Node(4, null);
+        node1.next = node2;
+        node2.next = node3;
+        node3.next = node4;
+        node4.next = node5;
+        getPerfectLinkNode(node1);
+    }
+    /**
+     * 定义链表节点
+     */
+    class Node{
+        // 节点的值
+        Integer val;
+        // 下一个节点
+        Node next;
+
+        public Node(Integer val, Node node) {
+            this.val = val;
+            this.next = node;
+        }
+    }
+
+    /**
+     * 求解完美链表
+     */
+    public Node getPerfectLinkNode(Node linkNode) {
+        // 哈希表保存数字出现的次数
+        Map<Integer, Integer> hash = new HashMap<>();
+        while (linkNode != null) {
+            if (hash.containsKey(linkNode.val)) {
+                hash.put(linkNode.val, hash.get(linkNode.val) + 1);
+            } else {
+                hash.put(linkNode.val, 1);
+            }
+            linkNode = linkNode.next;
+        }
+        int value = 0;
+        int maxNum = -1;
+        for (Map.Entry<Integer, Integer> entry : hash.entrySet()) {
+            if (entry.getValue() > maxNum) {
+                maxNum = entry.getValue();
+                value = entry.getKey();
+            }
+        }
+        // 创建maxNum个值为value的链表
+        Node ans = new Node(0, null);
+        Node point = ans;
+        while (maxNum > 0) {
+            Node temp = new Node(value, null);
+            point.next = temp;
+            point = temp;
+            maxNum--;
+        }
+        return ans.next;
+    }
+
+
+
+
+
+
+    @Test
+    public void test_3129() {
+        Assert.assertEquals(14, numberOfStableArrays(3, 3, 2));
+
+    }
+
+    /**
+     * 3129.找出所有稳定的二进制数组I
+     */
+    public int numberOfStableArrays(int zero, int one, int limit) {
+        // 回溯算法：数组总共有：zero+one个元素，0或1连续的个数最多为limit个
+        List<List<Integer>> list = new ArrayList<>();
+        int size = zero + one;
+        back(one, size, limit, list, new ArrayList<>());
+        list.forEach(item -> System.out.println(item.toString()));
+        return list.size();
+    }
+
+    private void back(int leftOne, int size, int limit, List<List<Integer>> list, List<Integer> temp) {
+        if (temp.size() == size) {
+            list.add(temp);
+            return;
+        }
+        if (leftOne > 0) {
+            if (canPutOne(temp, limit)) {
+                temp.add(1);
+                back(leftOne - 1, size, limit, list, temp);
+                temp.remove(temp.size() - 1);
+            } else {
+                temp.add(0);
+                back(leftOne, size, limit, list, temp);
+            }
+        }
+
+    }
+
+    private boolean canPutOne(List<Integer> temp, int limit) {
+        // index-1及之前是否有limit个1，有就不可以继续放1，否则就可以放1
+        int len = temp.size();
+        int idx = len - 1;
+        while (limit > 0) {
+            if (idx > 0 || temp.get(idx) == 0) {
+                return true;
+            }
+            limit--;
+            idx--;
+        }
+        return false;
+    }
+
+    /**
+     * 3128.直角三角形
+     *
+     * @param grid
+     * @return
+     */
+    public long numberOfRightTriangles(int[][] grid) {
+        // 乘法原理，即笛卡尔积，每个节点横竖方向1的个数分别为n，k，则改点为直接顶点有（n-1）*（k-1）个直角三角形
+        int col = grid[0].length; // 列个数
+        int[] colNum = new int[col]; // 每列1的个数
+        for (int i = 0; i < grid.length; i++) {
+            int[] rowArr = grid[i];
+            for (int c = 0; c < col; c++) {
+                colNum[c] += rowArr[c];
+            }
+        }
+
+        long ans = 0;
+        for (int i = 0; i < grid.length; i++) {
+            // 计算行1的个数
+            int rowNum = 0;
+            for (int c = 0; c < grid[0].length; c++) {
+                rowNum += grid[i][c];
+            }
+            // 乘法原理，计算当前节点
+            for (int c = 0; c < grid[0].length; c++) {
+                if (grid[i][c] == 1) {
+                    ans += (long) (rowNum - 1) * (colNum[c] - 1);
+                }
+            }
+        }
+        return ans;
+    }
+
+
+    @Test
+    public void test_40() {
+        // [1,2,8,9] 3
+//        Assert.assertEquals(18, maxmiumScore(new int[]{1,2,8,9}, 3));
+    }
+
+    /**
+     * LCP 40.心算挑战
+     *
+     * @param cards
+     * @param cnt
+     * @return
+     */
+    public int maxmiumScore(int[] cards, int cnt) {
+        // 选择奇数的个数为2 * n个时结果才能为偶数。将cards卡片按照奇偶数分为2列表。
+        // 贪心思想，分别取2 * n个奇数，遍获取最大的有效得分
+        Arrays.sort(cards);
+        List<Integer> l1 = new ArrayList<>(); // 偶数
+        List<Integer> l2 = new ArrayList<>(); // 奇数
+        for (int i = 0; i < cards.length; i++) {
+            if (cards[i] % 2 == 0) {
+                l1.add(cards[i]);
+            } else {
+                l2.add(cards[i]);
+            }
+        }
+        int max = Integer.MIN_VALUE;
+        // 遍历cnt个card求和，且取奇数卡片2*n次
+        for (int i = 0; i <= cnt; i += 2) {
+            int ans = 0;
+            // 当获取奇数卡片i个，则获取偶数卡片cnt-i个
+            int j = 1;
+            while (j <= i) {
+                int index = l2.size() - j;
+                if (index < 0) {
+                    ans = Integer.MIN_VALUE;
+                } else {
+                    ans += l2.get(index);
+                }
+                j++;
+            }
+            int l = 1;
+            while (l <= cnt - i) {
+                int index = l1.size() - l;
+                if (index < 0) {
+                    ans = Integer.MIN_VALUE;
+                } else {
+                    ans += l1.get(index);
+                }
+                l++;
+            }
+            max = Math.max(max, ans);
+        }
+        return max < 0 ? 0 : max;
+    }
+
+
+    @Test
     public void test_3111() {
         // 输入：[[2,1],[1,0],[1,4],[1,8],[3,5],[4,6]]   w=1
         // 输出：2
         Assert.assertEquals(2, minRectanglesToCoverPoints(
-                new int[][]{{2,1},{1,0},{1,4},{1,8},{3,5},{4,6}}, 1));
+                new int[][]{{2, 1}, {1, 0}, {1, 4}, {1, 8}, {3, 5}, {4, 6}}, 1));
     }
 
     /**
@@ -65,12 +313,13 @@ public class CodeSets {
 
     @Test
     public void test_2090() {
-        getAverages(new int[]{7,4,3,9,1,8,5,2,6}, 3);
+        getAverages(new int[]{7, 4, 3, 9, 1, 8, 5, 2, 6}, 3);
     }
 
 
     /**
      * 2090.半径为k的子数组平均值
+     *
      * @param nums
      * @param k
      * @return
@@ -103,6 +352,7 @@ public class CodeSets {
 
     /**
      * 1343.大小为k且平局值大于等于阈值的子数组数目
+     *
      * @param arr
      * @param k
      * @param threshold
@@ -137,10 +387,11 @@ public class CodeSets {
     /**
      * 643. 子数组最大平均数 I
      * 给你一个由 n 个元素组成的整数数组 nums 和一个整数 k 。
-     *
+     * <p>
      * 请你找出平均数最大且 长度为 k 的连续子数组，并输出该最大平均数。
-     *
+     * <p>
      * 任何误差小于 10^5 的答案都将被视为正确答案。
+     *
      * @param nums
      * @param k
      * @return
@@ -156,7 +407,7 @@ public class CodeSets {
                 continue;
             }
             // 2更新平均数
-            maxSum = Math.max(maxSum,  sum);
+            maxSum = Math.max(maxSum, sum);
             // 3出窗口
             sum -= nums[i - k + 1];
         }
@@ -166,6 +417,7 @@ public class CodeSets {
     /**
      * 1984. 学生分数的最小差值
      * 排序+滑动窗口
+     *
      * @param nums
      * @param k
      * @return
@@ -187,19 +439,19 @@ public class CodeSets {
 
     /**
      * 2269.找到一个数字的 K 美丽值
-     *
+     * <p>
      * 一个整数 num 的 k 美丽值定义为 num 中符合以下条件的 子字符串 数目：
-     *
+     * <p>
      * 子字符串长度为 k 。
      * 子字符串能整除 num 。
      * 给你整数 num 和 k ，请你返回 num 的 k 美丽值。
-     *
+     * <p>
      * 注意：
-     *
+     * <p>
      * 允许有 前缀 0 。
      * 0 不能整除任何值。
      * 一个 子字符串 是一个字符串里的连续一段字符序列。
-     *
+     * <p>
      * 滑动窗口
      */
     public int divisorSubstrings(int num, int k) {
@@ -214,6 +466,7 @@ public class CodeSets {
         }
         return count;
     }
+
     @Test
     public void test_2269() {
         int i = divisorSubstrings(609070001, 3);
