@@ -36,10 +36,10 @@ public class CodeSets {
             for (int j = 0; num > 0; j++) {
                 int dig = num % 10;
                 num /= 10;
-                digitalNum[j][dig] = digitalNum[j][dig] + 1;
+                digitalNum[j][dig]++;
             }
         }
-        // 计算每个位上不同数值可以出现的对数
+        // 计算每个位上不同数值可以出现的对数(还有更快捷的办法，纵向遍历到下标k时，此时对数为k - cnt[d]，见方法02)
         long ans = 0;
         for (int row = 0; row < len; row++) {
             int sumLeft = nums.length;
@@ -48,6 +48,26 @@ public class CodeSets {
                     sumLeft = sumLeft - digitalNum[row][i];
                     ans += (long) sumLeft * digitalNum[row][i];
                 }
+            }
+        }
+        return ans;
+
+    }
+
+    /**
+     * 还有更快捷的办法，纵向遍历到下标k时，此时对数为k - cnt[d]，见方法02
+     */
+    public long sumDigitDifferences02(int[] nums) {
+        // 定义二位数组，分别计算每位出现的数字的次数
+        int len = Integer.toString(nums[0]).length();
+        int[][] cnt = new int[len][10];  // len 表示nums元素的长度
+        long ans = 0;
+        // 从个位开始遍历nums数组，一次遍历，k - cnt[d]
+        for (int k = 0; k < nums.length; k++) {
+            int num = nums[k];
+            for (int j = 0; j < len; j++, num /= 10) {
+                ans += k - cnt[j][num % 10];
+                cnt[j][num % 10]++;
             }
         }
         return ans;
