@@ -16,6 +16,52 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+
+    @Test
+    public void test_3142() {
+        Assert.assertEquals(true, satisfiesConditions(new int[][]{{1, 2, 3},{1, 2, 3}}));
+    }
+
+    /**
+     * 3142.判断矩阵是否满足条件：如果存在，则等于下面的格子，不等于右边的格子
+     * @param grid
+     * @return
+     */
+    public boolean satisfiesConditions(int[][] grid) {
+        for (int row = 0; row < grid.length; row++) {
+            for (int col = 0; col < grid[0].length; col++) {
+                if (row + 1 < grid.length && grid[row][col] != grid[row + 1][col]) {
+                    return false;
+                }
+                if (col + 1 < grid[0].length && grid[row][col] == grid[row][col + 1]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 3127.构造相同颜色的正方形
+     * @param grid
+     * @return
+     */
+    public boolean canMakeSquare(char[][] grid) {
+        for (int i = 1; i < 3; i++) {
+            for (int j = 1; j < 3; j++) {
+                int whites = 0;
+                if (grid[i][j] == 'W') whites++;
+                if (grid[i][j - 1] == 'W') whites++;
+                if (grid[i - 1][j] == 'W') whites++;
+                if (grid[i - 1][j - 1] == 'W') whites++;
+                if (whites != 2) return true;
+            }
+        }
+        return false;
+    }
+
+
+
     @Test
     public void test_3153() {
         Assert.assertEquals(4, sumDigitDifferences(new int[] {13, 23, 12}));
