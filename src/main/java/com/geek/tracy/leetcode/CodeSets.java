@@ -17,6 +17,77 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
 
+
+    @Test
+    public void test_1004() {
+        Assert.assertEquals(6, longestOnes(new int[]{1,1,1,0,0,0,1,1,1,1,0}, 2));
+        Assert.assertEquals(10, longestOnes(new int[]{0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1}, 3));
+    }
+    /**
+     * 1004.最大连续的个数III
+     * <p>滑动窗口</p>
+     *
+     */
+    public int longestOnes(int[] nums, int k) {
+        int len = nums.length;
+        int left = 0;
+        int ans = 0;
+        int cntZero = 0;
+        for (int right = 0; right < len; right++) {
+            // 1.入窗
+            if (nums[right] == 0) {
+                cntZero++;
+            }
+
+            // 2.更新：左边界右移，更新ans
+            while (cntZero > k) {
+                if (nums[left] == 0) {
+                    cntZero--;
+                }
+                left++;
+            }
+            ans = Math.max(ans, right -left + 1);
+        }
+        return ans;
+    }
+
+    /**
+     * 2024.考试的最大困扰度. 窗口中T或F个数到达K次时，窗口达到最大值
+     * <p>滑动窗口</p>
+     */
+    public int maxConsecutiveAnswers(String answerKey, int k) {
+        int len = answerKey.length();
+        int left = 0;
+        int ans = 0;
+        int cntT = 0;
+        int cntF = 0;
+        for (int right = 0; right < len; right++) {
+            // 计算T、F出现的次数
+            if (answerKey.charAt(right) == 'T') {
+                cntT++;
+            } else {
+                cntF++;
+            }
+
+            // 1.入窗：F、T出现的次数都超过了k次时，则移动左边界，控制窗口大小
+            while (cntT > k && cntF > k) {
+                // 移动左边界
+                if (answerKey.charAt(left) == 'T') {
+                    cntT--;
+                } else {
+                    cntF--;
+                }
+                left++; // 左边界右移
+            }
+            // 2.更新
+            ans = Math.max(ans, right - left + 1);
+            // 3.出窗
+
+        }
+        return ans;
+    }
+
+
     @Test
     public void test_3142() {
         Assert.assertEquals(true, satisfiesConditions(new int[][]{{1, 2, 3},{1, 2, 3}}));
