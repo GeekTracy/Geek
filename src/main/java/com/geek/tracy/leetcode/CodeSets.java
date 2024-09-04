@@ -17,7 +17,71 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
 
+    /**
+     * 2860.让所有学生保持开心的分组方法数
+     * <p>阅读理解题，注意题目数据范围及题意理解</p>
+     * 提示：
+     *
+     * 1 <= nums.length <= 10^5
+     * 0 <= nums[i] < nums.length
+     */
+    public int countWays(List<Integer> nums) {
+        //选中的序号i的nums[i]值要小于选中的人数，因此对nums进行排序后，假设选中了m个人，则有：
+        // nums[m-1] < m & nums[m] > m (题意理解)，
+        // 1)如果nums[0]>0,则可以一个不选，满足题意；
+        // 2）如果nums[n-1] < n,则可以全选，满足题意，此题提示已有该限制，所以一定可以全选
+        Collections.sort(nums);
+        int ans = 1; // 可以全选，初始值为1；
+        // 如果nums[0] > 0，可以一个不选，ans++
+        if (nums.get(0) > 0) {
+            ans++;
+        }
+        // 遍历1--size-1，选中的m值满足：nums[m-1] < m & nums[m] > m即满足题意，ans++
+        for (int m = 1; m < nums.size() - 1; m++) {
+            if (nums.get(m - 1) < m && nums.get(m) > m) {
+                ans++;
+            }
+        }
+        return ans;
 
+    }
+
+
+    /**
+     * 2708.一个小组的最大实力值
+     * @param nums
+     * @return
+     */
+    public long maxStrength(int[] nums) {
+        Arrays.sort(nums);
+        if (nums.length == 1) {
+            return nums[0];
+        }
+        if (nums[0] == nums[nums.length - 1] && nums[0] == 0) {
+            return 0;
+        }
+        long ans = 1;
+
+        // 先将大于0的乘到ans上，如果没有大于零的数，则将负数成对乘到ans上
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] < 0) {
+                list.add(nums[i]);
+            } else if (nums[i] > 0) {
+                ans *= nums[i];
+            }
+        }
+        if (list.size() == 1 && nums[nums.length - 1] == 0) {
+            return 0;
+        }
+        for (int i = 0; i < list.size(); i += 2) {
+            if (i + 1 < list.size()) {
+                ans = ans * list.get(i) * list.get(i + 1);
+            }
+        }
+        return ans;
+
+    }
 
 
     @Test
