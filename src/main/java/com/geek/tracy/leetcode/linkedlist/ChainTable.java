@@ -42,7 +42,6 @@ public class ChainTable {
                     p.next = null;
                 }
             }
-            }
         }
         return head;
     }
