@@ -23,6 +23,31 @@ import java.util.stream.Collectors;
 public class ChainTable {
 
 
+    /**
+     * 2181.合并零之间的节点
+     * @param head
+     * @return
+     */
+    public ListNode mergeNodes(ListNode head) {
+        ListNode p = head;
+
+        for (ListNode crr = head.next; crr != null; crr = crr.next) {
+            if (crr.val != 0) {
+                p.val += crr.val;
+            } else {
+                if (crr.next != null) {
+                    p.next = crr;
+                    p = crr;
+                } else {
+                    p.next = null;
+                }
+            }
+            }
+        }
+        return head;
+    }
+
+
     @Test
     public void test_2487 () {
         //输入：head = [5,2,13,3,8]
