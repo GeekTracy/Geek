@@ -2,10 +2,7 @@ package com.geek.tracy.leetcode.tree;
 
 import com.geek.tracy.leetcode.tree.bean.TreeNode;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 遍历方法
@@ -17,6 +14,7 @@ public class TreeTraversal implements TreeTraversalWay {
 
     /**
      * 前序遍历 -- 递归
+     *
      * @param tree 树节点
      * @param list 遍历保存数据的数组
      */
@@ -39,6 +37,7 @@ public class TreeTraversal implements TreeTraversalWay {
 
     /**
      * 前序遍历 -- 迭代，非递归
+     *
      * @param root 树节点
      */
     public List<Integer> preOrderIteration(TreeNode root) {
@@ -85,6 +84,7 @@ public class TreeTraversal implements TreeTraversalWay {
 
     /**
      * 中序遍历 -- 迭代，非递归
+     *
      * @param root 树节点
      */
     public List<Integer> inOrderIteration(TreeNode root) {
@@ -131,13 +131,38 @@ public class TreeTraversal implements TreeTraversalWay {
 
     /**
      * 后序遍历 -- 迭代，非递归
+     *
      * @param root 树节点
      */
     public List<Integer> postOrderIteration(TreeNode root) {
-        List<Integer> result = new ArrayList<>();
-        // 使用栈
-        Deque<TreeNode> deque = new LinkedList<>();
-        return result;
+        List<Integer> ans = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode prev = null;
+        //主要思想：
+        //由于在某颗子树访问完成以后，接着就要回溯到其父节点去
+        //因此可以用prev来记录访问历史，在回溯到父节点时，可以由此来判断，上一个访问的节点是否为右子树
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            //从栈中弹出的元素，左子树一定是访问完了的
+            root = stack.pop();
+            //现在需要确定的是是否有右子树，或者右子树是否访问过
+            //如果没有右子树，或者右子树访问完了，也就是上一个访问的节点是右子节点时
+            //说明可以访问当前节点
+            if (root.right == null || prev == root.right) {
+                ans.add(root.val);
+                //更新历史访问记录，这样回溯的时候父节点可以由此判断右子树是否访问完成
+                prev = root;
+                root = null;
+            } else {
+                //如果右子树没有被访问，那么将当前节点压栈，访问右子树
+                stack.push(root);
+                root = root.right;
+            }
+        }
+        return ans;
     }
 
 }
