@@ -4,7 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * 滑动窗口
@@ -17,6 +19,46 @@ public class SlidingWindowSets {
     /**
      * ### 1）定长滑动窗口############################################################################
      */
+
+
+    @Test
+    public void test_239() {
+        Assert.assertArrayEquals(new int[]{3, 3, 5, 5, 6, 7}, maxSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3));
+    }
+
+    /**
+     * 239.滑动窗口的最大值
+     * <p>滑动窗口的最大值，使用单调队列实现</>
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        // 单调队列，保存单调递减的元素下标，在入队下标i与队首下标间元素个数不超过k时，
+        // 队首保存的是滑动窗口的最大值，维护好单调递减队列deque。在i - k + 1 >=0 开始更新返回数组ans
+
+        int[] ans = new int[nums.length - k + 1];
+
+        Deque<Integer> deque = new LinkedList<>(); // 单调递减队列，保存的数据单调递减
+        for (int i = 0; i < nums.length; i++) {
+            // 1 保证单点队列deque单调递减，等于nums[i]的也移除
+            while (!deque.isEmpty() && nums[deque.peekLast()] <= nums[i]) {
+                deque.pollLast();
+            }
+
+            // 2 元素 i 入队列
+            deque.offerLast(i); // 队尾加入元素i
+
+            // 如果队首元素与i间（包含队首和i）元素大于k，则队首元素出队列
+            if (i - deque.peekFirst() + 1 > k) {
+                deque.pollFirst(); // 队首元素出队，
+            }
+
+            // 3 获取答案值，当i+1大于等于k时，则获取队首最大值即为当前窗口的最大值
+            if (i + 1 >= k) {
+                ans[i + 1 - k] = nums[deque.peekFirst()];
+            }
+        }
+        return ans;
+    }
+
     @Test
     public void test_1004() {
         Assert.assertEquals(6, longestOnes(new int[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0}, 2));
@@ -320,6 +362,50 @@ public class SlidingWindowSets {
     /**
      * ### 2）不定长滑动窗口############################################################################
      */
+
+
+    @Test
+    public void test_2398() {
+        Assert.assertEquals(1, maximumRobots(new int[]{4, 4, 1}, new int[]{3, 1, 2}, 7));
+        Assert.assertEquals(0, maximumRobots(new int[]{11, 12, 19}, new int[]{10, 8, 7}, 19));
+    }
+
+    /**
+     * 2398.预算内的最多机器人数目 : 运行 k 个机器人 总开销: max(chargeTimes) + k * sum(runningCosts)
+     * 变化的定长滑动窗口最大值问题。参考 {@link 239.滑动窗口的最大值}
+     * <p>不定长滑动窗口</>
+     */
+    public int maximumRobots(int[] chargeTimes, int[] runningCosts, long budget) {
+
+        // 不定长窗口，则要计算满足条件的不定长窗口长度，窗口长度为：ans = right - left + 1
+        int left = 0;
+        int ans = 0;
+        Deque<Integer> deque = new LinkedList<>();
+        long sum = 0;
+        int n = chargeTimes.length;  // 数组长度为n
+        for (int right = 0; right < n; right++) {
+            // 保持deque单调递减
+            while (!deque.isEmpty() && chargeTimes[right] >= chargeTimes[deque.peekLast()]) {
+                deque.pollLast();
+            }
+
+            // 入队deque，计算sum值
+            deque.offerLast(right);
+            sum += runningCosts[right];
+
+            // 总开销: max(chargeTimes) + k * sum(runningCosts)超过预算budget时，left出窗，直到在预算以内
+            while (!deque.isEmpty() && (chargeTimes[deque.peekFirst()] + (right - left + 1) * sum * 1.0) > budget) {
+                if (deque.peekFirst() == left) {  // 如果队首元素等于左侧元素，则队首元素出队
+                    deque.pollFirst();
+                }
+                sum -= runningCosts[left++];
+            }
+
+            // 更新ans 窗口长度
+            ans = Math.max(ans, right - left + 1);
+        }
+        return ans;
+    }
 
 
     /**
