@@ -3,10 +3,7 @@ package com.geek.tracy.leetcode.slidingwindow;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * 滑动窗口
@@ -20,6 +17,85 @@ public class SlidingWindowSets {
      * ### 1）定长滑动窗口############################################################################
      */
 
+    @Test
+    public void test_1652() {
+//        Assert.assertEquals(new int[]{12, 10, 16, 13}, decrypt(new int[]{5, 7 ,1, 4}, 3));
+        Assert.assertEquals(new int[]{12, 5, 6, 13}, decrypt(new int[]{2, 4, 9, 3}, -2));
+
+    }
+
+    public int[] decrypt(int[] code, int k) {
+        if (k == 0) {
+            return new int[code.length];
+        }
+        if (k > 0) {
+            return getAfter(code, k);
+        } else {
+            int[] revers = new int[code.length];
+            int index = 0;
+            for (int i = code.length - 1; i >= 0; i--) {
+                revers[index++] = code[i];
+            }
+            int[] temp = getAfter(revers, -k);
+            int[] ans = new int[code.length];
+
+            int idx = 0;
+            for (int i = code.length - 1; i >= 0; i--) {
+                ans[idx++] = temp[i];
+            }
+            return ans;
+        }
+    }
+
+    private int[] getAfter(int[] code, int k) {
+        int len = code.length;
+        int[] doubleCode = new int[len * 2];
+        for (int i = 0; i < len; i++) {
+            doubleCode[i] = code[i];
+            doubleCode[i + len] = doubleCode[i];
+        }
+        int[] ans = new int[code.length];
+        int sum = 0;
+        int left = 1;
+        // i 后面k个数替换i的值
+        for (int index = 0, i = 1; i < len * 2 && index < len; i++) {
+            sum += doubleCode[i];
+            if (i - left + 1 < k) {
+                continue;
+            }
+            ans[index++] = sum;
+
+            sum -= doubleCode[left++];
+        }
+        return ans;
+    }
+
+
+    public int minimumRecolors(String blocks, int k) {
+        int ans = Integer.MAX_VALUE;
+        int whiteNum = 0;
+        int left = 0;
+        char[] arr = blocks.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == 'W') {
+                whiteNum++;
+            }
+            // 入窗
+            if (i - left + 1 < k) {
+                continue;
+            }
+            // 更新ans
+            ans = Math.min(ans, whiteNum);
+
+            // 出窗
+            if (arr[left++] == 'W') {
+                whiteNum--;
+            }
+
+        }
+        return ans;
+
+    }
 
     @Test
     public void test_239() {
