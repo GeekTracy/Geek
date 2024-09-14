@@ -19,6 +19,125 @@ import java.util.Map;
  */
 public class DynamicProgrammingMethod {
 
+
+    /**
+     * 2266.统计打字方案数
+     * <p>超加强版本的爬楼的爬楼</p>
+     * 输入的数字为2--9，其中7和9是4个字母，其他都是3个字母。类比于爬楼：
+     * 3个字母的dp3(i) = dp3(i-1) + dp3(i-2) + dp3(i-3)；
+     * 4个字母的dp4(i) = dp4(i-1) + dp4(i-2) + dp4(i-3) + dp4(i-4)；
+     * <p>输入的字符按分组，进行乘法运算即可得到最终的值，</p>
+     * 例如输入：22223334455，分为4组，每组的方案数相乘即可得到最终值，dp3(4) * dp3(3) * dp(2) * dp(2)
+     *
+     * <p>题目规定：提示：
+     * 1 <= pressedKeys.length <= 10^5
+     * pressedKeys 只包含数字 '2' 到 '9' 。</p>
+     */
+    public int countTexts(String pressedKeys) {
+        int MOD = (int) 1e9 + 7;
+        int SIZE = (int) 1e5 + 1;
+        long[] dp3 = new long[SIZE];
+        long[] dp4 = new long[SIZE];  // 记录数组7,9方案数
+        // 初始值
+        dp3[0] = dp4[0] = 1;
+        dp3[1] = dp4[1] = 1;
+        dp3[2] = dp4[2] = 2;
+        dp3[3] = dp4[3] = 4;
+        // 从第4个字符开始计算dp3和dp4
+        for (int i = 4; i < pressedKeys.length(); i++) {
+            dp3[i] = (dp3[i - 1] + dp3[i - 2] + dp3[i - 3]) % MOD;
+            dp4[i] = (dp4[i - 1] + dp4[i - 2] + dp4[i - 3] + dp4[i - 4]) % MOD;
+        }
+
+        // 对pressedKeys进行分组计算，然后每组方案数进行乘法运算即可
+        char[] arr = pressedKeys.toCharArray();
+        long ans = 1;
+        int cnt = 0; // 当前组字符的个数
+        for (int i = 0; i < pressedKeys.length(); i++) {
+            char crr = arr[i];
+            cnt++;
+            if (i == pressedKeys.length() - 1 || crr != arr[i + 1]) {
+                if (crr != '7' && crr != '9') {
+                    ans = ans * dp3[cnt] % MOD;
+                } else {
+                    ans = ans * dp4[cnt] % MOD;
+                }
+                cnt = 0;
+            }
+
+        }
+        return (int)ans;
+    }
+
+    /**
+     * 2466.统计构造好字符串的方案数
+     * <p>类比于：377.组合总数IV</>
+     *
+     * @param low
+     * @param high
+     * @param zero
+     * @param one
+     * @return
+     */
+    public int countGoodStrings(int low, int high, int zero, int one) {
+        int MOD = 1000000007;
+        int[] dp = new int[high + 1];
+        dp[0] = 1;
+        int ans = 0;
+        for (int i = 1; i <= high; i++) {
+            if (i >= zero) {
+                dp[i] = (dp[i - zero] + dp[i]) % MOD;
+            }
+            if (i >= one) {
+                dp[i] = (dp[i - one] + dp[i]) % MOD;
+            }
+            if (i >= low) {
+                ans = (dp[i] + ans) % MOD;
+            }
+        }
+        return ans;
+
+    }
+
+    @Test
+    public void test_377() {
+        Assert.assertEquals(7, combinationSum4(new int[]{1, 2, 3}, 4));
+    }
+
+    /**
+     * 377.组合总数IV
+     * <p>经典题型</p>
+     */
+    public int combinationSum4(int[] nums, int target) {
+        // 先将nums从小到大进行排序；
+        // f(target) 为 f(target - num[0]) + f(target - num[1]) + f(target - num[2])+...+f(target - num[i])，
+        // 其中num[i]<=target && num[i+1]>target。
+        Arrays.sort(nums);
+        int[] memory = new int[target + 1];
+        Arrays.fill(memory, -1);
+        return dfs(nums, target, memory);
+    }
+
+    public int dfs(int[] nums, int target, int[] memory) {
+        if (target == 0) {
+            return 1;
+        }
+        if (memory[target] != -1) {
+            return memory[target];
+        }
+        if (nums[0] < 0) {
+            return 0;
+        }
+        int ans = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] <= target) {
+                ans += dfs(nums, target - nums[i], memory);
+            }
+        }
+        memory[target] = ans;
+        return ans;
+    }
+
     @Test
     public void test_5() {
         System.out.println(longestPalindrome("erecbabcpoip"));
@@ -28,7 +147,7 @@ public class DynamicProgrammingMethod {
 
     /**
      * 5.最长回文字串
-     *
+     * <p>
      * 提示：
      * 1 <= s.length <= 1000
      * s 仅由数字和英文字母组成
@@ -69,21 +188,21 @@ public class DynamicProgrammingMethod {
     }
 
     @Test
-    public void test_2707 () {
+    public void test_2707() {
         // "dwmodizxvvbosxxw"
         // ["ox","lb","diz","gu","v","ksv","o","nuq","r","txhe","e","wmo","cehy","tskz","ds","kzbu"]  except:7
-        Assert.assertEquals(7, minExtraChar("dwmodizxvvbosxxw", new String[]{"ox","lb","diz","gu","v","ksv","o","nuq","r","txhe","e","wmo","cehy","tskz","ds","kzbu"}));
+        Assert.assertEquals(7, minExtraChar("dwmodizxvvbosxxw", new String[]{"ox", "lb", "diz", "gu", "v", "ksv", "o", "nuq", "r", "txhe", "e", "wmo", "cehy", "tskz", "ds", "kzbu"}));
         // "rkmsilizktprllwoimafyuqmeqrujxdzgp"
         // "rkmsilizktprllwoimafyuqmeqrujxdzgp"
         // ["afy","lyso","ymdt","uqm","cfybt","lwoim","hdzeg","th","rkmsi","d","e","tp","r","jx","tofxe","etjx","llqs","cpir","p","ncz","ofeyx","eqru","l","demij","tjky","jgodm","y","ernt","jfns","akjtl","wt","tk","zg","lxoi","kt"]
-        Assert.assertEquals(2, minExtraChar("rkmsilizktprllwoimafyuqmeqrujxdzgp", new String[]{"afy","lyso","ymdt","uqm","cfybt","lwoim","hdzeg","th","rkmsi","d","e","tp","r","jx","tofxe","etjx","llqs","cpir","p","ncz","ofeyx","eqru","l","demij","tjky","jgodm","y","ernt","jfns","akjtl","wt","tk","zg","lxoi","kt"}));
+        Assert.assertEquals(2, minExtraChar("rkmsilizktprllwoimafyuqmeqrujxdzgp", new String[]{"afy", "lyso", "ymdt", "uqm", "cfybt", "lwoim", "hdzeg", "th", "rkmsi", "d", "e", "tp", "r", "jx", "tofxe", "etjx", "llqs", "cpir", "p", "ncz", "ofeyx", "eqru", "l", "demij", "tjky", "jgodm", "y", "ernt", "jfns", "akjtl", "wt", "tk", "zg", "lxoi", "kt"}));
     }
 
     /**
      * 2707.字符串中的额外字符
-     *
-     *  定义f[i]标识下标为i的字串的额外字符个数，则原题可转换为转移方程中f[i - 1] + 1 和 f[j]的大小。其中f[0]=0
-     *  状态转移方程： f[i] = Min(f[i - 1] + 1, f[j]),说明：f[j]，其中j∈（0，i-1）,s[j]--s[i-1] 为字典中存在的单词，则f[i] = f[j]
+     * <p>
+     * 定义f[i]标识下标为i的字串的额外字符个数，则原题可转换为转移方程中f[i - 1] + 1 和 f[j]的大小。其中f[0]=0
+     * 状态转移方程： f[i] = Min(f[i - 1] + 1, f[j]),说明：f[j]，其中j∈（0，i-1）,s[j]--s[i-1] 为字典中存在的单词，则f[i] = f[j]
      */
     public int minExtraChar(String s, String[] dictionary) {
         HashSet<String> set = new HashSet<>();
@@ -94,7 +213,7 @@ public class DynamicProgrammingMethod {
         for (int i = 1; i <= length; i++) {
             f[i] = f[i - 1] + 1;
             for (int j = 0; j < i; j++) {
-                if (set.contains(s.substring(j, i))){
+                if (set.contains(s.substring(j, i))) {
                     f[i] = Math.min(f[i], f[j]);
                 }
             }
@@ -106,7 +225,7 @@ public class DynamicProgrammingMethod {
     @Test
     public void minFallingPathSumIITest() {
         System.out.println(minFallingPathSumII(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}));
-        System.out.println(minFallingPathSumII(new int[][]{{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2}}));
+        System.out.println(minFallingPathSumII(new int[][]{{2, 2, 1, 2, 2}, {2, 2, 1, 2, 2}, {2, 2, 1, 2, 2}, {2, 2, 1, 2, 2}, {2, 2, 1, 2, 2}}));
         // 回溯法会超时
         System.out.println(minFallingPathSumII(new int[][]{
                 {-2, -18, 31, -10, -71, 82, 47, 56, -14, 42},
@@ -124,7 +243,7 @@ public class DynamicProgrammingMethod {
 
     /**
      * 1289. 下降路径最小和 II
-     *
+     * <p>
      * 给你一个 n x n 整数矩阵 grid ，请你返回 非零偏移下降路径 数字和的最小值。
      * 非零偏移下降路径 定义为：从 grid 数组中的每一行选择一个数字，且按顺序选出来的数字中，相邻数字不在原数组的同一列。
      */
@@ -169,7 +288,7 @@ public class DynamicProgrammingMethod {
 
     /**
      * 931. 下降路径最小和
-     *
+     * <p>
      * 给你一个 n x n 的 方形 整数数组 matrix ，请你找出并返回通过 matrix 的下降路径 的 最小和 。
      * 下降路径 可以从第一行中的任何元素开始，并从每一行中选择一个元素。在下一行选择的元素和当前行所选元素最多相隔一列（即位于正下方或者沿对角
      * 线向左或者向右的第一个元素）。具体来说，位置 (row, col) 的下一个元素应当是 (row + 1, col - 1)、(row + 1, col) 或者 (row + 1, col + 1) 。
@@ -320,5 +439,27 @@ public class DynamicProgrammingMethod {
         System.out.println(maxSubarraySumCircular(new int[]{1, -2, 3, -2}));
     }
 
+    /**
+     * 746.使用最小花费爬楼梯
+     * <p>简单</p>
+     * 类似菲波那切数，f(n)的最小值为：[cost[length - 1] + f(n-1), cost[length - 2] + f(n-2)]中较小值，f(0) = 0,f(1) = 0,
+     * f(2) = Min(cost[1]+f(1),cost[0]+f(0))即f(2)=Min(cost[1],cost[0])...
+     *
+     * @param cost
+     * @return
+     */
+    public int minCostClimbingStairs(int[] cost) {
+        // 数组cost长度为n，下标从0开始，即n可以表示为楼顶。经分析：
+        // f(0) = 0,
+        // f(1) = 0,
+        // f(2) = Min(cost[1]+f(1),cost[0]+f(0))即f(2)=Min(cost[1],cost[0])
+        // ...
+        // f(n) = Min(cost[length - 1] + f(n-1), cost[length - 2] + f(n-2))
+        int[] dp = new int[cost.length + 1];
+        for (int i = 2; i <= cost.length; i++) {
+            dp[i] = Math.min(cost[i - 1] + dp[i - 1], cost[i - 2] + dp[i - 2]);
+        }
+        return dp[cost.length];
+    }
 
 }
