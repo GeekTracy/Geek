@@ -17,6 +17,46 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
 
+
+    @Test
+    public void test_pow() {
+        System.out.println(pow(3, 3));
+        System.out.println(pow(3, 4));
+        System.out.println(pow(2, 6));
+        System.out.println(pow(2, -5));
+        System.out.println(pow(-5, 3));
+
+    }
+
+    public int pow(int x, int n) {
+        if (n < 0) {
+            x = 1 / x;
+            n = -n;
+        }
+        return quickPow(x, n);
+    }
+
+    public int quickPow(int x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        int y = quickPow(x, n / 2);
+        return n % 2 == 0 ? y * y : y * y * x;
+    }
+
+    public int[] sortedSquares(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] < 0) {
+                nums[i] = -nums[i];
+            }
+        }
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = nums[i] * nums[i];
+        }
+        return nums;
+    }
+
     /**
      * 2860.让所有学生保持开心的分组方法数
      * <p>阅读理解题，注意题目数据范围及题意理解</p>
@@ -204,7 +244,7 @@ public class CodeSets {
     /**
      * 定义链表节点
      */
-    class Node{
+    public class Node{
         // 节点的值
         Integer val;
         // 下一个节点
