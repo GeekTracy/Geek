@@ -16,6 +16,96 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+    /**
+     * 32. 最长有效括号
+     */
+    public int longestValidParentheses(String s) {
+        // 利用栈来匹配并标记有效的括号
+        char[] arr = s.toCharArray();
+        boolean[] valid = new boolean[s.length()];
+        Deque<Integer> deque = new LinkedList<>();
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == '(') {
+                deque.push(i);
+            } else {
+                if (!deque.isEmpty()) {
+                    valid[deque.pop()] = true;
+                    valid[i] = true;
+                }
+            }
+        }
+        // valid标记数组中，连续1的最长子串及ans
+        int ans = 0;
+        int left = 0;
+        int cnt = 0;
+        for (int i = 0; i < valid.length; i++) {
+            if (valid[i]) {
+                cnt++;
+            } else {
+                ans = Math.max(ans, cnt);
+                cnt = 0;
+            }
+        }
+        ans = Math.max(ans, cnt);
+        return ans;
+    }
+
+
+
+    @Test
+    public void test_2414() {
+        System.out.println(longestContinuousSubstring("abcdeq"));
+
+    }
+
+    /**
+     * 2414.最长的字母序连续子字符串的长度
+     */
+    public int longestContinuousSubstring(String s) {
+        int len = s.length();
+        char[] arr = s.toCharArray();
+        int ans = 0;
+        int start = 0;
+        for (int i = 0; i < len; i++) {
+            if (i == len - 1 || arr[i + 1] - arr[i] != 1) {
+                ans = Math.max(ans, i - start + 1);
+                start = i + 1;
+            }
+        }
+        return ans;
+    }
+
+
+    /**
+     * 2332.坐上公交的最晚时间
+     * <p>题目分析题，倒序插入找到最晚到站时间</p>
+     * 返回你可以搭乘公交车的最晚到达公交站时间。你 不能 跟别的乘客同时刻到达。
+     */
+    public int latestTimeCatchTheBus(int[] buses, int[] passengers, int capacity) {
+        // 公交、乘客进行排序
+        Arrays.sort(buses);
+        Arrays.sort(passengers);
+
+        // 模拟乘客上车，找到最后一个上车的乘客j
+        int j = 0;
+        int crrCap = 0;
+        for (int bus : buses) {
+            // 每辆车bus，初始化一个当前可坐人数crrCap。当可坐人数大于0且passengers[j]小于等于当前车辆到达时间即可上车！
+            for (crrCap = capacity; crrCap > 0 && j < passengers.length && passengers[j] <= bus; crrCap--) {
+                j++;
+            }
+        }
+        // 最后上车乘客为
+        int l = j - 1;
+        // 逻辑思维：因为求最晚到达公交站的时间，所以需要考虑最后一辆车是否上满乘客，如果没有上满，则插入到最后一辆车即可，否则往前
+        // 找到一个空位插入即可
+        int ans = (crrCap > 0) ? buses[buses.length - 1] : passengers[l];
+        while (l >= 0 && ans == passengers[l]) {
+            ans--;
+            l--;
+        }
+        return ans;
+    }
 
 
     @Test
@@ -61,7 +151,7 @@ public class CodeSets {
      * 2860.让所有学生保持开心的分组方法数
      * <p>阅读理解题，注意题目数据范围及题意理解</p>
      * 提示：
-     *
+     * <p>
      * 1 <= nums.length <= 10^5
      * 0 <= nums[i] < nums.length
      */
@@ -89,6 +179,7 @@ public class CodeSets {
 
     /**
      * 2708.一个小组的最大实力值
+     *
      * @param nums
      * @return
      */
@@ -126,11 +217,12 @@ public class CodeSets {
 
     @Test
     public void test_3142() {
-        Assert.assertEquals(true, satisfiesConditions(new int[][]{{1, 2, 3},{1, 2, 3}}));
+        Assert.assertEquals(true, satisfiesConditions(new int[][]{{1, 2, 3}, {1, 2, 3}}));
     }
 
     /**
      * 3142.判断矩阵是否满足条件：如果存在，则等于下面的格子，不等于右边的格子
+     *
      * @param grid
      * @return
      */
@@ -150,6 +242,7 @@ public class CodeSets {
 
     /**
      * 3127.构造相同颜色的正方形
+     *
      * @param grid
      * @return
      */
@@ -168,11 +261,10 @@ public class CodeSets {
     }
 
 
-
     @Test
     public void test_3153() {
-        Assert.assertEquals(4, sumDigitDifferences(new int[] {13, 23, 12}));
-        Assert.assertEquals(0, sumDigitDifferences(new int[] {10, 10, 10, 10}));
+        Assert.assertEquals(4, sumDigitDifferences(new int[]{13, 23, 12}));
+        Assert.assertEquals(0, sumDigitDifferences(new int[]{10, 10, 10, 10}));
 //        sumDigitDifferences02(new int[]{234,890,763,134,987,908,645});
     }
 
@@ -241,10 +333,11 @@ public class CodeSets {
         node4.next = node5;
         getPerfectLinkNode(node1);
     }
+
     /**
      * 定义链表节点
      */
-    public class Node{
+    public class Node {
         // 节点的值
         Integer val;
         // 下一个节点
@@ -289,10 +382,6 @@ public class CodeSets {
         }
         return ans.next;
     }
-
-
-
-
 
 
     @Test
@@ -482,8 +571,6 @@ public class CodeSets {
         double y = quickMul(x, n / 2);
         return n % 2 == 0 ? y * y : y * y * x;
     }
-
-
 
 
     @Test
