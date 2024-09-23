@@ -17,6 +17,20 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
     /**
+     * 1014.最佳观光组合
+     * <P>value[i] + value[j] + i - j 可以变化为：（value[i] + i）+ (value[j] - j)，遍历右侧j，左侧max记录value[i] + i的最大值即可</P>
+     */
+    public int maxScoreSightseeingPair(int[] values) {
+        int max = values[0]; // max代表value[i] + i
+        int ans = 0;
+        for (int j = 1; j < values.length; j++) {
+            ans = Math.max(ans, max + values[j] - j);
+            max = Math.max(max, values[j] + j);
+        }
+        return ans;
+    }
+
+    /**
      * 32. 最长有效括号
      */
     public int longestValidParentheses(String s) {
