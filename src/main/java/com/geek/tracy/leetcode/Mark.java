@@ -14,6 +14,84 @@ import java.util.stream.Collectors;
  */
 public class Mark {
 
+
+    /**
+     * 2306.公司命名
+     * @param ideas
+     * <p>给你一个字符串数组 ideas 表示在公司命名过程中使用的名字列表。公司命名流程如下：
+     *
+     * 1)从 ideas 中选择 2 个 不同 名字，称为 ideaA 和 ideaB 。
+     * 2)交换 ideaA 和 ideaB 的首字母。
+     * 3)如果得到的两个新名字 都 不在 ideas 中，那么 ideaA ideaB（串联 ideaA 和 ideaB ，中间用一个空格分隔）是一个有效的公司名字。
+     * 4)否则，不是一个有效的名字。
+     * 返回 不同 且有效的公司名字的数目。</p>
+     */
+    public long distinctNames(String[] ideas) {
+        // 将ideas里的字符串，按照首字母进行分组。由于都是小写，则数组最大长度为26，使用Set集合保存保存除首字母之外的字符子串
+        Set<String>[] groups = new HashSet[26];
+        Arrays.setAll(groups, i -> new HashSet());
+        for (String idea : ideas) {
+            groups[idea.charAt(0) - 'a'].add(idea.substring(1));
+        }
+        long ans = 0;
+        // 遍历每组集合之间找到相同字符子串的个数m，则交换后不同的公司名字的数目为（lenghtI-m）（lengthJ-m）* 2，
+        for (int i = 1; i < groups.length; i++) {
+            // 遍历所有当前i下标与小于i下标groups集合的子字符串
+            for (int j = 0; j < i; j++) {
+                // 下标i与下标j相同的元素个数为m
+                int m = 0;
+                for (String s : groups[j]) {
+                    if (groups[i].contains(s)) {
+                        m++;
+                    }
+                }
+                ans += (groups[i].size() - m) * (groups[j].size() - m) * 2;
+            }
+        }
+        return ans;
+
+
+    }
+
+
+    Map<Integer, Integer> memo = new HashMap<>();
+
+    /**
+     * 2376.统计特殊整数
+     * @param n
+     * @return
+     */
+    public int countSpecialNumbers(int n) {
+        String nStr = String.valueOf(n);
+        int res = 0;
+        int prod = 9;
+        for (int i = 0; i < nStr.length() - 1; i++) {
+            res += prod;
+            prod *= 9 - i;
+        }
+        res += dp(0, false, nStr);
+        return res;
+    }
+
+    public int dp(int mask, boolean prefixSmaller, String nStr) {
+        if (Integer.bitCount(mask) == nStr.length()) {
+            return 1;
+        }
+        int key = mask * 2 + (prefixSmaller ? 1 : 0);
+        if (!memo.containsKey(key)) {
+            int res = 0;
+            int lowerBound = mask == 0 ? 1 : 0;
+            int upperBound = prefixSmaller ? 9 : nStr.charAt(Integer.bitCount(mask)) - '0';
+            for (int i = lowerBound; i <= upperBound; i++) {
+                if (((mask >> i) & 1) == 0) {
+                    res += dp(mask | (1 << i), prefixSmaller || i < upperBound, nStr);
+                }
+            }
+            memo.put(key, res);
+        }
+        return memo.get(key);
+    }
+
     @Test
     public void test_699() {
         //
