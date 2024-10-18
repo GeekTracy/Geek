@@ -6,6 +6,16 @@ package com.geek.tracy.leetcode;
  */
 public class CodeSets2 {
 
+
+    /**
+     * 3191.使二进制数组全部等于1的额最少操作次数I
+     * @param nums
+     * @return
+     */
+    public int minOperations(int[] nums) {
+        return 0;
+    }
+
     /**
      * 2207.字符串中最多数目的子序列
      * @param text
