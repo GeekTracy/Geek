@@ -3,12 +3,44 @@ package com.geek.tracy.leetcode;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * @author mike
  * @date 2024/9/24
  */
 public class CodeSets2 {
 
+    /**
+     * 910.最小差值 II
+     * <p>
+     * 一）对数组进行排序；对于数组的操作总的有两种请情况：
+     * 1）全部增或全部减；2）部分增，部分减，按贪心思想，对于排序后的数组，前面增，后面减，这样可以减小最大值与最小值的差值；
+     * </p>
+     * <p>
+     * 二）全部进行增减k、或者减少k的操作，则最大值与最小值之间的差值不改变；
+     * </p>
+     * 三）左边的增减k，右边的减少k，针对这种情况，遍历整个数组，每次基于相邻的2个数进行遍历，i下标及其左边的增加k，i+1下标及其右边减少k，每次判断最大最小值，并对差值进行比较，遍历完成即可得到最小差值；
+     * </p>
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int smallestRangeII(int[] nums, int k) {
+        // 对数组进行排序
+        Arrays.sort(nums);
+        int len = nums.length;
+        // 针对情况1，全部增减或全部减少，计算差值
+        int ans = nums[len - 1] - nums[0];
+        // 针对情况2，遍历正数组
+        for (int i = 0; i < len - 1; i++) {
+            int max = Math.max(nums[i] + k, nums[len - 1] - k);
+            int min = Math.min(nums[i + 1] - k, nums[0] + k);
+            ans = Math.min(max - min, ans);
+        }
+        return ans;
+
+    }
 
     @Test
     public void test_3191() {
