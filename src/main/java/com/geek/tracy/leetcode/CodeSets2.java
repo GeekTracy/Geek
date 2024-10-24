@@ -4,12 +4,42 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 /**
  * @author mike
  * @date 2024/9/24
  */
 public class CodeSets2 {
+
+
+    @Test
+    public void test_3175() {
+        Assert.assertEquals(2, findWinningPlayer(new int[]{16,4,7,17}, 562084119));
+    }
+
+    /**
+     * 3175.找到连续赢k场比赛的第一位玩家
+     * <p>直接使用队列模拟，当k非常大时，就会空转比较；分析便知，遍历一圈，未得到连续赢了k次的赢家，这时数组的最大值即是那个赢家</p>
+     */
+    public int findWinningPlayer(int[] skills, int k) {
+        // 模拟整个比较过程，定义一个队列，对于k非常大时有空的消耗；所以遍历一次所以数据即可，增加一个退出的判断
+        int winner = 0;
+        int count = 0;
+        for (int i = 1; i < skills.length && count < k; i++) {
+            if (skills[winner] < skills[i]) {
+                winner = i;
+                count = 0;
+            }
+            // 赢的回合数增加
+            count++;
+        }
+
+        return winner;
+    }
+
 
     /**
      * 910.最小差值 II
@@ -22,6 +52,7 @@ public class CodeSets2 {
      * </p>
      * 三）左边的增减k，右边的减少k，针对这种情况，遍历整个数组，每次基于相邻的2个数进行遍历，i下标及其左边的增加k，i+1下标及其右边减少k，每次判断最大最小值，并对差值进行比较，遍历完成即可得到最小差值；
      * </p>
+     *
      * @param nums
      * @param k
      * @return
@@ -75,7 +106,7 @@ public class CodeSets2 {
                 sum++;
                 for (int j = left; j <= i; j++) {
                     if (j == left && nums[left] == 0) {
-                        left ++;
+                        left++;
                     }
                     nums[j] = nums[j] ^ 1;
                 }
