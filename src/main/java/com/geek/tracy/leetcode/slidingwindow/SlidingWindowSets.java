@@ -3,7 +3,10 @@ package com.geek.tracy.leetcode.slidingwindow;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * 滑动窗口
@@ -19,8 +22,8 @@ public class SlidingWindowSets {
 
     @Test
     public void test_1652() {
-//        Assert.assertEquals(new int[]{12, 10, 16, 13}, decrypt(new int[]{5, 7 ,1, 4}, 3));
-        Assert.assertEquals(new int[]{12, 5, 6, 13}, decrypt(new int[]{2, 4, 9, 3}, -2));
+        //        Assert.assertEquals(new int[]{12, 10, 16, 13}, decrypt(new int[]{5, 7 ,1, 4}, 3));
+        Assert.assertEquals(new int[] {12, 5, 6, 13}, decrypt(new int[] {2, 4, 9, 3}, -2));
 
     }
 
@@ -99,7 +102,8 @@ public class SlidingWindowSets {
 
     @Test
     public void test_239() {
-        Assert.assertArrayEquals(new int[]{3, 3, 5, 5, 6, 7}, maxSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3));
+        Assert.assertArrayEquals(new int[] {3, 3, 5, 5, 6, 7},
+                maxSlidingWindow(new int[] {1, 3, -1, -3, 5, 3, 6, 7}, 3));
     }
 
     /**
@@ -137,8 +141,8 @@ public class SlidingWindowSets {
 
     @Test
     public void test_1004() {
-        Assert.assertEquals(6, longestOnes(new int[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0}, 2));
-        Assert.assertEquals(10, longestOnes(new int[]{0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1}, 3));
+        Assert.assertEquals(6, longestOnes(new int[] {1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0}, 2));
+        Assert.assertEquals(10, longestOnes(new int[] {0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1}, 3));
     }
 
     /**
@@ -206,7 +210,7 @@ public class SlidingWindowSets {
 
     @Test
     public void test_2090() {
-        getAverages(new int[]{7, 4, 3, 9, 1, 8, 5, 2, 6}, 3);
+        getAverages(new int[] {7, 4, 3, 9, 1, 8, 5, 2, 6}, 3);
     }
 
 
@@ -274,12 +278,11 @@ public class SlidingWindowSets {
 
     @Test
     public void test_643() {
-        Assert.assertEquals(-1, findMaxAverage(new int[]{-1}, 1));
+        Assert.assertEquals(-1, findMaxAverage(new int[] {-1}, 1));
     }
 
     /**
-     * 643. 子数组最大平均数 I
-     * 给你一个由 n 个元素组成的整数数组 nums 和一个整数 k 。
+     * 643. 子数组最大平均数 I 给你一个由 n 个元素组成的整数数组 nums 和一个整数 k 。
      * <p>
      * 请你找出平均数最大且 长度为 k 的连续子数组，并输出该最大平均数。
      * <p>
@@ -308,8 +311,7 @@ public class SlidingWindowSets {
     }
 
     /**
-     * 1984. 学生分数的最小差值
-     * 排序+滑动窗口
+     * 1984. 学生分数的最小差值 排序+滑动窗口
      *
      * @param nums
      * @param k
@@ -335,15 +337,11 @@ public class SlidingWindowSets {
      * <p>
      * 一个整数 num 的 k 美丽值定义为 num 中符合以下条件的 子字符串 数目：
      * <p>
-     * 子字符串长度为 k 。
-     * 子字符串能整除 num 。
-     * 给你整数 num 和 k ，请你返回 num 的 k 美丽值。
+     * 子字符串长度为 k 。 子字符串能整除 num 。 给你整数 num 和 k ，请你返回 num 的 k 美丽值。
      * <p>
      * 注意：
      * <p>
-     * 允许有 前缀 0 。
-     * 0 不能整除任何值。
-     * 一个 子字符串 是一个字符串里的连续一段字符序列。
+     * 允许有 前缀 0 。 0 不能整除任何值。 一个 子字符串 是一个字符串里的连续一段字符序列。
      * <p>
      * 滑动窗口
      */
@@ -368,7 +366,7 @@ public class SlidingWindowSets {
 
     @Test
     public void test_1456() {
-//        Assert.assertEquals(4, maxVowels("weallloveyou", 7));
+        //        Assert.assertEquals(4, maxVowels("weallloveyou", 7));
         Assert.assertEquals(3, maxVowels("abciiidef", 3));
     }
 
@@ -391,7 +389,8 @@ public class SlidingWindowSets {
 
             // 3 出窗
             int outIndex = i - k + 1;
-            if ('a' == arr[outIndex] || 'e' == arr[outIndex] || 'i' == arr[outIndex] || 'o' == arr[outIndex] || 'u' == arr[outIndex]) {
+            if ('a' == arr[outIndex] || 'e' == arr[outIndex] || 'i' == arr[outIndex] || 'o' == arr[outIndex]
+                    || 'u' == arr[outIndex]) {
                 vowels--;
             }
         }
@@ -402,9 +401,7 @@ public class SlidingWindowSets {
     /**
      * 1456.定长子串中元音的最大数目
      * <p>
-     * 给你字符串 s 和整数 k 。
-     * 请返回字符串 s 中长度为 k 的单个子字符串中可能包含的最大元音字母数。
-     * 英文中的 元音字母 为（a, e, i, o, u）。
+     * 给你字符串 s 和整数 k 。 请返回字符串 s 中长度为 k 的单个子字符串中可能包含的最大元音字母数。 英文中的 元音字母 为（a, e, i, o, u）。
      * <p>
      * 移动窗口
      */
@@ -442,13 +439,13 @@ public class SlidingWindowSets {
 
     @Test
     public void test_2398() {
-        Assert.assertEquals(1, maximumRobots(new int[]{4, 4, 1}, new int[]{3, 1, 2}, 7));
-        Assert.assertEquals(0, maximumRobots(new int[]{11, 12, 19}, new int[]{10, 8, 7}, 19));
+        Assert.assertEquals(1, maximumRobots(new int[] {4, 4, 1}, new int[] {3, 1, 2}, 7));
+        Assert.assertEquals(0, maximumRobots(new int[] {11, 12, 19}, new int[] {10, 8, 7}, 19));
     }
 
     /**
-     * 2398.预算内的最多机器人数目 : 运行 k 个机器人 总开销: max(chargeTimes) + k * sum(runningCosts)
-     * 变化的定长滑动窗口最大值问题。参考 {@link 239.滑动窗口的最大值}
+     * 2398.预算内的最多机器人数目 : 运行 k 个机器人 总开销: max(chargeTimes) + k * sum(runningCosts) 变化的定长滑动窗口最大值问题。参考
+     * {@link 239.滑动窗口的最大值}
      * <p>不定长滑动窗口</>
      */
     public int maximumRobots(int[] chargeTimes, int[] runningCosts, long budget) {
@@ -485,12 +482,48 @@ public class SlidingWindowSets {
 
 
     /**
-     * ### 3）单序列双指针############################################################################
+     * 3095.或值至少K的最短子数组I
      */
+    public int minimumSubarrayLength(int[] nums, int k) {
+        int ans = Integer.MAX_VALUE;
+        // 变长滑动窗口
+        // 两层循环，子数组长度为：j-i+1
+        for (int i = 0; i < nums.length; i++) {
+            int orSum = nums[i];
+            for (int j = i; j < nums.length; j++) {
+                orSum |= nums[j];
+                if (orSum >= k) {
+                    ans = Math.min(ans, j - i + 1);
+                    break;
+                }
+            }
+        }
+        return ans == Integer.MAX_VALUE ? -1 : ans;
 
+    }
 
     /**
-     * ### 4）双序列双指针############################################################################
+     * 3095.或值至少K的最短子数组II  nums大数量时性能解法nums.length = 100,000
+     */
+    public int minimumSubarrayLengthII(int[] nums, int k) {
+        return 0;
+    }
+    public int findClosestNumber(int[] nums) {
+        int dis = 0;
+        int ans = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            dis = Math.min(Math.abs(nums[i]), dis);
+            ans = Math.max(ans, nums[i]);
+        }
+        return ans;
+    }
+
+    /**
+     * ### 3）单序列双指针#######################################################################
+     */
+
+    /**
+     * ### 4）双序列双指针#######################################################################
      */
 
     /**
