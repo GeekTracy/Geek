@@ -4,9 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Deque;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 
 /**
  * @author mike
@@ -14,16 +11,45 @@ import java.util.LinkedList;
  */
 public class CodeSets2 {
 
+    /**
+     * 1760.袋子里最少数目的球
+     * 
+     * @param nums          原始数组
+     * @param maxOperations 最大操作次数
+     * @return 最小的单个袋子中球数
+     */
+    public int minimumSize(int[] nums, int maxOperations) {
+        int left = 1;
+        int right = Arrays.stream(nums).max().getAsInt();
 
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            // 计算需要的操作次数
+            long ops = 0;
+            for (int num : nums) {
+                ops += (num - 1) / mid;
+            }
+
+            if (ops <= maxOperations) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return left;
+    }
 
     @Test
     public void test_3175() {
-        Assert.assertEquals(2, findWinningPlayer(new int[]{16,4,7,17}, 562084119));
+        Assert.assertEquals(2, findWinningPlayer(new int[] { 16, 4, 7, 17 }, 562084119));
     }
 
     /**
      * 3175.找到连续赢k场比赛的第一位玩家
-     * <p>直接使用队列模拟，当k非常大时，就会空转比较；分析便知，遍历一圈，未得到连续赢了k次的赢家，这时数组的最大值即是那个赢家</p>
+     * <p>
+     * 直接使用队列模拟，当k非常大时，就会空转比较；分析便知，遍历一圈，未得到连续赢了k次的赢家，这时数组的最大值即是那个赢家
+     * </p>
      */
     public int findWinningPlayer(int[] skills, int k) {
         // 模拟整个比较过程，定义一个队列，对于k非常大时有空的消耗；所以遍历一次所以数据即可，增加一个退出的判断
