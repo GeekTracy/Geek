@@ -17,6 +17,46 @@ import java.util.stream.Collectors;
 public class CodeSets {
 
     /**
+     * 1833.雪糕的最大数量
+     *
+     * 示例 1：
+     *
+     * 输入：costs = [1,3,2,4,1], coins = 7
+     * 输出：4
+     * 解释：Tony 可以买下标为 0、1、2、4 的雪糕，总价为 1 + 3 + 2 + 1 = 7
+     * 示例 2：
+     *
+     * 输入：costs = [10,6,8,7,7,8], coins = 5
+     * 输出：0
+     * 解释：Tony 没有足够的钱买任何一支雪糕。
+     * 示例 3：
+     *
+     * 输入：costs = [1,6,3,1,2,5], coins = 20
+     * 输出：6
+     * 解释：Tony 可以买下所有的雪糕，总价为 1 + 6 + 3 + 1 + 2 + 5 = 18 。
+     */
+    public int maxIceCream(int[] costs, int coins) {
+        // 排序，购买第一个则剪掉，一次递归往后取
+        // sort
+        Arrays.sort(costs);
+        for (int i = 0; i < costs.length; i++) {
+            if (coins < costs[i]) { // 不够买
+                return i;
+            }
+            coins -= costs[i];
+        }
+        return costs.length;
+    }
+
+    @Test
+    public void test_1833_01() {
+        // 示例1
+        Assert.assertEquals(maxIceCream(new int[] {1,3,2,4,1}, 7), 4);
+        Assert.assertEquals(maxIceCream(new int[] {10,6,8,7,7,8}, 5), 0);
+        Assert.assertEquals(maxIceCream(new int[] {1,6,3,1,2,5}, 20), 6);
+    }
+
+    /**
      * 1014.最佳观光组合
      * <P>value[i] + value[j] + i - j 可以变化为：（value[i] + i）+ (value[j] - j)，遍历右侧j，左侧max记录value[i] + i的最大值即可</P>
      */
