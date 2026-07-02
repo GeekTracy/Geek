@@ -7,6 +7,9 @@ import java.util.*;
 
 /**
  * 网格图（DFS 深度优先算法,BFS 广度优先算法）
+ * <p>BFS: Breadth First Search 广度优先算法</p>
+ * <p>DFS: Depth  First Search   深度优先算法</p>
+ * <p>并查集</p>
  *
  * @author mike
  * @date 2024/7/18
@@ -19,16 +22,139 @@ public class GraphSets {
      * ### 网格图的BFS遍历
      */
 
+
+    /**
+     * 2812.找出安全路劲
+     * <P>给你一个下标从 0 开始、大小为 n x n 的二维矩阵 grid ，其中 (r, c) 表示：
+     *
+     * 如果 grid[r][c] = 1 ，则表示一个存在小偷的单元格
+     * 如果 grid[r][c] = 0 ，则表示一个空单元格
+     * 你最开始位于单元格 (0, 0) 。在一步移动中，你可以移动到矩阵中的任一相邻单元格，包括存在小偷的单元格。
+     *
+     * 矩阵中路径的 安全系数 定义为：从路径中任一单元格到矩阵中任一小偷所在单元格的 最小 曼哈顿距离。
+     *
+     * 返回所有通向单元格 (n - 1, n - 1) 的路径中的 最大安全系数 。
+     *
+     * 单元格 (r, c) 的某个 相邻 单元格，是指在矩阵中存在的 (r, c + 1)、(r, c - 1)、(r + 1, c) 和 (r - 1, c) 之一。
+     *
+     * 两个单元格 (a, b) 和 (x, y) 之间的 曼哈顿距离 等于 | a - x | + | b - y | ，其中 |val| 表示 val 的绝对值。</P>
+     */
+    public int maximumSafenessFactor(List<List<Integer>> grid) {
+        Queue<int[]> queue = new LinkedList<>();
+        int[] directions = {-1, 0, 1, 0, -1};
+
+        // 记录每个点的曼哈顿距离 bfs
+        int[][] bfs = new int[grid.size()][grid.get(0).size()];
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 0; j < grid.get(i).size(); j++) {
+                if (grid.get(i).get(j) == 1) {
+                    // 小偷节点，坐标入栈
+                    queue.add(new int[]{i,j});
+                } else {
+                    // 非小偷节点，初始化为-1
+                    bfs[i][j] = -1;
+                }
+            }
+        }
+
+        int step = 1;
+        while (!queue.isEmpty()) {
+            // 遍历当前层
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] curr = queue.poll();
+                // 遍历4个方向
+                for (int n = 0; n < directions.length - 1; n++) {
+                    int x = curr[0] + directions[n];
+                    int y = curr[1] + directions[n + 1];
+                    // 越界判断
+                    if (x < 0 || y < 0 || x >= grid.size() || y >= grid.get(0).size() - 1 || bfs[x][y] > 0) {
+                        continue;
+                    }
+                    bfs[x][y] = step;
+                    // 新的一层入栈
+                    queue.add(new int[]{x, y});
+                }
+            }
+            step++;
+        }
+        // 以上处理难点1：获得每一个坐标点到最近小偷的距离....
+        // 以下处理难点2：
+        // 得到了dfs[][],知道了每个节点的曼哈顿距离，遍历dfs矩阵，找到每一条路径[0，0]-->[n-1,n-1]上最小的值dfs[i][j]为该条路径的曼哈顿
+        // 距离，其中距离最大的一条曼哈顿距离，即为本体所求的最大安全距离。如果找每一条路径肯定会超时。
+        // 则通过分析：减少不必要的遍历处理，由于一定会经过起点和终点，则曼哈顿距离一定是小于等于min[dfs[0][0],dfs[n-1][n-1]]
+
+        // 如果最大安全距离为limit，
+        // 1)从起点到终点的路径上的每一点的值 grid.get(i).get(j) >= limit;
+        // 2)可以抵达终点；
+        // 开始遍历，返回该条路径上最小的值
+        return 0; // todo
+    }
+
+
+    /**
+     * 542. 01 矩阵 解法II
+     */
+    public int[][] updateMatrix_II(int[][] mat) {
+        // 广度优先搜索 【多源BFS】这个题目可能有多个元素是0，所以需要表里整个矩阵，将每个0元素四个方位（↑，→，↓，←）的距离设置为1，
+        // 然后遍历所有这些设置为1的元素，将其四个方位（↑，→，↓，←）的距离设置为2，以此类推遍历设置所求矩阵...
+        // 这里可以将所有非0，也就是值为1的元素设置成一个特殊的初始值以示区分，这里将其设置为：-1
+        Queue<int[]> queue = new LinkedList<>();
+        // 定义四个方位：
+        int[][] directions = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        // 初始化
+        int[][] ans = new int[mat.length][mat[0].length];
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                if (mat[i][j] == 0) {
+                    queue.add(new int[]{i, j});
+                } else {
+                    ans[i][j] = -1;
+                }
+            }
+        }
+
+        int step = 1;
+        while (!queue.isEmpty()) {
+            // 按层遍历
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] curr = queue.poll();
+                // 按照四个方向遍历（↑，→，↓，←）
+                for (int n = 0; n < directions.length; n++) {
+                    int x = curr[0] + directions[n][0];
+                    int y = curr[1] + directions[n][1];
+                    // 判断是否越界 || 值不为初始值-1
+                    if (x < 0 || x >= mat.length || y < 0 || y >=mat[0].length || ans[x][y] > 0) {
+                        continue;
+                    }
+                    ans[x][y] = step;
+                    queue.add(new int[]{x, y});
+                }
+            }
+            // 遍历下一层时，step++
+            step++;
+        }
+        return ans;
+
+    }
+
     @Test
     public void test_542() {
         // 输入：mat = [[0,0,0],[0,1,0],[0,0,0]]
         //输出：[[0,0,0],[0,1,0],[0,0,0]]
-        updateMatrix(new int[][]{{0,0,0}, {0,1,0}, {0,0,0}});
+//        updateMatrix(new int[][]{{0, 0, 0}, {0, 1, 0}, {0, 0, 0}});
+        updateMatrix_II(new int[][]{{0, 0, 0}, {0, 1, 0}, {0, 0, 0}});
         //输入：mat = [[0,0,0],[0,1,0],[1,1,1]]
         //输出：[[0,0,0],[0,1,0],[1,2,1]]
     }
+
     /**
      * 542. 01 矩阵
+     * <P>给定一个由 0 和 1 组成的矩阵 mat ，请输出一个大小相同的矩阵，其中每一个格子是 mat 中对应位置元素到最近的 0 的距离。
+     * <p>
+     * 两个相邻元素间的距离为 1 。</P>
+     *
      * @param matrix
      * @return
      */
@@ -39,7 +165,7 @@ public class GraphSets {
         for (int row = 0; row < matrix.length; row++) {
             for (int col = 0; col < matrix[0].length; col++) {
                 if (matrix[row][col] == 0) {
-                    queue.offer(new int[] {row, col});
+                    queue.offer(new int[]{row, col});
                 } else {
                     //标记非零元素为负，和遍历后设定的正数距离加以区分
                     matrix[row][col] = -1;
@@ -54,7 +180,8 @@ public class GraphSets {
             for (int i = 0; i < size; i++) {
                 //获取队列中的元素位置
                 int[] cur = queue.poll();
-                //向四个方向依次走一步
+                //向四个方向依次走一步,directions的设计很巧妙，四个方向的坐标变化放到了一个数组中{-1, 0, 1, 0, -1}，
+                // 相邻2个元素表示一个方向，5元素表示了四个方向[-1, 0],[0, 1],[1, 0],[0, -1] ==> ↑，→，↓，←
                 for (int j = 0; j < directions.length - 1; j++) {
                     int x = cur[0] + directions[j];
                     int y = cur[1] + directions[j + 1];
@@ -62,8 +189,9 @@ public class GraphSets {
                     if (x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length || matrix[x][y] >= 0) {
                         continue;
                     }
+                    // 因为初始为1的元素设置为：-1，所以上面的判断，不为0的都跳过了，设置过的也会跳过
                     matrix[x][y] = step;
-                    queue.offer(new int[] {x, y});
+                    queue.offer(new int[]{x, y});
                 }
             }
             //下次遍历到的-1元素相比前一次距离step加1
@@ -72,15 +200,14 @@ public class GraphSets {
         return matrix;
     }
 
-     /**
+    /**
      *
      * ## 网格图的BFS遍历  END-----------------
      * --------------------------------------
      */
 
 
-
-     /**
+    /**
      * #############################################################################################
      * ### 网格图的DFS遍历，类似于树的遍历，例如树的遍历：1）判断 base case，2）访问两个相邻结点：左子结点、右子结点
      * --  void traverse(TreeNode root) {
@@ -124,7 +251,7 @@ public class GraphSets {
      * 岛屿 是由一些相邻的 1 (代表土地) 构成的组合，这里的「相邻」要求两个 1 必须在 水平或者竖直的四个方向上 相邻。你可以假设 grid 的四个边缘
      * 都被 0（代表水）包围着。
      * 岛屿的面积是岛上值为 1 的单元格的数目。
-     * 计算并返回 grid 中最大的岛屿面积。如果没有岛屿，则返回面积为 0 。
+     * 计算并返回 grid 中最大的岛屿面积。如果没有岛屿，则返回面积为 0 。</P>
      */
     public int maxAreaOfIsland(int[][] grid) {
         int row = grid.length;
@@ -171,7 +298,7 @@ public class GraphSets {
      * <p>
      * 给你一个由 '1'（陆地）和 '0'（水）组成的的二维网格，请你计算网格中岛屿的数量。
      * 岛屿总是被水包围，并且每座岛屿只能由水平方向和/或竖直方向上相邻的陆地连接形成。
-     * 此外，你可以假设该网格的四条边均被水包围。
+     * 此外，你可以假设该网格的四条边均被水包围。</p>
      *
      * @param grid
      * @return 岛屿的个数
@@ -194,6 +321,7 @@ public class GraphSets {
 
     /**
      * 遍历网格图，将岛屿标记为2
+     *
      * @param grid
      * @param r
      * @param c
@@ -215,9 +343,64 @@ public class GraphSets {
         dfs_num(grid, r, c + 1);
     }
 
+    @Test
+    public void test_3619() {
+        // [[0,2,1,0,0],[0,5,0,0,5],[0,0,1,0,0],[0,1,4,7,0],[0,2,0,0,8]] k=5
+        // return 2
+//        int [][]grid = {{0,2,1,0,0},{0,5,0,0,5},{0,0,1,0,0},{0,1,4,7,0},{0,2,0,0,8}};
+//        Assert.assertEquals(2, countIslands(grid, 5));
+
+        // [[0,0,0],[0,0,1],[11,0,6],[0,10,2],[0,0,0],[8,0,0]]  k =19 return 1
+        int [][]grid1 = {{0,0,0},{0,0,1},{11,0,6},{0,10,2},{0,0,0},{8,0,0}};
+        Assert.assertEquals(1, countIslands(grid1, 19));
+
+    }
+    /**
+     * 3619.总价值可以被K整除的岛屿数目
+     * <p>给你一个 m x n 的矩阵 grid 和一个正整数 k。一个 岛屿 是由 正 整数（表示陆地）组成的，并且陆地间 四周 连通（水平或垂直）。
+     *
+     * 一个岛屿的总价值是该岛屿中所有单元格的值之和。
+     *
+     * 返回总价值可以被 k 整除 的岛屿数量。</p>
+     */
+    public int countIslands(int[][] grid, int k) {
+        int[] directions = new int[]{-1, 0, 1, 0, -1};
+        int row = grid.length;
+        int col = grid[0].length;
+        int ans = 0;
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid[i][j] == 0) {
+                    continue;
+                }
+                Queue<int[]> queue = new LinkedList<>();
+                queue.offer(new int[]{i, j});
+                int sum = grid[i][j];
+                grid[i][j] = 0;
+                while (!queue.isEmpty()) {
+                    int[] curr = queue.poll();
+                    for (int n = 0; n < directions.length - 1; n++) {
+                        int x = curr[0] + directions[n];
+                        int y = curr[1] + directions[n + 1];
+                        if (x < 0 || y < 0 || x >= row || y >= col || grid[x][y] == 0) {
+                            continue;
+                        }
+                        sum += grid[x][y];
+                        grid[x][y] = 0;
+                        queue.offer(new int[]{x, y});
+                    }
+                }
+                if (sum != 0 && sum % k == 0) {
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+
     /**
      * 463.岛屿的周长
-     *
+     * <p>
      * 基于上面2道岛屿问题，这里求周长，即遇到边界、遇到水时，返回长度1即可。本题限定了网格图中只有1个岛屿
      */
     public int islandPerimeter(int[][] grid) {
@@ -257,7 +440,7 @@ public class GraphSets {
 
     /**
      * 16.19.水域大小
-     *
+     * <p>
      * 你有一个用于表示一片土地的整数矩阵land，该矩阵中每个点的值代表对应地点的海拔高度。若值为0则表示水域。由垂直、水平或对角连接的水域为池塘。
      * 池塘的大小是指相连接的水域的个数。编写一个方法来计算矩阵中所有池塘的大小，返回值需要从小到大排序。
      */
@@ -282,7 +465,7 @@ public class GraphSets {
     private int dfs_pond(int[][] land, int r, int c) {
         // 1）边界
         if (r < 0 || c < 0 || r >= land.length || c >= land[0].length) {
-            return 0 ;
+            return 0;
         }
         if (land[r][c] != 0) {
             return 0;
