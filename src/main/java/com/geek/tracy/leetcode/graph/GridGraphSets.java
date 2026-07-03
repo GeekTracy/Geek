@@ -14,7 +14,7 @@ import java.util.*;
  * @author mike
  * @date 2024/7/18
  */
-public class GraphSets {
+public class GridGraphSets {
 
 
     /**
