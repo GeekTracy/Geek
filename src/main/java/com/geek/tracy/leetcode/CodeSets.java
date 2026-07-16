@@ -16,6 +16,108 @@ import java.util.stream.Collectors;
  */
 public class CodeSets {
 
+    private static final int MOD = 1_000_000_007;
+
+
+    /**
+     * 3867.数对的最大公约数之和
+     * @param nums
+     * @return
+     */
+    public long gcdSum(int[] nums) {
+        int n = nums.length;
+        int[] pre = new int[n];
+        int mx = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            mx = Math.max(mx, x);
+            pre[i] = gcd(x, mx);
+        }
+
+        Arrays.sort(pre);
+        long ans = 0;
+        for (int i = 0; i < n / 2; i++) {
+            ans += gcd(pre[i], pre[n - 1 - i]);
+        }
+        return ans;
+    }
+
+    /**
+     * 辗转相除法，也被称为欧几里得算法，是一种用于计算两个非负整数的最大公约数（GCD, Greatest Common Divisor）的有效方法。其原理基于以下数学定理：
+     *  对于任意两个正整数 a 和 b（假设 a≥b），它们的最大公约数等于 b 和 amodb（a 除以 b 的余数）的最大公约数
+     * <p>
+     * 原理说明
+     *      * 初始步骤：给定两个整数 a 和 b，其中 a≥b
+     *      * 递归步骤：
+     *      * 计算 a 除以 b 的余数 r，即 r=a mod b
+     *      * 如果 r=0，则 gcd(a,b)=b。
+     *      * 否则，用 b 和 r 替换原来的 a 和 b，并重复上述步骤。
+     *      * 终止条件：当余数为零时，算法终止，此时的除数即为所求的最大公约数。
+     * </p>
+     */
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    @Test
+    public void test_1189() {
+        // "nlaebolko"
+        Assert.assertEquals(maxNumberOfBalloons("nlaebolko"), 1);
+    }
+
+    /**
+     * 1189. "balloon"（气球）
+     * @param text
+     * @return
+     */
+    public int maxNumberOfBalloons(String text) {
+        // 目标单词：balloon
+        // 转换为数组，遍历数组，计算倍数
+        char[] textArr = text.toCharArray();
+        Arrays.sort(textArr);
+        char[] sortWord = "balloon".toCharArray();
+        Arrays.sort(sortWord);
+        // 遍历排序的单词array，取到不重复的字母，计算testArray中字母的个数，text中 min【个数/重复字母个数】即为可以拼接的balloon的个数
+        char currentChar = sortWord[0];
+        int ans = 0;
+        // 双索引
+        int index1 = 0;
+        int index2 = 0;
+        for (int i = 1; i < sortWord.length;) {
+            char crr = sortWord[index1];
+            while (i < sortWord.length && sortWord[i] == sortWord[index1]) {
+                i++;
+            }
+            int cnt1 = i - index1;
+            index1 = i; // 更新index1
+            // 找到等于crr的字符的下标
+            while (index2 < textArr.length && textArr[index2] != crr) {
+                index2++;
+            }
+            int cnt2 = 0;
+            // 遍历textArr
+            while (index2 < textArr.length && textArr[index2] == crr) {
+                index2++;
+                cnt2++;
+            }
+            // 遍历完了，没有找到等于crr的字符，则没有可以组成balloon字母的字符
+            if (cnt2 == 0) {
+                return 0;
+            }
+            // min【个数/重复字母个数】为结果
+            int num = cnt2 / cnt1;
+            ans = (ans != 0) ? Math.min(ans, num) : num;
+
+        }
+        return ans;
+
+    }
+
     /**
      * 1833.雪糕的最大数量
      *
