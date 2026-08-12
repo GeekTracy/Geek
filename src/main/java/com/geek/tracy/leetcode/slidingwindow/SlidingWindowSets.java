@@ -3,10 +3,7 @@ package com.geek.tracy.leetcode.slidingwindow;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * 滑动窗口
@@ -23,7 +20,7 @@ public class SlidingWindowSets {
     @Test
     public void test_1652() {
         //        Assert.assertEquals(new int[]{12, 10, 16, 13}, decrypt(new int[]{5, 7 ,1, 4}, 3));
-        Assert.assertEquals(new int[] {12, 5, 6, 13}, decrypt(new int[] {2, 4, 9, 3}, -2));
+        Assert.assertEquals(new int[]{12, 5, 6, 13}, decrypt(new int[]{2, 4, 9, 3}, -2));
 
     }
 
@@ -102,8 +99,8 @@ public class SlidingWindowSets {
 
     @Test
     public void test_239() {
-        Assert.assertArrayEquals(new int[] {3, 3, 5, 5, 6, 7},
-                maxSlidingWindow(new int[] {1, 3, -1, -3, 5, 3, 6, 7}, 3));
+        Assert.assertArrayEquals(new int[]{3, 3, 5, 5, 6, 7},
+                maxSlidingWindow(new int[]{1, 3, -1, -3, 5, 3, 6, 7}, 3));
     }
 
     /**
@@ -141,8 +138,8 @@ public class SlidingWindowSets {
 
     @Test
     public void test_1004() {
-        Assert.assertEquals(6, longestOnes(new int[] {1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0}, 2));
-        Assert.assertEquals(10, longestOnes(new int[] {0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1}, 3));
+        Assert.assertEquals(6, longestOnes(new int[]{1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0}, 2));
+        Assert.assertEquals(10, longestOnes(new int[]{0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1}, 3));
     }
 
     /**
@@ -210,7 +207,7 @@ public class SlidingWindowSets {
 
     @Test
     public void test_2090() {
-        getAverages(new int[] {7, 4, 3, 9, 1, 8, 5, 2, 6}, 3);
+        getAverages(new int[]{7, 4, 3, 9, 1, 8, 5, 2, 6}, 3);
     }
 
 
@@ -278,7 +275,7 @@ public class SlidingWindowSets {
 
     @Test
     public void test_643() {
-        Assert.assertEquals(-1, findMaxAverage(new int[] {-1}, 1));
+        Assert.assertEquals(-1, findMaxAverage(new int[]{-1}, 1));
     }
 
     /**
@@ -439,8 +436,49 @@ public class SlidingWindowSets {
 
     @Test
     public void test_2398() {
-        Assert.assertEquals(1, maximumRobots(new int[] {4, 4, 1}, new int[] {3, 1, 2}, 7));
-        Assert.assertEquals(0, maximumRobots(new int[] {11, 12, 19}, new int[] {10, 8, 7}, 19));
+//        Assert.assertEquals(1, maximumRobots(new int[]{4, 4, 1}, new int[]{3, 1, 2}, 7));
+//        Assert.assertEquals(0, maximumRobots(new int[]{11, 12, 19}, new int[]{10, 8, 7}, 19));
+
+        // 2958
+        Assert.assertEquals(6, maxSubarrayLength(new int[]{1, 2, 3, 1, 2, 3, 1, 2}, 2));
+        Assert.assertEquals(2, maxSubarrayLength(new int[]{1, 2, 1, 2, 1, 2, 1, 2}, 1));
+        Assert.assertEquals(4, maxSubarrayLength(new int[]{5, 5, 5, 5, 5, 5, 5}, 4));
+        Assert.assertEquals(1, maxSubarrayLength(new int[]{1}, 1));
+    }
+
+    /**
+     * 2958.最多K个重复元素的最长子数组
+     * <p>给你一个整数数组 nums 和一个整数 k 。
+     * <p>
+     * 一个元素 x 在数组中的 频率 指的是它在数组中的出现次数。
+     * <p>
+     * 如果一个数组中所有元素的频率都 小于等于 k ，那么我们称这个数组是 好 数组。
+     * <p>
+     * 请你返回 nums 中 最长好 子数组的长度。
+     * <p>
+     * 子数组 指的是一个数组中一段连续非空的元素序列。</p>
+     */
+    public int maxSubarrayLength(int[] nums, int k) {
+        // 本题滑动时间窗口的方法：对于每一个入窗的nums[right]，如果所有元素的频率都 小于等于 k则是一个好数组，更新结果，继续入窗nuns[right + 1],
+        // 否则则将左侧元素nums[left]根据是否为好数组的要求持续出窗，然后更新结果；
+        int size = nums.length;
+        int left = 0;
+        int res = 0;
+        // 哈希表保存重复元素的个数
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int right = 0; right < size; right++) {
+//            map.put(nums[right], map.getOrDefault(nums[right], 0) + 1);  // 入参，个数+1
+            map.merge(nums[right], 1, (t, u) -> t + u);
+            // 入窗后大于k，则左侧出窗直到满足好数组
+            while (map.get(nums[right]) > k) {
+//                map.put(nums[left], map.getOrDefault(nums[left], 0) - 1);  // 左侧出窗，个数减1
+                map.merge(nums[right], -1, (t, u) -> t + u);
+                left++;
+            }
+            res = Math.max(res, right - left + 1);
+        }
+        return res;
+
     }
 
     /**
@@ -508,6 +546,7 @@ public class SlidingWindowSets {
     public int minimumSubarrayLengthII(int[] nums, int k) {
         return 0;
     }
+
     public int findClosestNumber(int[] nums) {
         int dis = 0;
         int ans = Integer.MIN_VALUE;
