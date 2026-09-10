@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * 树 -- 相关题目
+ *
  * @Author Tracy
  * @Date 2023/6/26
  */
@@ -34,7 +35,7 @@ public class CodeTreeSets extends TreeTraversal {
 
     /**
      * 1448. 统计二叉树中好节点的数目
-     *
+     * <p>
      * 给你一棵根为 root 的二叉树，请你返回二叉树中好节点的数目。
      * 「好节点」X 定义为：从根到该节点 X 所经过的节点中，没有任何节点的值大于 X 的值。
      */
@@ -56,36 +57,36 @@ public class CodeTreeSets extends TreeTraversal {
 
     /**
      * 617. 合并二叉树
-     *
+     * <p>
      * 给你两棵二叉树： root1 和 root2 。
-     *
+     * <p>
      * 想象一下，当你将其中一棵覆盖到另一棵之上时，两棵树上的一些节点将会重叠（而另一些不会）。你需要将这两棵树合并成一棵新二叉树。合并的规则是：
      * 如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，不为 null 的节点将直接作为新二叉树的节点。
      * 返回合并后的二叉树。
      * 注意: 合并过程必须从两个树的根节点开始。
-     *
+     * <p>
      * 答案写法，更加简洁，书写角度不一样
-     *     public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
-     *         if (t1 == null) {
-     *             return t2;
-     *         }
-     *         if (t2 == null) {
-     *             return t1;
-     *         }
-     *         TreeNode merged = new TreeNode(t1.val + t2.val);
-     *         merged.left = mergeTrees(t1.left, t2.left);
-     *         merged.right = mergeTrees(t1.right, t2.right);
-     *         return merged;
-     *     }
-     *  来个更简洁的：上述解答的精简版
-     *    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
-     *         if (root1 == null) return root2;
-     *         if (root2 == null) return root1;
-     *         return new TreeNode(root1.val + root2.val,
-     *             mergeTrees(root1.left, root2.left),    // 合并左子树
-     *             mergeTrees(root1.right, root2.right)); // 合并右子树
-     *     }
-     *
+     * public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+     * if (t1 == null) {
+     * return t2;
+     * }
+     * if (t2 == null) {
+     * return t1;
+     * }
+     * TreeNode merged = new TreeNode(t1.val + t2.val);
+     * merged.left = mergeTrees(t1.left, t2.left);
+     * merged.right = mergeTrees(t1.right, t2.right);
+     * return merged;
+     * }
+     * 来个更简洁的：上述解答的精简版
+     * public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+     * if (root1 == null) return root2;
+     * if (root2 == null) return root1;
+     * return new TreeNode(root1.val + root2.val,
+     * mergeTrees(root1.left, root2.left),    // 合并左子树
+     * mergeTrees(root1.right, root2.right)); // 合并右子树
+     * }
+     * <p>
      * 作者：灵茶山艾府
      * 链接：https://leetcode.cn/problems/merge-two-binary-trees/solutions/2387255/kan-dao-di-gui-jiu-yun-dai-ni-li-jie-di-leixm/
      * 来源：力扣（LeetCode）
@@ -118,16 +119,17 @@ public class CodeTreeSets extends TreeTraversal {
      * 2104. 子数组范围和
      * 2681. 英雄的力量
      * 2281. 巫师的总力量和
-     *
+     * <p>
      * 979. 在二叉树中分配硬币 distribute coins in binary tree
-     *
+     * <p>
      * 给定一个有 N 个结点的二叉树的根结点 root，树中的每个结点上都对应有 node.val 枚硬币，并且总共有 N 枚硬币。
      * 在一次移动中，我们可以选择两个相邻的结点，然后将一枚硬币从其中一个结点移动到另一个结点。(移动可以是从父结点到子结点，或者从子结点移动到父结点。)。
      * 返回使每个结点上只有一枚硬币所需的移动次数。
-     *
+     * <p>
      * 注：有点不好理解！！待进一步理解！
      */
     private int res = 0;
+
     public int distributeCoins(TreeNode root) {
         dfsCoin(root);
         return res;
@@ -212,7 +214,7 @@ public class CodeTreeSets extends TreeTraversal {
             }
         }
         // 按前序、中序特点，截取左子树前序、中序，右子树前序、中序
-        int[] leftPre  = Arrays.copyOfRange(preorder, 1, leftSubSize + 1);
+        int[] leftPre = Arrays.copyOfRange(preorder, 1, leftSubSize + 1);
         int[] leftIn = Arrays.copyOfRange(inorder, 0, leftSubSize);
         int[] rightPre = Arrays.copyOfRange(preorder, leftSubSize + 1, n);
         int[] rightIn = Arrays.copyOfRange(inorder, leftSubSize + 1, n);
@@ -240,7 +242,7 @@ public class CodeTreeSets extends TreeTraversal {
         // 截取左子树中序、后序，右子树中序、后续
         int[] leftTreeInorder = Arrays.copyOfRange(inorder, 0, count);
         int[] leftTreePostorder = Arrays.copyOfRange(postorder, 0, count);
-        int[] rightTreeInorder = Arrays.copyOfRange(inorder,count + 1, n);
+        int[] rightTreeInorder = Arrays.copyOfRange(inorder, count + 1, n);
         int[] rightTreePostorder = Arrays.copyOfRange(postorder, count, n - 1);
         // 构建树：TreeNode(根节点值， 左子树， 右子树)
         return new TreeNode(postorder[n - 1], buildTree(leftTreeInorder, leftTreePostorder), buildTree(rightTreeInorder, rightTreePostorder));
@@ -254,7 +256,7 @@ public class CodeTreeSets extends TreeTraversal {
 
     /**
      * 889.根据前序和后序遍历构造二叉树
-     *
+     * <p>
      * 分析：仅通过前序、后续，得到的解不唯一，可以拆分为子问题处理，即分治法，递归处理子问题。通过前序的根，找到对应的左右子树递归处理，前序数组为1时返回节点，为空时返回null
      */
     public TreeNode constructFromPrePost(int[] preorder, int[] postorder) {
@@ -268,8 +270,8 @@ public class CodeTreeSets extends TreeTraversal {
         for (int i = 0; i < postorder.length; i++) {
             count++;
             if (postorder[i] == preorder[1]) {
-               break;
-           }
+                break;
+            }
         }
         int leftTreeSize = count;
         // 画出示意实例进行分析设值
@@ -291,7 +293,7 @@ public class CodeTreeSets extends TreeTraversal {
 
     /**
      * 2583.二叉树中的第K大层和
-     *
+     * <p>
      * 给你一棵二叉树的根节点 root 和一个正整数 k 。
      * 树中的 层和 是指 同一层 上节点值的总和。
      * 返回树中第 k 大的层和（不一定不同）。如果树少于 k 层，则返回 -1 。
@@ -332,13 +334,60 @@ public class CodeTreeSets extends TreeTraversal {
         //- Level 3: 2 + 1 + 3 + 7 = 13
         //- Level 4: 4 + 6 = 10
         //第 2 大的层和等于 13 。
-        TreeNode root = constructFromPrePost(new int[]{5,8,2,4,6,1,9,3,7}, new int[]{4,6,2,1,8,3,7,9,5});
+        TreeNode root = constructFromPrePost(new int[]{5, 8, 2, 4, 6, 1, 9, 3, 7}, new int[]{4, 6, 2, 1, 8, 3, 7, 9, 5});
         long l = kthLargestLevelSum(root, 2);
         Assert.assertEquals(13, l);
         // 输入：root = [1,2,null,3], k = 1
         //输出：3
         //解释：最大的层和是 3 。
 
+    }
+
+    @Test
+    public void test_2265() {
+        // 初始化root
+//        TreeNode root = TreeNode.inti(new Integer[]{4, 8, 5, 0, 1, null, 6});
+        TreeNode root = TreeNode.inti(new Integer[]{4});
+        averageOfSubtree(root);
+        System.out.println(ANS);
+
+    }
+
+    /**
+     * 2265.统计值等于子树平均值的节点数
+     * <p>
+     * 给你一棵二叉树的根节点 root ，找出并返回满足要求的节点数，要求节点的值等于其 子树 中值的 平均值 。
+     * <p>
+     * 注意：
+     * <p>
+     * n 个元素的平均值可以由 n 个元素 求和 然后再除以 n ，并 向下舍入 到最近的整数。
+     * root 的 子树 由 root 和它的所有后代组成。
+     */
+    public int averageOfSubtree(TreeNode root) {
+        // 遍历计算每一个节点以及其子树的平均值
+        calAverage_dfs(root);
+        return ANS;
+    }
+
+    private int ANS = 0;
+
+    private int[] calAverage_dfs(TreeNode root) {
+        if (root == null) {
+            return new int[]{0, 0};
+        }
+
+        // 计算左子树
+        int[] left = calAverage_dfs(root.left);
+        // 计算右子树
+        int[] right = calAverage_dfs(root.right);
+
+        int count = 1 + left[0] + right[0];
+        int sum = root.val + left[1] + right[1];
+
+        if (root.val == sum / count) {
+            ANS++;
+        }
+        return new int[]{count, sum};
     }
 
 }
