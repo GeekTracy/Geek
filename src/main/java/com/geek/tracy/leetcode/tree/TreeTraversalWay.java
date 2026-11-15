@@ -31,4 +31,25 @@ public interface TreeTraversalWay {
      * @param list 遍历保存数据的数组
      */
     void postOrder(TreeNode tree, List<Integer> list);
+
+    /**
+     * 前序遍历 -- 迭代，非递归
+     *
+     * @param root 树节点
+     */
+    List<Integer> preOrderIteration(TreeNode root);
+
+    /**
+     * 中序遍历 -- 迭代，非递归
+     *
+     * @param root 树节点
+     */
+    List<Integer> inOrderIteration(TreeNode root);
+
+    /**
+     * 后序遍历 -- 迭代，非递归
+     *
+     * @param root 树节点
+     */
+    List<Integer> postOrderIteration(TreeNode root);
 }

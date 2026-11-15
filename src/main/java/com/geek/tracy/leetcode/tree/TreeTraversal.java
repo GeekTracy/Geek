@@ -40,6 +40,7 @@ public class TreeTraversal implements TreeTraversalWay {
      *
      * @param root 树节点
      */
+    @Override
     public List<Integer> preOrderIteration(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         // 使用栈，进栈顺序：右、左，前序遍历保持左节点在栈顶
@@ -87,6 +88,7 @@ public class TreeTraversal implements TreeTraversalWay {
      *
      * @param root 树节点
      */
+    @Override
     public List<Integer> inOrderIteration(TreeNode root) {
         List<Integer> result = new ArrayList<>();
         // 使用栈
@@ -134,6 +136,7 @@ public class TreeTraversal implements TreeTraversalWay {
      *
      * @param root 树节点
      */
+    @Override
     public List<Integer> postOrderIteration(TreeNode root) {
         List<Integer> ans = new LinkedList<>();
         Stack<TreeNode> stack = new Stack<>();
